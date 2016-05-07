@@ -3,13 +3,12 @@ using System.Collections;
 
 public class UIMinimiser : MonoBehaviour 
 {
-	DebugUIElement [] m_disabledElements;
-	bool m_minimised = false;
+	private bool m_minimised = true;
 
 	public void Minimise () 
 	{
-		m_disabledElements = GetComponentsInChildren<DebugUIElement>();
-		foreach(DebugUIElement e in m_disabledElements)
+		DebugUIElement [] elements = GetComponentsInChildren<DebugUIElement>(true);
+		foreach(DebugUIElement e in elements)
 		{
 			e.gameObject.SetActive(false);
 		}
@@ -19,10 +18,12 @@ public class UIMinimiser : MonoBehaviour
 
 	public void Maximise () 
 	{
-		foreach(DebugUIElement e in m_disabledElements)
+		DebugUIElement [] elements = GetComponentsInChildren<DebugUIElement>(true);
+		foreach(DebugUIElement e in elements)
 		{
 			e.gameObject.SetActive(true);
 		}
+
 		m_minimised = false;
 	}
 
@@ -37,6 +38,4 @@ public class UIMinimiser : MonoBehaviour
 			Minimise();
 		}
 	}
-	
-
 }

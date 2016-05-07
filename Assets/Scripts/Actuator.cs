@@ -29,11 +29,12 @@ public class Actuator : MonoBehaviour
 			m_debugObject=Instantiate(m_debugPrefab);
 	}
 
-	// Use this for initialization
 	void Start () 
 	{
 		if (m_debugObject)
+		{
 			m_debugObject.GetComponent<ActuatorDebugUI>().m_actuator = this;
+		}
 
 		if (m_movingPart)
 		{

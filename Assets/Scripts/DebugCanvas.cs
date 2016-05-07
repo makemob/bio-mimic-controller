@@ -30,6 +30,7 @@ public class DebugCanvas : MonoBehaviour
 			if (m_actuatorsDebugPanel)
 			{
 				objectToAdd.transform.SetParent(m_actuatorsDebugPanel);
+				objectToAdd.SetActive(false);
 				success = true;
 			}
 			break;
@@ -37,6 +38,7 @@ public class DebugCanvas : MonoBehaviour
 			if (m_lightsDebugPanel)
 			{
 				objectToAdd.transform.SetParent(m_lightsDebugPanel);
+				objectToAdd.SetActive(false);
 				success = true;
 			}
 			break;

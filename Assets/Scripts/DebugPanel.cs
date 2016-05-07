@@ -1,16 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DebugPanel : MonoBehaviour {
-
-	//public GameObject 
-	// Use this for initialization
-	void Start () {
+public class DebugPanel : MonoBehaviour 
+{
 	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 }
