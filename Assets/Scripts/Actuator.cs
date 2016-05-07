@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-public class Actuator : MonoBehaviour {
-
+public class Actuator : MonoBehaviour 
+{
 	public Rigidbody m_base;
 	public Rigidbody m_movingPart;
 
@@ -20,10 +20,21 @@ public class Actuator : MonoBehaviour {
 	private ConfigurableJoint m_baseJoint;
 	private float m_previousNormalisedPosition = 0.0f;
 
+	public GameObject m_debugPrefab;
+	private GameObject m_debugObject;
+
+	void Awake()
+	{
+		if (m_debugPrefab)
+			m_debugObject=Instantiate(m_debugPrefab);
+	}
 
 	// Use this for initialization
 	void Start () 
 	{
+		if (m_debugObject)
+			m_debugObject.GetComponent<ActuatorDebugUI>().m_actuator = this;
+
 		if (m_movingPart)
 		{
 			//Need to loop through to find the correct joint as there may be multiple attached to this game object.
@@ -36,7 +47,6 @@ public class Actuator : MonoBehaviour {
 		}
 	}
 
-	// Update is called once per frame
 	void Update () 
 	{
 		if (m_autoMove)
@@ -55,5 +65,10 @@ public class Actuator : MonoBehaviour {
 		}
 
 		m_previousNormalisedPosition = m_currentNormalisedPosition;
+	}
+
+	public float GetNormalisedPosition() 
+	{
+		return m_currentNormalisedPosition;
 	}
 }
