@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-public class ActuatorDebugUI : MonoBehaviour 
+public class ActuatorDebugUI : DebugUIElement 
 {
 	public Actuator m_actuator;
 	public Text m_label;
