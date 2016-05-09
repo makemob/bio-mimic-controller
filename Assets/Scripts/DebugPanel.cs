@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DebugPanel : MonoBehaviour 
+public abstract class DebugPanel : MonoBehaviour 
 {
 	
 }

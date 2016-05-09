@@ -9,11 +9,6 @@ public class ActuatorDebugUI : DebugUIElement
 	public GraphElement m_simulationBar;
 	public GraphElement m_sensorBar;
 
-	void Start()
-	{
-		DebugCanvas.Instance.AddElement(gameObject, DebugCanvas.DebugPanelType.Actuators);
-	}
-
 	void Update () 
 	{
 		if (m_actuator)
@@ -35,4 +30,13 @@ public class ActuatorDebugUI : DebugUIElement
 			}	
 		}
 	}
+
+	public override void SetDebuggableObject(GameObject debuggableObject)
+	{
+		if (debuggableObject)
+		{
+			m_actuator = debuggableObject.GetComponent<Actuator>();
+		}
+	}
+
 }

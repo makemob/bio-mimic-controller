@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class DebugCanvas : MonoBehaviour 
 {
@@ -30,6 +31,7 @@ public class DebugCanvas : MonoBehaviour
 			if (m_actuatorsDebugPanel)
 			{
 				objectToAdd.transform.SetParent(m_actuatorsDebugPanel);
+				SortChildrenByName(m_actuatorsDebugPanel);
 				objectToAdd.SetActive(false);
 				success = true;
 			}
@@ -38,6 +40,7 @@ public class DebugCanvas : MonoBehaviour
 			if (m_lightsDebugPanel)
 			{
 				objectToAdd.transform.SetParent(m_lightsDebugPanel);
+				SortChildrenByName(m_lightsDebugPanel);
 				objectToAdd.SetActive(false);
 				success = true;
 			}
@@ -45,9 +48,27 @@ public class DebugCanvas : MonoBehaviour
 		default:
 			break;
 		}
-
+			
 		if (!success)
 			Debug.Log("Unable to add debug element. No parent!");
+	}
+
+
+	void SortChildrenByName(Transform parent)
+	{
+		List<Transform> children = new List<Transform>(parent.childCount);
+
+		for(int i=0; i< parent.childCount; i++)
+		{
+			children.Add(parent.GetChild(i));
+		}
+
+		children.Sort((a,b) => a.name.CompareTo(b.name));
+
+		for(int i=0; i<parent.childCount; i++)
+		{
+			children[i].SetSiblingIndex(i);
+		}
 	}
 
 	void Update () 
