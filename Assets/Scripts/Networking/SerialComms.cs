@@ -9,19 +9,18 @@ public class SerialComms : MonoBehaviour {
 
 	void Start()
 	{
-		Init ();
+		Startup ();
 	}
 
-	protected virtual void Init () 
+	public virtual void Startup () 
 	{
 		m_serial = new SerialPort("/dev/tty.usbserial-A101OCIF",9600);
 		if (m_serial != null)
 			m_serial.Open();
 		Debug.Log("Opened serial port.");
-		//SerialWrite(" ");
 	}
 	
-	public virtual void Stop () 
+	public virtual void Shutdown () 
 	{
 		SerialWrite("s\r");
 	}
