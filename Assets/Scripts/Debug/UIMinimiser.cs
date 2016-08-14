@@ -5,6 +5,12 @@ public class UIMinimiser : MonoBehaviour
 {
 	private bool m_minimised = true;
 
+	void Start()
+	{
+		if (m_minimised)
+			Minimise();
+	}
+
 	public void Minimise () 
 	{
 		DebugUIElement [] elements = GetComponentsInChildren<DebugUIElement>(true);

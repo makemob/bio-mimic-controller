@@ -6,7 +6,7 @@ public class Debuggable : MonoBehaviour
 {
 	public GameObject m_debugPrefab;	//Prefab used to instantiate the debug ui for displaying info about this Debuggable object
 
-	void Awake () 
+	protected void CreateDebugObject() 
 	{
 		if (m_debugPrefab)
 		{

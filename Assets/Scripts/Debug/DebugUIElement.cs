@@ -8,7 +8,7 @@ public class DebugUIElement : MonoBehaviour
 	public virtual void Start()
 	{
 		//Add this object to the debug canvas 
-		DebugCanvas.Instance.AddElement(gameObject, m_type);
+		DebugCanvas.Instance.AddElement(this, m_type);
 	}
 
 	//Override this to set subclass members and attach graphs, text etc

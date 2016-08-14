@@ -3,6 +3,8 @@
 
 public class Actuator : Debuggable 
 {
+	public int m_id = 0;
+
 	public Rigidbody m_base;
 	public Rigidbody m_movingPart;
 
@@ -20,6 +22,15 @@ public class Actuator : Debuggable
 
 	private ConfigurableJoint m_baseJoint;
 	private float m_previousNormalisedPosition = 0.0f;
+
+	//private static int s_numberActuators = 0;	//TODO: Generalise id, possibly add ActuatorState struct.
+
+	void Awake()
+	{
+		//m_id = s_numberActuators++;
+		gameObject.name = m_id.ToString();
+		CreateDebugObject();
+	}
 
 	void Start () 
 	{
@@ -58,5 +69,10 @@ public class Actuator : Debuggable
 	public float GetNormalisedPosition() 
 	{
 		return m_currentNormalisedPosition;
+	}
+
+	public int GetID()
+	{
+		return m_id;	
 	}
 }

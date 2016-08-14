@@ -37,7 +37,7 @@ public class ModbusComms : SerialComms, IRoboticsController
 	//
 	// Shutdown the modbus connection and stop processing commands
 	//
-	public void Shutdown ()
+	public override void Shutdown ()
 	{
 		Debug.Log ("ModbusComms.Shutdown called.");
 
