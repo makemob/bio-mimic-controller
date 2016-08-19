@@ -60,7 +60,6 @@ public class Command_GenericAction : ICommand
 	}
 
 	public void Execute () { 
-		Debug.Log ("Executing Command_GenericAction");
 		m_action.Invoke();
 	}
 }

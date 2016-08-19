@@ -14,10 +14,23 @@ public class SerialComms : MonoBehaviour {
 
 	public virtual void Startup () 
 	{
+		string [] args = System.Environment.GetCommandLineArgs ();
+		for (int i = 0; i < args.Length; i++) {
+			Debug.Log (args [i]);
+		}
+
 		m_serial = new SerialPort("/dev/tty.usbserial-A101OCIF",9600);
-		if (m_serial != null)
-			m_serial.Open();
-		Debug.Log("Opened serial port.");
+		try {
+			
+			if (m_serial != null)
+				m_serial.Open();
+		}
+		catch {
+			Debug.Log("Failed to open serial port.");
+		}
+
+		if (m_serial.IsOpen)
+			Debug.Log("Opened serial port.");
 	}
 	
 	public virtual void Shutdown () 

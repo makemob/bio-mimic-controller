@@ -51,17 +51,31 @@ public class ModbusComms : SerialComms
 	public void WriteSingleRegister(byte address, ushort register, ushort data)
 	{
 		QueueInternalCommand (() => {
-			if (m_modbusMaster != null)
+			if (m_modbusMaster != null && m_serial.IsOpen)
 				m_modbusMaster.WriteSingleRegister(address, register, data);
+			Debug.Log(Time.realtimeSinceStartup + " ModbusSingleRegister. Address: " + address + " Register: " + register + " Data:" + data);
 		});
 	}
 
 	public void WriteMultipleRegisters(byte address, ushort startRegister, ushort [] data)
 	{
 		QueueInternalCommand (() => {
-			if (m_modbusMaster != null)
+			if (m_modbusMaster != null && m_serial.IsOpen)
 				m_modbusMaster.WriteMultipleRegisters(address, startRegister, data);
+			string dataString = "[";
+			foreach(ushort u in data)
+				dataString += u.ToString() + " ";
+			dataString += "]";
+			
+			Debug.Log(Time.realtimeSinceStartup + " ModbusMultiRegister. Address: " + address + " Register: " + startRegister + " Data:" + dataString);
+
 		});
+	}
+
+	public void ClearCommandQueue()
+	{
+		if (m_commandQueue)
+			m_commandQueue.Clear();
 	}
 
 	//

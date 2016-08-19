@@ -12,16 +12,14 @@ public class ModbusRoboticsController : RoboticsController
 	const ushort BACKWARDS = 2;
 	const int MAX_ACTUATORS = 16;
 
+	public bool m_useMultiRegister = true;
+
 	private ModbusComms m_modbus;
 	private List<Actuator> m_actuators = new List<Actuator>();
 
-	void Start()
-	{
-		m_modbus = GetComponent<ModbusComms>();
-	}
-
 	public override void Startup()
 	{
+		m_modbus = GetComponent<ModbusComms>();
 		m_modbus.Startup();
 	}
 
@@ -49,7 +47,15 @@ public class ModbusRoboticsController : RoboticsController
 
 		ushort[] data = new ushort[] { direction, speed };
 
-		m_modbus.WriteMultipleRegisters ((byte)actuatorID, 0, data);
+		if (m_useMultiRegister) 
+		{
+			m_modbus.WriteMultipleRegisters ((byte)actuatorID, 0, data);
+		} 
+		else 
+		{
+			m_modbus.WriteSingleRegister ((byte)actuatorID, 0, direction);
+			m_modbus.WriteSingleRegister ((byte)actuatorID, 1, speed);
+		}
 	}
 
 	public override void SetAllActuatorSpeeds(float normalisedSpeed)
@@ -81,6 +87,16 @@ public class ModbusRoboticsController : RoboticsController
 	public override void Stop()
 	{
 		StopAllActuators ();
+	}
+
+	public void ToggleMultiRegister()
+	{
+		m_useMultiRegister = !m_useMultiRegister;
+	}
+
+	public void UseMultiRegister(bool doUseMultiRegister)
+	{
+		m_useMultiRegister = doUseMultiRegister;
 	}
 
 	//

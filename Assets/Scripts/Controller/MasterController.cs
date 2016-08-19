@@ -2,10 +2,10 @@
 using System.Collections;
 using UKI;
 
-public class MasterController : MonoBehaviour, IMasterController, ILightingController
+public class MasterController : MonoBehaviour, IMasterController
 {
 	public RoboticsController [] m_roboticsControllers;
-	public ILightingController [] m_lightingControllers;
+	public LightingController [] m_lightingControllers;
 
 	public static MasterController Instance;
 
@@ -18,7 +18,11 @@ public class MasterController : MonoBehaviour, IMasterController, ILightingContr
 		Instance = this; 
 	}
 
-	void Start() {}
+	void Start() 
+	{
+		Startup ();
+	}
+
 	void Update() {}
 
 	//
@@ -30,7 +34,7 @@ public class MasterController : MonoBehaviour, IMasterController, ILightingContr
 		foreach (RoboticsController r in m_roboticsControllers)
 			r.Startup ();
 		
-		foreach (ILightingController l in m_lightingControllers)
+		foreach (LightingController l in m_lightingControllers)
 			l.Startup ();
 	}
 
@@ -38,12 +42,13 @@ public class MasterController : MonoBehaviour, IMasterController, ILightingContr
 	{
 		foreach (RoboticsController r in m_roboticsControllers)
 			r.Shutdown();
-		foreach (ILightingController l in m_lightingControllers)
+		foreach (LightingController l in m_lightingControllers)
 			l.Shutdown ();
 	}
 
 	public void Stop()
 	{
+		StopAllCoroutines();
 		StopRobotics ();
 		StopLighting ();
 	}
@@ -55,13 +60,15 @@ public class MasterController : MonoBehaviour, IMasterController, ILightingContr
 		
 	public void StopRobotics ()
 	{
+		StopAllCoroutines();
 		foreach (RoboticsController r in m_roboticsControllers)
 			r.Stop();
 	}
 		
 	public void StopLighting ()
 	{
-		foreach (ILightingController l in m_lightingControllers)
+		StopAllCoroutines();
+		foreach (LightingController l in m_lightingControllers)
 			l.Stop();
 	}
 
@@ -103,6 +110,29 @@ public class MasterController : MonoBehaviour, IMasterController, ILightingContr
 
 	public void Wave()
 	{
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.SetAllActuatorSpeeds(-1.0f);
+
+		//TODO Implement wait until all down, then commence wave function
+	}
+
+	public void Callibrate()
+	{
+		StartCoroutine(CallibrateCoroutine());
+	}
+
+	public IEnumerator CallibrateCoroutine()
+	{
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.SetAllActuatorSpeeds(-1.0f);
+
+		yield return new WaitForSeconds(1.5f);
+
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.SetAllActuatorSpeeds(1.0f);
+
+		yield return new WaitForSeconds(1.5f);
+
 		foreach (RoboticsController r in m_roboticsControllers)
 			r.SetAllActuatorSpeeds(-1.0f);
 
