@@ -2,16 +2,22 @@
 using System.Collections;
 using UKI;
 
-public class MasterController : MonoBehaviour, IMasterController
+public class MasterController : MonoBehaviour, IMasterController, ILightingController
 {
-	public IRoboticsController m_roboticsController;
-	public ILightingController m_lightingController;
+	public RoboticsController [] m_roboticsControllers;
+	public ILightingController [] m_lightingControllers;
+
+	public static MasterController Instance;
 
 	//
 	// Unity interface
 	//
 
-	void Awake() {}
+	void Awake() 
+	{ 
+		Instance = this; 
+	}
+
 	void Start() {}
 	void Update() {}
 
@@ -21,18 +27,19 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void Startup ()
 	{
-		if (m_roboticsController != null)
-			m_roboticsController.Startup();
-		if (m_lightingController != null)
-			m_lightingController.Startup ();
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.Startup ();
+		
+		foreach (ILightingController l in m_lightingControllers)
+			l.Startup ();
 	}
 
 	public void Shutdown ()
 	{
-		if (m_roboticsController != null)
-			m_roboticsController.Shutdown();
-		if (m_lightingController != null)
-			m_lightingController.Shutdown ();
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.Shutdown();
+		foreach (ILightingController l in m_lightingControllers)
+			l.Shutdown ();
 	}
 
 	public void Stop()
@@ -48,13 +55,39 @@ public class MasterController : MonoBehaviour, IMasterController
 		
 	public void StopRobotics ()
 	{
-		if (m_roboticsController != null)
-			m_roboticsController.Stop();
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.Stop();
 	}
 		
 	public void StopLighting ()
 	{
-		if (m_lightingController != null)
-			m_lightingController.Stop();
+		foreach (ILightingController l in m_lightingControllers)
+			l.Stop();
 	}
+
+	public void RegisterActuator(Actuator a)
+	{
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.RegisterActuator(a);
+	}
+
+	public void SetActuatorSpeed (int actuatorID, float speed)
+	{
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.SetActuatorSpeed(actuatorID, speed);
+	}
+
+	public void StopActuator (int actuatorID)
+	{
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.StopActuator(actuatorID);
+	}
+
+	public void StopAllActuators ()
+	{
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.StopAllActuators();
+	}
+
+
 }

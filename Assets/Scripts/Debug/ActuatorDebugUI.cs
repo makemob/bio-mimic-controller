@@ -36,16 +36,21 @@ public class ActuatorDebugUI : DebugUIElement
 	public void OnUp()
 	{
 		Debug.Log("Up pressed.");
+		MasterController.Instance.SetActuatorSpeed (GetActuatorID (), 1.0f);
 	}
 		
 	public void OnDown()
 	{
 		Debug.Log("Down pressed.");
+		MasterController.Instance.SetActuatorSpeed (GetActuatorID (), -1.0f);
+
 	}
 
 	public void OnStop()
 	{
 		Debug.Log("Stop pressed.");
+		MasterController.Instance.StopActuator(GetActuatorID());
+
 	}
 
 	private int GetActuatorID()

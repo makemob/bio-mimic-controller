@@ -6,7 +6,7 @@ using System;
 using Modbus.Device;
 using UKI;
 
-public class ModbusComms : SerialComms, IRoboticsController
+public class ModbusComms : SerialComms
 {
 	//Register values from scarab
 	const ushort STILL = 0;
@@ -41,59 +41,27 @@ public class ModbusComms : SerialComms, IRoboticsController
 	{
 		Debug.Log ("ModbusComms.Shutdown called.");
 
-		m_commandQueue.Stop ();
+		m_commandQueue.Stop();
 		m_commandQueue.Clear();
 
 		//TODO: Send a final stop message??
 		m_modbusMaster.Dispose ();
 	}
 
-	//
-	// Queue up a command to set the speed of a given actuator. Fires off the message to modbus without bounds checking.
-	// _actuatorID is the id of given actuator. _speed is normalised speed from -1.0 to 1.0f.
-	//
-	public void SetActuatorSpeed (int _actuatorID, float _speed)
+	public void WriteSingleRegister(byte address, ushort register, ushort data)
 	{
 		QueueInternalCommand (() => {
-			ushort direction = 0;
-			ushort speed = 0;
-
-			GetSpeedAndDirection (_speed, out speed, out direction);
-
-			ushort[] data = new ushort[] { direction, speed };
 			if (m_modbusMaster != null)
-				m_modbusMaster.WriteMultipleRegisters ((byte)_actuatorID, 0, data);
+				m_modbusMaster.WriteSingleRegister(address, register, data);
 		});
 	}
 
-	//
-	// Queue up a command to stop a given acuator 
-	//
-	public void StopActuator (int actuatorID) 
+	public void WriteMultipleRegisters(byte address, ushort startRegister, ushort [] data)
 	{
-		Debug.Log ("StopActuator called");
-
 		QueueInternalCommand (() => {
 			if (m_modbusMaster != null)
-				m_modbusMaster.WriteSingleRegister ((byte)actuatorID, 0, 0);
+				m_modbusMaster.WriteMultipleRegisters(address, startRegister, data);
 		});
-	}
-
-	//
-	// Queue up a list of commands to stop all actuators. TODO: investigate a single command version of this.
-	//
-	public void StopAllActuators ()
-	{
-		for(var i=0; i < MAX_ACTUATORS; i++)
-			StopActuator(i);	
-	}
-
-	//
-	// Stop everything!
-	//
-	public void Stop ()
-	{
-		StopAllActuators();
 	}
 
 	//
@@ -105,17 +73,4 @@ public class ModbusComms : SerialComms, IRoboticsController
 			m_commandQueue.Add(new Command_GenericAction(a));
 	}
 
-	//
-	// Helper function to return the speed and direction from a given normalised speed (-1.0f to 1.0f)
-	//
-	private void GetSpeedAndDirection (float _normalisedSpeed, out ushort _speed, out ushort _direction)
-	{
-		_speed =  Convert.ToUInt16(Math.Abs(_normalisedSpeed) * 255.0f);
-
-		_direction = STILL;				//still by default
-		if (_normalisedSpeed > 0.0f)			
-			_direction = FORWARDS;		//forwards
-		else if (_normalisedSpeed > 0.0f)
-			_direction = BACKWARDS;		//backwards
-	}
 }

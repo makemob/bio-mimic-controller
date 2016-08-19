@@ -13,10 +13,10 @@ public interface ICommand
 //
 public class Command_StopActuator : ICommand {
 	
-	IRoboticsController m_roboticsController;
+	RoboticsController m_roboticsController;
 	byte m_actuatorID;
 
-	public Command_StopActuator (IRoboticsController r, byte actuatorID) {
+	public Command_StopActuator (RoboticsController r, byte actuatorID) {
 		m_roboticsController = r;
 		m_actuatorID = actuatorID;
 	}
@@ -32,11 +32,11 @@ public class Command_StopActuator : ICommand {
 //
 public class Command_SetActuatorSpeed : ICommand
 {
-	IRoboticsController m_roboticsInterface; 
+	RoboticsController m_roboticsInterface; 
 	float m_speed; 
 	byte m_actuatorID;
 
-	public Command_SetActuatorSpeed (IRoboticsController r, byte actuatorID, float speed) {
+	public Command_SetActuatorSpeed (RoboticsController r, byte actuatorID, float speed) {
 		m_roboticsInterface = r; 
 		m_speed = speed; 
 		m_actuatorID = actuatorID;

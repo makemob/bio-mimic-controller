@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using UKI;
 
 
-public class Actuator : Debuggable 
+public class Actuator : Debuggable
 {
 	public int m_id = 0;
 
@@ -20,6 +21,8 @@ public class Actuator : Debuggable
 	[Range(0.0f, 1.0f)]
 	public float m_currentNormalisedPosition = 0.0f;
 
+	public float m_moveSpeed = 0.0f;
+
 	private ConfigurableJoint m_baseJoint;
 	private float m_previousNormalisedPosition = 0.0f;
 
@@ -30,6 +33,8 @@ public class Actuator : Debuggable
 		//m_id = s_numberActuators++;
 		gameObject.name = m_id.ToString();
 		CreateDebugObject();
+
+		MasterController.Instance.RegisterActuator(this);
 	}
 
 	void Start () 
@@ -51,7 +56,7 @@ public class Actuator : Debuggable
 		if (m_autoMove)
 		{
 			//m_currentNormalisedPosition = 0.5f * (Mathf.Sin(Time.realtimeSinceStartup / m_autoMovePeriod) + 1.0f);
-			m_currentAngle += Time.deltaTime * (360.0f/m_autoMovePeriod);
+			m_currentAngle += Time.deltaTime * (360.0f/m_autoMovePeriod) * m_moveSpeed;
 			if (m_currentAngle >= 360.0f)
 				m_currentAngle -= 360.0f;
 			m_currentNormalisedPosition = 0.5f * (Mathf.Sin(m_currentAngle * Mathf.Deg2Rad) + 1.0f);
@@ -74,5 +79,10 @@ public class Actuator : Debuggable
 	public int GetID()
 	{
 		return m_id;	
+	}
+
+	public void SetActuatorSpeed(float normalisedSpeed)
+	{
+		m_moveSpeed = normalisedSpeed;
 	}
 }
