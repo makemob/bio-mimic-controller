@@ -4,6 +4,12 @@ using UKI;
 
 public class Actuator : Debuggable
 {
+	public enum MoveType
+	{
+		Angular,
+		Clamped
+	}
+
 	public int m_id = 0;
 
 	public Rigidbody m_base;
@@ -12,7 +18,9 @@ public class Actuator : Debuggable
 	public float m_minPosition = 0.0f;
 	public float m_maxPosition = 1.0f;
 
-	public bool m_autoMove = false;
+	public MoveType m_moveType;
+	public bool m_autoMoveAngle = false;
+	public bool m_autoMoveClamped = false;
 	public float m_autoMovePeriod = 1.0f;
 
 	[Range(0.0f, 360.0f)]
@@ -53,14 +61,20 @@ public class Actuator : Debuggable
 
 	void Update () 
 	{
-		if (m_autoMove)
+		switch (m_moveType) 
 		{
-			//m_currentNormalisedPosition = 0.5f * (Mathf.Sin(Time.realtimeSinceStartup / m_autoMovePeriod) + 1.0f);
+		case MoveType.Angular:
 			m_currentAngle += Time.deltaTime * (360.0f/m_autoMovePeriod) * m_moveSpeed;
 			if (m_currentAngle >= 360.0f)
 				m_currentAngle -= 360.0f;
 			m_currentNormalisedPosition = 0.5f * (Mathf.Sin(m_currentAngle * Mathf.Deg2Rad) + 1.0f);
+			break;
+		case MoveType.Clamped:
+			m_currentNormalisedPosition += Time.deltaTime * m_moveSpeed;
+			m_currentNormalisedPosition = Mathf.Clamp (m_currentNormalisedPosition, 0.0f, 1.0f);
+			break;
 		}
+
 
 		if (m_baseJoint && m_previousNormalisedPosition != m_currentNormalisedPosition)
 		{

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace UKI 
 {	
@@ -12,6 +13,10 @@ namespace UKI
 		public abstract void RegisterActuator(Actuator actuator);
 
 		public abstract void SetActuatorSpeed (int actuatorID, float speed);
+
+		public abstract void SetAllActuatorSpeeds (float speed);
+
+		public abstract void SetAllActuatorSpeeds (List<float> speeds);
 
 		public abstract void StopActuator (int actuatorID);
 

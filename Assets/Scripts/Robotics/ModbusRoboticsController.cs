@@ -52,6 +52,19 @@ public class ModbusRoboticsController : RoboticsController
 		m_modbus.WriteMultipleRegisters ((byte)actuatorID, 0, data);
 	}
 
+	public override void SetAllActuatorSpeeds(float normalisedSpeed)
+	{
+		for (int i=0; i < m_actuators.Count; i++)
+			SetActuatorSpeed (i, normalisedSpeed);
+	}
+
+	public override void SetAllActuatorSpeeds(List<float> speeds)
+	{
+		int count = Mathf.Min (speeds.Count, m_actuators.Count);
+		for (int i=0; i < count; i++)
+			SetActuatorSpeed (i, speeds[i]);
+	}
+
 	public override void StopActuator(int actuatorID)
 	{
 		m_actuators[actuatorID].SetActuatorSpeed(0.0f);

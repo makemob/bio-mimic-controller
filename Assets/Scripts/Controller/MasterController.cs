@@ -89,5 +89,23 @@ public class MasterController : MonoBehaviour, IMasterController, ILightingContr
 			r.StopAllActuators();
 	}
 
+	public void AllUp()
+	{
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.SetAllActuatorSpeeds(1.0f);
+	}
 
+	public void AllDown()
+	{
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.SetAllActuatorSpeeds(-1.0f);
+	}
+
+	public void Wave()
+	{
+		foreach (RoboticsController r in m_roboticsControllers)
+			r.SetAllActuatorSpeeds(-1.0f);
+
+		//TODO Implement wait until all down, then commence wave function
+	}
 }
