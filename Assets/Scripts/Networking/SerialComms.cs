@@ -14,12 +14,24 @@ public class SerialComms : MonoBehaviour {
 
 	public virtual void Startup () 
 	{
-		string [] args = System.Environment.GetCommandLineArgs ();
-		for (int i = 0; i < args.Length; i++) {
-			Debug.Log (args [i]);
+        string portName = "/dev/tty.usbserial-A101OCIF";
+        int baudRate = 9600;
+        string [] args = System.Environment.GetCommandLineArgs ();
+		for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i].Equals("-portName", System.StringComparison.OrdinalIgnoreCase) && (i + 1) < args.Length)
+            {
+                portName = args[i+1];
+            }
+            else if (args[i].Equals("-baudRate", System.StringComparison.OrdinalIgnoreCase) && (i + 1) < args.Length)
+            {
+                baudRate = System.Convert.ToInt32(args[i + 1]);
+            }
 		}
 
-		m_serial = new SerialPort("/dev/tty.usbserial-A101OCIF",9600);
+        Debug.Log("Attempting to open serial port. PortName: " + portName + " BaudRate: " + baudRate);
+
+		m_serial = new SerialPort(portName, baudRate);
 		try {
 			
 			if (m_serial != null)

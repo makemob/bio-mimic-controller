@@ -42,12 +42,14 @@ public class Actuator : Debuggable
 		gameObject.name = m_id.ToString();
 		CreateDebugObject();
 
-		MasterController.Instance.RegisterActuator(this);
+		
 	}
 
 	void Start () 
 	{
-		if (m_movingPart)
+        MasterController.Instance.RegisterActuator(this);
+
+        if (m_movingPart)
 		{
 			//Need to loop through to find the correct joint as there may be multiple attached to this game object.
 			ConfigurableJoint [] allJoints = m_movingPart.GetComponents<ConfigurableJoint>();
