@@ -23,7 +23,11 @@ public class MasterController : MonoBehaviour, IMasterController
 		Startup ();
 	}
 
-	void Update() {}
+	void Update() 
+	{
+		if (Input.GetKeyUp (KeyCode.Escape))
+			Application.Quit();
+	}
 
 	//
 	// User interface
