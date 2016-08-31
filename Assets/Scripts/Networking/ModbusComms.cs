@@ -8,6 +8,8 @@ using UKI;
 
 public class ModbusComms : SerialComms
 {
+	//TODO: Import register map
+
 	//Register values from scarab
 	const ushort STILL = 0;
 	const ushort FORWARDS = 1;
@@ -30,6 +32,8 @@ public class ModbusComms : SerialComms
 		if (!m_commandQueue)
 			m_commandQueue = gameObject.AddComponent<CommandQueue> ();
 		m_commandQueue.Run();
+
+		Debug.Log("Minimum interval is " + GetMinimumInterval(m_baudRate));
 
 		Debug.Log ("ModbusComms ready");
 	}
@@ -55,6 +59,7 @@ public class ModbusComms : SerialComms
 				m_modbusMaster.WriteSingleRegister(address, register, data);
 			Debug.Log(Time.realtimeSinceStartup + " ModbusSingleRegister. Address: " + address + " Register: " + register + " Data:" + data);
 		});
+
 	}
 
 	public void WriteMultipleRegisters(byte address, ushort startRegister, ushort [] data)
@@ -85,6 +90,18 @@ public class ModbusComms : SerialComms
 	{
 		if (m_commandQueue && m_commandQueue.enabled)
 			m_commandQueue.Add(new Command_GenericAction(a));
+	}
+
+
+	public static double GetMinimumInterval(int baud)
+	{
+		const int bitsPerCharacter = 11;	//Modbus rtu is 11-bits per character
+		const double minimumIntervalMultiplier = 3.5; 
+		double timePerBit = 1.0 / (double)baud;
+		double timePerCharacter = timePerBit * bitsPerCharacter;
+		double minimumInterval = timePerCharacter * minimumIntervalMultiplier;
+
+		return minimumInterval;
 	}
 
 }

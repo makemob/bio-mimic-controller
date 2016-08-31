@@ -5,6 +5,9 @@ using System.IO.Ports;
 
 public class SerialComms : MonoBehaviour {
 
+	public string m_portName = "/dev/tty.usbserial-A101OCIF";
+	public int m_baudRate = 9600;
+
 	protected SerialPort m_serial;
 
 	void Start()
@@ -14,24 +17,24 @@ public class SerialComms : MonoBehaviour {
 
 	public virtual void Startup () 
 	{
-        string portName = "/dev/tty.usbserial-A101OCIF";
-        int baudRate = 9600;
+        //string portName = "/dev/tty.usbserial-A101OCIF";
+        //int baudRate = 9600;
         string [] args = System.Environment.GetCommandLineArgs ();
 		for (int i = 0; i < args.Length; i++)
         {
             if (args[i].Equals("-portName", System.StringComparison.OrdinalIgnoreCase) && (i + 1) < args.Length)
             {
-                portName = args[i+1];
+				m_portName = args[i+1];
             }
             else if (args[i].Equals("-baudRate", System.StringComparison.OrdinalIgnoreCase) && (i + 1) < args.Length)
             {
-                baudRate = System.Convert.ToInt32(args[i + 1]);
+				m_baudRate = System.Convert.ToInt32(args[i + 1]);
             }
 		}
 
-        Debug.Log("Attempting to open serial port. PortName: " + portName + " BaudRate: " + baudRate);
+		Debug.Log("Attempting to open serial port. PortName: " + m_portName + " BaudRate: " + m_baudRate);
 
-		m_serial = new SerialPort(portName, baudRate);
+		m_serial = new SerialPort(m_portName, m_baudRate);
 		try {
 			
 			if (m_serial != null)
