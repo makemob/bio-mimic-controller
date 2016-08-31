@@ -4,6 +4,84 @@ using System.Collections;
 using System.Collections.Generic;
 using UKI;
 
+enum ModbusSlaveMap
+{
+	MB_SCARAB_ID1 = 0,
+	MB_SCARAB_ID2 = 1,
+	MB_SCARAB_ID3 = 2,
+	MB_SCARAB_ID4 = 3,
+	MB_SCARAB_ID5 = 4,
+	MB_SCARAB_ID6 = 5,
+	MB_SCARAB_ID7 = 6,
+	MB_SCARAB_ID8 = 7,
+	MB_SCARAB_ID9 = 8,
+	MB_SCARAB_ID10 = 9,
+	MB_SCARAB_ID11 = 10,
+	MB_SCARAB_ID12 = 11,
+	MB_SCARAB_ID13 = 12,
+	MB_SCARAB_ID14 = 13,
+	MB_SCARAB_ID15 = 14,
+	MB_SCARAB_ID16 = 15,
+}
+
+enum ModbusRegisterMap
+{
+	//MB_SCARAB_ID1 = 0,
+	// ...
+	//MB_SCARAB_ID15 = 15,
+	MB_BOARD_VERSION,
+	MB_FW_VERSION_MAJOR,
+	MB_FW_VERSION_MINOR,
+	MB_MODBUS_ERROR_COUNT,
+	MB_UPTIME_MSW,
+	MB_UPTIME_LSW,
+
+	MB_BRIDGE_CURRENT = 100,
+	MB_BATT_VOLTAGE,
+	MB_MAX_BATT_VOLTAGE,
+	MB_MIN_BATT_VOLTAGE,
+	MB_BOARD_TEMPERATURE,
+	MB_EXT_1_ADC,
+	MB_EXT_2_ADC,
+	MB_EXT_1_DIG,
+	MB_EXT_2_DIG,
+	MB_EXT_3_DIG,
+	MB_EXT_4_DIG,
+	MB_EXT_5_DIG,
+	MB_EXT_6_DIG,
+	MB_BLUE_LED,
+	MB_GREEN_LED,
+
+	MB_MOTOR_SETPOINT = 200,
+	MB_MOTOR_SPEED,
+	MB_MOTOR_ACCEL,
+	MB_CURRENT_LIMIT_INWARD,
+	MB_CURRENT_LIMIT_OUTWARD,
+	MB_CURRENT_TRIPS_INWARD,
+	MB_CURRENT_TRIPS_OUTWARD,
+	MB_VOLTAGE_TRIPS,
+	MB_ESTOP,
+	MB_RESET_ESTOP,    // Write 0x5050 to reset emergency stop
+	MB_MOTOR_PWM_FREQ_MSW,
+	MB_MOTOR_PWM_FREQ_LSW,
+	MB_MOTOR_PWM_DUTY_MSW,
+	MB_MOTOR_PWM_DUTY_LSW,
+
+	// Position info etc. = 300
+
+
+	MB_UNLOCK_CONFIG = 9000,    // Write 0xA0A0 to unlock regs, anything else to lock
+	MB_MODBUS_ADDRESS,
+	MB_OPERATING_MODE,   // eg. Limit switches, encoders
+	MB_OPERATING_CONFIG, // specific config for the selected mode
+	MB_DEFAULT_CURRENT_LIMIT_INWARD,
+	MB_DEFAULT_CURRENT_LIMIT_OUTWARD,
+	MB_MAX_CURRENT_LIMIT_INWARD,
+	MB_MAX_CURRENT_LIMIT_OUTWARD,
+
+	NUM_MODBUS_REGS
+};
+
 [RequireComponent(typeof(ModbusComms))]
 public class ModbusRoboticsController : RoboticsController 
 {
@@ -56,6 +134,9 @@ public class ModbusRoboticsController : RoboticsController
 			m_modbus.WriteSingleRegister ((byte)actuatorID, 0, direction);
 			m_modbus.WriteSingleRegister ((byte)actuatorID, 1, speed);
 		}
+
+		//m_modbus.WriteSingleRegister (MB_SCARAB_ID1, MB_MOTOR_SPEED, 255);
+		//m_modbus.
 	}
 
 	public override void SetAllActuatorSpeeds(float normalisedSpeed)
