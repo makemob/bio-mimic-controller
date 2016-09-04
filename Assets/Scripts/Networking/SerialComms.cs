@@ -10,11 +10,6 @@ public class SerialComms : MonoBehaviour {
 
 	protected SerialPort m_serial;
 
-	void Start()
-	{
-		Startup ();
-	}
-
 	public virtual void Startup () 
 	{
         //string portName = "/dev/tty.usbserial-A101OCIF";
