@@ -47,7 +47,8 @@ public class Actuator : Debuggable
 
 	void Start () 
 	{
-        MasterController.Instance.RegisterActuator(this);
+		if (MasterController.Instance)
+        	MasterController.Instance.RegisterActuator(this);
 
         if (m_movingPart)
 		{
