@@ -10,6 +10,12 @@ public class ModbusComms : SerialComms
 {
 	//TODO: Import register map
 
+	//Transport values. See documentation for details.
+	public int m_readTimeout = 200;		//milliseconds
+	public int m_writeTimeout = 200;	//milliseconds
+	public int m_waitToRetry = 200;		//milliseconds
+	public int m_retries = 3;			//max num retries
+
 	//Register values from scarab
 	const ushort STILL = 0;
 	const ushort FORWARDS = 1;
@@ -81,6 +87,21 @@ public class ModbusComms : SerialComms
 	{
 		if (m_commandQueue)
 			m_commandQueue.Clear();
+	}
+
+	void Update()
+	{
+		if (m_readTimeout != m_modbusMaster.Transport.ReadTimeout)
+			m_modbusMaster.Transport.ReadTimeout = m_readTimeout;
+		
+		if (m_writeTimeout != m_modbusMaster.Transport.WriteTimeout)
+			m_modbusMaster.Transport.WriteTimeout = m_writeTimeout;
+
+		if (m_waitToRetry != m_modbusMaster.Transport.WaitToRetryMilliseconds)
+			m_modbusMaster.Transport.WaitToRetryMilliseconds = m_waitToRetry;
+
+		if (m_retries != m_modbusMaster.Transport.Retries)			
+			m_modbusMaster.Transport.Retries = m_retries;
 	}
 
 	//

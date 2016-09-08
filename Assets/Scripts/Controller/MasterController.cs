@@ -130,12 +130,12 @@ public class MasterController : MonoBehaviour, IMasterController
 		foreach (RoboticsController r in m_roboticsControllers)
 			r.SetAllActuatorSpeeds(-1.0f);
 
-		yield return new WaitForSeconds(1.5f);
+		yield return new WaitForSeconds(4.0f);
 
 		foreach (RoboticsController r in m_roboticsControllers)
 			r.SetAllActuatorSpeeds(1.0f);
 
-		yield return new WaitForSeconds(1.5f);
+		yield return new WaitForSeconds(4.0f);
 
 		foreach (RoboticsController r in m_roboticsControllers)
 			r.SetAllActuatorSpeeds(-1.0f);

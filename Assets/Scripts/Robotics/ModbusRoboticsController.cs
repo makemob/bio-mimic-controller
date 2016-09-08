@@ -91,6 +91,7 @@ public class ModbusRoboticsController : RoboticsController
 	const int MAX_ACTUATORS = 16;
 
 	public bool m_useMultiRegister = true;
+	public int m_timeout = 1000;
 
 	private ModbusComms m_modbus;
 	private List<Actuator> m_actuators = new List<Actuator>();
