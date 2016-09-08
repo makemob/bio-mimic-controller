@@ -30,6 +30,7 @@ public class Actuator : Debuggable
 	public float m_currentNormalisedPosition = 0.0f;
 
 	public float m_moveSpeed = 0.0f;
+	public float m_moveSpeedScale = 0.5f;	//Change this to tune for now
 
 	private ConfigurableJoint m_baseJoint;
 	private float m_previousNormalisedPosition = 0.0f;
@@ -41,8 +42,6 @@ public class Actuator : Debuggable
 		//m_id = s_numberActuators++;
 		gameObject.name = m_id.ToString();
 		CreateDebugObject();
-
-		
 	}
 
 	void Start () 
@@ -60,6 +59,8 @@ public class Actuator : Debuggable
 					m_baseJoint = allJoints[i];
 			}
 		}
+
+		UpdateTargetPosition();
 	}
 
 	void Update () 
@@ -73,16 +74,15 @@ public class Actuator : Debuggable
 			m_currentNormalisedPosition = 0.5f * (Mathf.Sin(m_currentAngle * Mathf.Deg2Rad) + 1.0f);
 			break;
 		case MoveType.Clamped:
-			m_currentNormalisedPosition += Time.deltaTime * m_moveSpeed;
+			m_currentNormalisedPosition += Time.deltaTime * m_moveSpeed * m_moveSpeedScale;
 			m_currentNormalisedPosition = Mathf.Clamp (m_currentNormalisedPosition, 0.0f, 1.0f);
 			break;
 		}
 
 
-		if (m_baseJoint && m_previousNormalisedPosition != m_currentNormalisedPosition)
+		if (m_previousNormalisedPosition != m_currentNormalisedPosition)
 		{
-			m_baseJoint.GetComponent<Rigidbody>().WakeUp();
-			m_baseJoint.targetPosition = new Vector3(0.0f, Mathf.Lerp(m_minPosition, m_maxPosition, m_currentNormalisedPosition), 0.0f);
+			UpdateTargetPosition ();
 		}
 
 		m_previousNormalisedPosition = m_currentNormalisedPosition;
@@ -101,5 +101,14 @@ public class Actuator : Debuggable
 	public void SetActuatorSpeed(float normalisedSpeed)
 	{
 		m_moveSpeed = normalisedSpeed;
+	}
+
+	private void UpdateTargetPosition()
+	{
+		if (m_baseJoint) 
+		{
+			m_baseJoint.GetComponent<Rigidbody> ().WakeUp ();
+			m_baseJoint.targetPosition = new Vector3 (0.0f, Mathf.Lerp (m_minPosition, m_maxPosition, m_currentNormalisedPosition), 0.0f);
+		}
 	}
 }
