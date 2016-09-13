@@ -10,6 +10,8 @@ public class Actuator : Debuggable
 		Clamped
 	}
 
+	public ActuatorState m_state;
+
 	public int m_id = 0;
 
 	public Rigidbody m_base;

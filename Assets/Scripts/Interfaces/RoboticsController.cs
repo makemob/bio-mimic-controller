@@ -23,5 +23,7 @@ namespace UKI
 		public abstract void StopAllActuators ();
 
 		public abstract void Stop();
+
+		public abstract ActuatorState GetActuatorState (int actuatroID);
 	}
 }
