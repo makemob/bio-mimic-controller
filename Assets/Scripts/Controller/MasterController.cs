@@ -127,6 +127,8 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void UpdateActuatorState(int actuatorID)
 	{
+		//float t = Time.;
+
 		foreach (RoboticsController r in m_roboticsControllers) {
 			ActuatorState state = r.GetActuatorState (actuatorID);
 			Debug.Log ("Actuator State: " + state.ToString());

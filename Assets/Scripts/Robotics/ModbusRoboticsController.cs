@@ -18,12 +18,13 @@ public class ModbusRoboticsController : RoboticsController
 	public int m_timeout = 1000;
 
 	private ModbusComms m_modbus;
-	private List<Actuator> m_actuators = new List<Actuator>();
+	private Dictionary<int, Actuator> m_actuators = new Dictionary<int, Actuator>();
 
 	public override void Startup()
 	{
 		m_modbus = GetComponent<ModbusComms>();
 		m_modbus.Startup();
+
 	}
 
 	public override void Shutdown()
@@ -33,16 +34,18 @@ public class ModbusRoboticsController : RoboticsController
 
 	public override void RegisterActuator(Actuator actuator)
 	{
-		if (!m_actuators.Contains(actuator))
-			m_actuators.Add(actuator);
+		//if (!m_actuators.Contains (actuator))
+			m_actuators [actuator.m_id] = actuator;
 
-		m_actuators.Sort((a,b) => { return a.m_id.CompareTo(b.m_id); });
+		//TODO: Sort dictionary
+		//m_actuators.Sort((a,b) => { return a.m_id.CompareTo(b.m_id); });
 	}
 
 	public override void SetActuatorSpeed(int actuatorID, float normalisedSpeed)
 	{
 		m_actuators[actuatorID].SetActuatorSpeed(normalisedSpeed);
 
+		//normalisedSpeed = Mathf.c
 //		ushort direction = 0;
 //		ushort speed = 0;
 //
@@ -56,7 +59,7 @@ public class ModbusRoboticsController : RoboticsController
 		//} 
 		//else 
 		//{
-		m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_MOTOR_SETPOINT, (ushort)(normalisedSpeed * 100.0f));
+		m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_MOTOR_SETPOINT, (ushort)(normalisedSpeed * 89.0f));
 			//m_modbus.WriteSingleRegister ((byte)actuatorID, 1, speed);
 		//}
 
@@ -102,16 +105,31 @@ public class ModbusRoboticsController : RoboticsController
 		//MB_MAX_BATT_VOLTAGE = 102,
 		//MB_MIN_BATT_VOLTAGE = 103,
 		//MB_BOARD_TEMPERATURE = 104,
+	
 
 		//TODO: run on separate thread?
 		//m_modbus.Rea
-		ushort [] result = m_modbus.ReadHoldingRegisters ((byte)actuatorID, (ushort)ModbusRegister.MB_BRIDGE_CURRENT, (ushort)5);
+		byte id = (byte)actuatorID;
+		ushort start = (ushort)ModbusRegister.MB_BRIDGE_CURRENT;
+		ushort count = 5;
+		Debug.Log ("ID: " + id + "start: " + start + "count: " + count);
+		ushort [] result = m_modbus.ReadHoldingRegisters (id, start, count);
 		ActuatorState s = new ActuatorState ();
 		if (result != null && result.Length > 0) 
 		{
 			s.m_bridgeCurrent = result [0];
 			s.m_batteryVoltage = result [1];
 			s.m_boardTemperature = result [4];
+		}
+
+		ushort [] currentrips =  m_modbus.ReadHoldingRegisters ((byte)actuatorID,
+							(ushort)ModbusRegister.MB_CURRENT_TRIPS_INWARD,
+							(ushort)2);
+		
+		if (currentrips != null && currentrips.Length > 0) 
+		{
+			s.m_innerTrips = currentrips [0];
+			s.m_outerTrips = currentrips [1];
 		}
 
 		//Hacky state update here

@@ -88,6 +88,13 @@ public class Actuator : Debuggable
 		}
 
 		m_previousNormalisedPosition = m_currentNormalisedPosition;
+
+		if (m_state.m_innerTrips > 0 || m_state.m_outerTrips > 0) 
+		{
+			SetActuatorSpeed (0.0f);
+			Debug.Log ("Stopping actuator due to current trip.");
+		}
+		
 	}
 
 	public float GetNormalisedPosition() 
