@@ -51,9 +51,11 @@ public class TestArtnet : MonoBehaviour {
         allSections.Add(section1);
         allSections.Add(section2);
 
-        pixlite.SendAllSections(allSections);
+        //pixlite.SendAllSectionsArtnet(allSections);
+        pixlite.SendAllSectionsSACN(allSections);
 
-       if(showDebug) Debug.Log("Artnet " + counter.ToString());
+
+       if (showDebug) Debug.Log("Artnet " + counter.ToString());
 
         counter++;
 
