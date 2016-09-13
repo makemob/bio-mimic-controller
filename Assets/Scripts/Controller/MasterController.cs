@@ -125,6 +125,14 @@ public class MasterController : MonoBehaviour, IMasterController
 		StartCoroutine(CallibrateCoroutine());
 	}
 
+	public void UpdateActuatorState(int actuatorID)
+	{
+		foreach (RoboticsController r in m_roboticsControllers) {
+			ActuatorState state = r.GetActuatorState (actuatorID);
+			Debug.Log ("Actuator State: " + state.ToString());
+		}
+	}
+
 	public IEnumerator CallibrateCoroutine()
 	{
 		foreach (RoboticsController r in m_roboticsControllers)
@@ -140,6 +148,6 @@ public class MasterController : MonoBehaviour, IMasterController
 		foreach (RoboticsController r in m_roboticsControllers)
 			r.SetAllActuatorSpeeds(-1.0f);
 
-		//TODO Implement wait until all down, then commence wave function
+		//TODO Implement wait until all downlo then commence wave function
 	}
 }

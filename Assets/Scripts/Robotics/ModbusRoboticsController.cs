@@ -43,22 +43,22 @@ public class ModbusRoboticsController : RoboticsController
 	{
 		m_actuators[actuatorID].SetActuatorSpeed(normalisedSpeed);
 
-		ushort direction = 0;
-		ushort speed = 0;
+//		ushort direction = 0;
+//		ushort speed = 0;
+//
+//		GetSpeedAndDirection (normalisedSpeed, out speed, out direction);
+//
+//		ushort[] data = new ushort[] { direction, speed };
 
-		GetSpeedAndDirection (normalisedSpeed, out speed, out direction);
-
-		ushort[] data = new ushort[] { direction, speed };
-
-		if (m_useMultiRegister) 
-		{
-			m_modbus.WriteMultipleRegisters ((byte)actuatorID, 0, data);
-		} 
-		else 
-		{
-			m_modbus.WriteSingleRegister ((byte)actuatorID, 0, direction);
-			m_modbus.WriteSingleRegister ((byte)actuatorID, 1, speed);
-		}
+		//if (m_useMultiRegister) 
+		//{
+		//	m_modbus.WriteMultipleRegisters ((byte)actuatorID, 0, data);
+		//} 
+		//else 
+		//{
+		m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_MOTOR_SETPOINT, (ushort)(normalisedSpeed * 100.0f));
+			//m_modbus.WriteSingleRegister ((byte)actuatorID, 1, speed);
+		//}
 
 		//m_modbus.WriteSingleRegister (MB_SCARAB_ID1, MB_MOTOR_SPEED, 255);
 		//m_modbus.
@@ -81,7 +81,7 @@ public class ModbusRoboticsController : RoboticsController
 	{
 		m_actuators[actuatorID].SetActuatorSpeed(0.0f);
 
-		m_modbus.WriteSingleRegister ((byte)actuatorID, 0, 0);
+		m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_MOTOR_SETPOINT, (ushort)0);
 	}
 
 	public override void StopAllActuators()
@@ -97,12 +97,30 @@ public class ModbusRoboticsController : RoboticsController
 
 	public override ActuatorState GetActuatorState (int actuatorID)
 	{
+		//MB_BRIDGE_CURRENT =	100,
+		//MB_BATT_VOLTAGE = 101,
+		//MB_MAX_BATT_VOLTAGE = 102,
+		//MB_MIN_BATT_VOLTAGE = 103,
+		//MB_BOARD_TEMPERATURE = 104,
 
-		//m_modbus.ReadHoldingRegisters(
-		ModbusRegister led = ModbusRegister.MB_BLUE_LED;
+		//TODO: run on separate thread?
+		//m_modbus.Rea
+		ushort [] result = m_modbus.ReadHoldingRegisters ((byte)actuatorID, (ushort)ModbusRegister.MB_BRIDGE_CURRENT, (ushort)5);
+		ActuatorState s = new ActuatorState ();
+		if (result != null && result.Length > 0) 
+		{
+			s.m_bridgeCurrent = result [0];
+			s.m_batteryVoltage = result [1];
+			s.m_boardTemperature = result [4];
+		}
 
+		//Hacky state update here
+		if (actuatorID < m_actuators.Count)
+			m_actuators[actuatorID].m_state = s;
 
-		return new ActuatorState();//ODO: Fill out state
+		//TODO: Fill out full state
+
+		return s;
 	}
 
 	public void ToggleMultiRegister()
