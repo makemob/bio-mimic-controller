@@ -75,16 +75,16 @@ public class ModbusRoboticsController : RoboticsController
 
 	public override void SetAllActuatorSpeeds(float normalisedSpeed)
 	{
-		for (int i=0; i < m_actuators.Count; i++)
-			SetActuatorSpeed (i, normalisedSpeed);
+		foreach(Actuator a in m_actuators.Values)
+			SetActuatorSpeed (a.GetID(), normalisedSpeed);
 	}
 
-	public override void SetAllActuatorSpeeds(List<float> speeds)
-	{
-		int count = Mathf.Min (speeds.Count, m_actuators.Count);
-		for (int i=0; i < count; i++)
-			SetActuatorSpeed (i, speeds[i]);
-	}
+//	public override void SetAllActuatorSpeeds(List<float> speeds)
+//	{
+//		int count = Mathf.Min (speeds.Count, m_actuators.Count);
+//		foreach(Actuator a in m_actuators.Values)			
+//			SetActuatorSpeed (i, speeds[i]);
+//	}
 
 	public override void StopActuator(int actuatorID)
 	{
@@ -95,8 +95,8 @@ public class ModbusRoboticsController : RoboticsController
 
 	public override void StopAllActuators()
 	{
-		for(var i=0; i < m_actuators.Count; i++)
-			StopActuator(i);	
+		foreach(Actuator a in m_actuators.Values)
+			StopActuator(a.GetID());	
 	}
 
 	public override void Stop()

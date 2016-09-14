@@ -16,7 +16,7 @@ namespace UKI
 
 		public abstract void SetAllActuatorSpeeds (float speed);
 
-		public abstract void SetAllActuatorSpeeds (List<float> speeds);
+		//public abstract void SetAllActuatorSpeeds (List<float> speeds);
 
 		public abstract void StopActuator (int actuatorID);
 
