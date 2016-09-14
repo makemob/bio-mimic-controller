@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.IO;
 using UKI;
 
 public class MasterController : MonoBehaviour, IMasterController
 {
+	public string m_configFile = "Config";
+	public UKI.Config m_config;
+
 	public RoboticsController [] m_roboticsControllers;
 	public LightingController [] m_lightingControllers;
 
@@ -16,6 +20,7 @@ public class MasterController : MonoBehaviour, IMasterController
 	void Awake() 
 	{ 
 		Instance = this; 
+		LoadConfig();
 	}
 
 	void Start() 
@@ -78,6 +83,15 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void RegisterActuator(Actuator a)
 	{
+		//It's currently CRITICAL that the config is applied before this actuator is registered with the robotics controller.
+		bool found = m_config.FindActuator(a.name, ref a.m_config);	
+		if (!found) 
+		{
+			Debug.Log ("Actuator (" + a.name + ") not found. Disabling.");
+			a.gameObject.SetActive(false);
+			return;
+		}
+
 		foreach (RoboticsController r in m_roboticsControllers)
 			r.RegisterActuator(a);
 	}
@@ -138,6 +152,8 @@ public class MasterController : MonoBehaviour, IMasterController
 	public IEnumerator CallibrateCoroutine()
 	{
 		foreach (RoboticsController r in m_roboticsControllers)
+				r.SetAllActuatorSpeeds(-1.0f);
+		foreach (RoboticsController r in m_roboticsControllers)
 			r.SetAllActuatorSpeeds(-1.0f);
 
 		yield return new WaitForSeconds(4.0f);
@@ -151,5 +167,18 @@ public class MasterController : MonoBehaviour, IMasterController
 			r.SetAllActuatorSpeeds(-1.0f);
 
 		//TODO Implement wait until all downlo then commence wave function
+	}
+
+	public void LoadConfig()
+	{
+		//TODO: Store in game directory or somewhere easy to find.
+		TextAsset t = Resources.Load (m_configFile) as TextAsset;
+		m_config = JsonUtility.FromJson<Config>(t.text);
+	}
+
+	public void SaveConfig()
+	{
+		string json = JsonUtility.ToJson(m_config, true);
+		File.WriteAllText("Assets/Resources/" + m_configFile, json);
 	}
 }

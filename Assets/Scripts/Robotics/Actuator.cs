@@ -10,9 +10,8 @@ public class Actuator : Debuggable
 		Clamped
 	}
 
+	public ActuatorConfig m_config;
 	public ActuatorState m_state;
-
-	public int m_id = 0;
 
 	public Rigidbody m_base;
 	public Rigidbody m_movingPart;
@@ -42,14 +41,17 @@ public class Actuator : Debuggable
 	void Awake()
 	{
 		//m_id = s_numberActuators++;
-		gameObject.name = m_id.ToString();
-		CreateDebugObject();
+		//gameObject.name = m_id.ToString();
 	}
 
 	void Start () 
 	{
+		CreateDebugObject();
+
 		if (MasterController.Instance)
         	MasterController.Instance.RegisterActuator(this);
+
+		ApplyConfig ();
 
         if (m_movingPart)
 		{
@@ -104,7 +106,7 @@ public class Actuator : Debuggable
 
 	public int GetID()
 	{
-		return m_id;	
+		return m_config.id;	
 	}
 
 	public void SetActuatorSpeed(float normalisedSpeed)
@@ -119,5 +121,10 @@ public class Actuator : Debuggable
 			m_baseJoint.GetComponent<Rigidbody> ().WakeUp ();
 			m_baseJoint.targetPosition = new Vector3 (0.0f, Mathf.Lerp (m_minPosition, m_maxPosition, m_currentNormalisedPosition), 0.0f);
 		}
+	}
+
+	private void ApplyConfig()
+	{
+		gameObject.name = m_config.name;
 	}
 }

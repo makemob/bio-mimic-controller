@@ -24,7 +24,6 @@ public class ModbusRoboticsController : RoboticsController
 	{
 		m_modbus = GetComponent<ModbusComms>();
 		m_modbus.Startup();
-
 	}
 
 	public override void Shutdown()
@@ -34,9 +33,16 @@ public class ModbusRoboticsController : RoboticsController
 
 	public override void RegisterActuator(Actuator actuator)
 	{
-		//if (!m_actuators.Contains (actuator))
-			m_actuators [actuator.m_id] = actuator;
+		m_actuators [actuator.GetID()] = actuator;
 
+		m_modbus.WriteSingleRegister((byte)actuator.GetID(), 
+									 (ushort)ModbusRegister.MB_DEFAULT_CURRENT_LIMIT_INWARD, 
+									 (ushort)actuator.m_config.inwardCurrentLimit);
+		
+		m_modbus.WriteSingleRegister((byte)actuator.GetID(), 
+									 (ushort)ModbusRegister.MB_CURRENT_LIMIT_OUTWARD, 
+									 (ushort)actuator.m_config.outwardCurrentLimit);
+		
 		//TODO: Sort dictionary
 		//m_actuators.Sort((a,b) => { return a.m_id.CompareTo(b.m_id); });
 	}

@@ -14,7 +14,7 @@ public class ActuatorDebugUI : DebugUIElement
 		if (m_actuator)
 		{
 			if (m_label)
-				m_label.text = GetActuatorID().ToString();//m_actuator.name;
+				m_label.text = m_actuator.m_config.name;
 
 			if (m_simulationBar)
 			{
