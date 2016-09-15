@@ -112,16 +112,14 @@ public class ModbusRoboticsController : RoboticsController
 		//MB_BATT_VOLTAGE = 101,
 		//MB_MAX_BATT_VOLTAGE = 102,
 		//MB_MIN_BATT_VOLTAGE = 103,
-		//MB_BOARD_TEMPERATURE = 104,
-	
+		//MB_BOARD_TEMPERATURE = 104,	
 
 		//TODO: run on separate thread?
-		//m_modbus.Rea
 		byte id = (byte)actuatorID;
-		ushort start = (ushort)ModbusRegister.MB_BRIDGE_CURRENT;
-		ushort count = 5;
-		Debug.Log ("ID: " + id + "start: " + start + "count: " + count);
-		ushort [] result = m_modbus.ReadHoldingRegisters (id, start, count);
+		ushort startRegister = (ushort)ModbusRegister.MB_BRIDGE_CURRENT;
+		ushort numToRead = 5;
+
+		ushort [] result = m_modbus.ReadHoldingRegisters (id, startRegister, numToRead);
 		ActuatorState s = new ActuatorState ();
 		if (result != null && result.Length > 0) 
 		{
@@ -147,6 +145,12 @@ public class ModbusRoboticsController : RoboticsController
 		//TODO: Fill out full state
 
 		return s;
+	}
+
+	public override void UpdateAllActuatorStates()
+	{
+		foreach(Actuator a in m_actuators.Values)
+			GetActuatorState(a.GetID());
 	}
 
 	public void ToggleMultiRegister()
