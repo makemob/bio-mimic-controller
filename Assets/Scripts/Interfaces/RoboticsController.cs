@@ -10,7 +10,7 @@ namespace UKI
 
 		public abstract void Shutdown();
 
-		public abstract void RegisterActuator(Actuator actuator);
+		public abstract bool RegisterActuator(Actuator actuator);
 
 		public abstract void SetActuatorSpeed (int actuatorID, float speed);
 

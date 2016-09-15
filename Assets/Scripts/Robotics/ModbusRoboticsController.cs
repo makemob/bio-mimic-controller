@@ -31,7 +31,7 @@ public class ModbusRoboticsController : RoboticsController
 		m_modbus.Shutdown();
 	}
 
-	public override void RegisterActuator(Actuator actuator)
+	public override bool RegisterActuator(Actuator actuator)
 	{
 		m_actuators [actuator.GetID()] = actuator;
 
@@ -45,6 +45,8 @@ public class ModbusRoboticsController : RoboticsController
 		
 		//TODO: Sort dictionary
 		//m_actuators.Sort((a,b) => { return a.m_id.CompareTo(b.m_id); });
+
+		return true;
 	}
 
 	public override void SetActuatorSpeed(int actuatorID, float normalisedSpeed)

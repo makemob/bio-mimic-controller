@@ -46,10 +46,14 @@ public class Actuator : Debuggable
 
 	void Start () 
 	{
-		CreateDebugObject();
+		if (MasterController.Instance) 
+		{
+			bool success = MasterController.Instance.RegisterActuator (this);
+			if (!success)
+				return;	//Failed to register, prevent startup of this actuator
+		}
 
-		if (MasterController.Instance)
-        	MasterController.Instance.RegisterActuator(this);
+		CreateDebugObject();
 
 		ApplyConfig ();
 

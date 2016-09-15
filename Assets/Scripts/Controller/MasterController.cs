@@ -81,7 +81,7 @@ public class MasterController : MonoBehaviour, IMasterController
 			l.Stop();
 	}
 
-	public void RegisterActuator(Actuator a)
+	public bool RegisterActuator(Actuator a)
 	{
 		//It's currently CRITICAL that the config is applied before this actuator is registered with the robotics controller.
 		bool found = m_config.FindActuator(a.name, ref a.m_config);	
@@ -89,11 +89,14 @@ public class MasterController : MonoBehaviour, IMasterController
 		{
 			Debug.Log ("Actuator (" + a.name + ") not found. Disabling.");
 			a.gameObject.SetActive(false);
-			return;
+			return false;
 		}
 
+		bool registrationSuccess = true;
 		foreach (RoboticsController r in m_roboticsControllers)
-			r.RegisterActuator(a);
+			registrationSuccess = registrationSuccess && r.RegisterActuator(a);
+
+		return registrationSuccess;
 	}
 
 	public void SetActuatorSpeed (int actuatorID, float speed)
