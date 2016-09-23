@@ -1,0 +1,29 @@
+{
+    "version": 1,
+    "actuators": [
+        {
+            "name": "HindHip",
+            "id": 0,
+            "minExtent": 0.0,
+            "maxExtent": 0.5,
+            "inwardCurrentLimit": 1700,
+            "outwardCurrentLimit": 1700
+        },
+        {
+            "name": "HindKnee",
+            "id": 1,
+            "minExtent": 0.0,
+            "maxExtent": 0.5,
+            "inwardCurrentLimit": 1700,
+            "outwardCurrentLimit": 1700
+        },
+        {
+            "name": "HindAnkle",
+            "id": 7,
+            "minExtent": 0.0,
+            "maxExtent": 0.5,
+            "inwardCurrentLimit": 1700,
+            "outwardCurrentLimit": 1700
+        }
+    ]
+}
