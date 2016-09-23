@@ -9,17 +9,12 @@ using UKI;
 [RequireComponent(typeof(ModbusComms))]
 public class ModbusRoboticsController : RoboticsController 
 {
-	const ushort STILL = 0;
-	const ushort FORWARDS = 1;
-	const ushort BACKWARDS = 2;
-	const int MAX_ACTUATORS = 16;
-
 	public bool m_useMultiRegister = true;
 	public int m_timeout = 1000;
 	public float m_actuatorStateUpdateInterval = 1.0f;	//Time between state updates 
 
-	private ModbusComms m_modbus;
-	private Dictionary<int, Actuator> m_actuators = new Dictionary<int, Actuator>();
+	ModbusComms m_modbus;
+	Dictionary<int, Actuator> m_actuators = new Dictionary<int, Actuator>();
 
 	public override void Startup()
 	{
@@ -42,6 +37,8 @@ public class ModbusRoboticsController : RoboticsController
 
 		m_actuators [actuator.GetID()] = actuator;
 
+		//TODO: Check writing immediately no longer locks up. We should be ok.
+
 		m_modbus.WriteSingleRegister((byte)actuator.GetID(), 
 									 (ushort)ModbusRegister.MB_DEFAULT_CURRENT_LIMIT_INWARD, 
 									 (ushort)actuator.m_config.inwardCurrentLimit);
@@ -58,6 +55,46 @@ public class ModbusRoboticsController : RoboticsController
 
 	public override void SetActuatorSpeed(int actuatorID, float normalisedSpeed)
 	{
+		//Check inner current trip limit 
+		if (m_actuators [actuatorID].m_state.m_innerCurrentTrips > 0) 
+		{
+			if (normalisedSpeed <= 0.0f)
+				return; //Prevent attempts at continued movement
+
+			//Clear switch register first
+			m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_CURRENT_TRIPS_INWARD, (ushort)0);		
+		}
+
+		//Check outer current trip limit
+		if (m_actuators [actuatorID].m_state.m_outerCurrentTrips > 0) 
+		{
+			if (normalisedSpeed >= 0.0f)
+				return;	//Prevent attempts at continued movement
+
+			//Clear switch register first
+			m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_CURRENT_TRIPS_OUTWARD, (ushort)0);
+		}
+
+		//Check inner limit microswitch
+		if (m_actuators [actuatorID].m_state.m_atInnerLimit) 
+		{
+			if (normalisedSpeed <= 0.0f)
+				return;	//Prevent attempts at continued movement
+
+			//Clear switch register first
+			m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_INWARD_ENDSTOP_COUNT, (ushort)0);		
+		}
+
+		//Check outer limit microswitch
+		if (m_actuators [actuatorID].m_state.m_atOuterLimit) 
+		{
+			if (normalisedSpeed >= 0.0f)
+				return;	//Prevent attempts at continued movement
+
+			//Clear switch register first
+			m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_OUTWARD_ENDSTOP_COUNT, (ushort)0);		
+		}
+			
 		m_actuators[actuatorID].SetActuatorSpeed(normalisedSpeed);
 		m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_MOTOR_SETPOINT, (ushort)(normalisedSpeed * 89.0f));
 	}
@@ -116,9 +153,7 @@ public class ModbusRoboticsController : RoboticsController
 			s.m_atOuterLimit = extentSwitches[1] > 0;
 		}
 			
-		//Hacky state update here
-		if (actuatorID < m_actuators.Count)
-			m_actuators[actuatorID].m_state = s;
+
 
 		return s;
 	}
@@ -157,9 +192,26 @@ public class ModbusRoboticsController : RoboticsController
 				index = (index + 1) % actuatorCount;
 				int currentID = actuatorIDs [index];
 				ActuatorState state = GetActuatorState(currentID);
-				//Debug.Log ("Actuator " + currentID + ": " + state.ToString ());
+				UpdateActuator (m_actuators [currentID], state);
 			}
 			yield return new WaitForSeconds(m_actuatorStateUpdateInterval);
 		}
+	}
+
+	void UpdateActuator(Actuator actuator, ActuatorState state)
+	{
+		actuator.m_state = state;
+
+		//TODO: trigger event 
+
+		if (actuator.m_state.m_atInnerLimit) {
+			actuator.SetActuatorSpeed(0.0f);
+		}
+
+		if (actuator.m_state.m_atOuterLimit) {
+			actuator.SetActuatorSpeed(0.0f);
+		}
+
+		//Debug.Log ("Actuator " + currentID + ": " + state.ToString ());
 	}
 }
