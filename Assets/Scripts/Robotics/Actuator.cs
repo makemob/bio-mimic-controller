@@ -33,16 +33,8 @@ public class Actuator : Debuggable
 	public float m_moveSpeed = 0.0f;
 	public float m_moveSpeedScale = 0.5f;	//Change this to tune for now
 
-	private ConfigurableJoint m_baseJoint;
-	private float m_previousNormalisedPosition = 0.0f;
-
-	//private static int s_numberActuators = 0;	//TODO: Generalise id, possibly add ActuatorState struct.
-
-	void Awake()
-	{
-		//m_id = s_numberActuators++;
-		//gameObject.name = m_id.ToString();
-	}
+	ConfigurableJoint m_baseJoint;
+	float m_previousNormalisedPosition = 0.0f;
 
 	void Start () 
 	{
@@ -95,7 +87,7 @@ public class Actuator : Debuggable
 
 		m_previousNormalisedPosition = m_currentNormalisedPosition;
 
-		if (m_state.m_innerTrips > 0 || m_state.m_outerTrips > 0) 
+		if (m_state.m_innerCurrentTrips > 0 || m_state.m_outerCurrentTrips > 0) 
 		{
 			SetActuatorSpeed (0.0f);
 			Debug.Log ("Stopping actuator due to current trip.");
@@ -118,7 +110,7 @@ public class Actuator : Debuggable
 		m_moveSpeed = normalisedSpeed;
 	}
 
-	private void UpdateTargetPosition()
+	void UpdateTargetPosition()
 	{
 		if (m_baseJoint) 
 		{
@@ -127,7 +119,7 @@ public class Actuator : Debuggable
 		}
 	}
 
-	private void ApplyConfig()
+	void ApplyConfig()
 	{
 		gameObject.name = m_config.name;
 	}

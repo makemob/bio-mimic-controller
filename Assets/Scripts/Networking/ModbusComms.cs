@@ -85,11 +85,6 @@ public class ModbusComms : SerialComms
 
 	public ushort [] ReadHoldingRegisters(byte slaveID, ushort startRegister, ushort numRegistersToRead)
 	{
-//		QueueInternalCommand (() => {
-//			if (m_modbusMaster != null && m_serial.IsOpen)
-//				m_modbusMaster.ReadHoldingRegisters(slaveID, startRegister, numRegistersToRead);
-//			Debug.Log(Time.realtimeSinceStartup + " ModbusSingleRegister. SlaveID: " + slaveID + " StartRegister: " + startRegister + " NumToRead:" + numRegistersToRead);
-//		});
 		if (m_modbusMaster != null && m_serial.IsOpen)
 			return m_modbusMaster.ReadHoldingRegisters(slaveID, startRegister, numRegistersToRead);
 

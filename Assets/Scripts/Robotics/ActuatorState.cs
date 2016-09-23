@@ -8,33 +8,47 @@ using System.Reflection;
 public struct ActuatorState 
 {
 	//TODO: Constructor
+
+	//Diagnostics
 	public int m_errorCount;
 	public int m_bridgeCurrent;
 	public int m_batteryVoltage;
 	public int m_boardTemperature;
+
+	//Speeds
 	public int m_motorSetPoint;	//Target speed
 	public int m_motorSpeed;	//Actual speed
 	public int m_motorAcceleration;
-	public int m_innerLimit;
-	public int m_outerLimit;
-	public int m_innerTrips;	//Number of current trips in reverse since boot
-	public int m_outerTrips;	//Number of current trips in forward since boot
+
+	//Current trips
+	public int m_innerCurrentLimit;
+	public int m_outerCurrentLimit;
+	public int m_innerCurrentTrips;	//Number of current trips in reverse since boot
+	public int m_outerCurrentTrips;	//Number of current trips in forward since boot
+
+	//Voltage trips
 	public int m_voltageTrips;	//Number of voltage limit trips since boot
+
+	//Limit microswitches
+	public bool m_atInnerLimit;
+	public bool m_atOuterLimit;
+	public int m_innerLimitCount;
+	public int m_outerLimitCount;
 
 	public override string ToString()
 	{
-		string output = "m_errorCount: " + m_errorCount +			
-			"\nm_bridgeCurrent: " + m_bridgeCurrent +
-			"\nm_batteryVoltage: " + m_batteryVoltage +
-			"\nm_boardTemperature: " + m_boardTemperature +
-			"\nm_motorSetPoint: " + m_motorSetPoint +
-			"\nm_motorSpeed: " + m_motorSpeed +
-			"\nm_motorAcceleration: " + m_motorAcceleration +
-			"\nm_innerLimit: " + m_innerLimit +
-			"\nm_outerLimit: " +  m_outerLimit +
-			"\nm_innerTrips: " + m_innerTrips +
-			"\nm_outerTrips: " + m_outerTrips + 
-			"\nm_voltageTrips: " + m_voltageTrips;
+		string output = "errorCount: " + m_errorCount +			
+			"\nbridgeCurrent: " + m_bridgeCurrent +
+			"\nbatteryVoltage: " + m_batteryVoltage +
+			"\nboardTemperature: " + m_boardTemperature +
+			"\nmotorSetPoint: " + m_motorSetPoint +
+			"\nmotorSpeed: " + m_motorSpeed +
+			"\nmotorAcceleration: " + m_motorAcceleration +
+			"\ninnerCurrentLimit: " + m_innerCurrentLimit +
+			"\nouterCurrentLimit: " +  m_outerCurrentLimit +
+			"\ninnerTrips: " + m_innerCurrentTrips +
+			"\nouterTrips: " + m_outerCurrentTrips + 
+			"\nvoltageTrips: " + m_voltageTrips;
 
 		return output;
 

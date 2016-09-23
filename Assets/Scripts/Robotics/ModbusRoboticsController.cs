@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.Assertions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UKI;
-
-
 
 [RequireComponent(typeof(ModbusComms))]
 public class ModbusRoboticsController : RoboticsController 
@@ -16,6 +16,7 @@ public class ModbusRoboticsController : RoboticsController
 
 	public bool m_useMultiRegister = true;
 	public int m_timeout = 1000;
+	public float m_actuatorStateUpdateInterval = 1.0f;	//Time between state updates 
 
 	private ModbusComms m_modbus;
 	private Dictionary<int, Actuator> m_actuators = new Dictionary<int, Actuator>();
@@ -24,15 +25,21 @@ public class ModbusRoboticsController : RoboticsController
 	{
 		m_modbus = GetComponent<ModbusComms>();
 		m_modbus.Startup();
+
+		StartCoroutine("UpdateActuatorStateLoop");
 	}
 
 	public override void Shutdown()
 	{
 		m_modbus.Shutdown();
+
+		StopCoroutine("UpdateActuatorStateLoop");
 	}
 
 	public override bool RegisterActuator(Actuator actuator)
 	{
+		Assert.IsNotNull(m_modbus, "Failed to register actuator. Modbus not started.");
+
 		m_actuators [actuator.GetID()] = actuator;
 
 		m_modbus.WriteSingleRegister((byte)actuator.GetID(), 
@@ -52,27 +59,7 @@ public class ModbusRoboticsController : RoboticsController
 	public override void SetActuatorSpeed(int actuatorID, float normalisedSpeed)
 	{
 		m_actuators[actuatorID].SetActuatorSpeed(normalisedSpeed);
-
-		//normalisedSpeed = Mathf.c
-//		ushort direction = 0;
-//		ushort speed = 0;
-//
-//		GetSpeedAndDirection (normalisedSpeed, out speed, out direction);
-//
-//		ushort[] data = new ushort[] { direction, speed };
-
-		//if (m_useMultiRegister) 
-		//{
-		//	m_modbus.WriteMultipleRegisters ((byte)actuatorID, 0, data);
-		//} 
-		//else 
-		//{
 		m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_MOTOR_SETPOINT, (ushort)(normalisedSpeed * 89.0f));
-			//m_modbus.WriteSingleRegister ((byte)actuatorID, 1, speed);
-		//}
-
-		//m_modbus.WriteSingleRegister (MB_SCARAB_ID1, MB_MOTOR_SPEED, 255);
-		//m_modbus.
 	}
 
 	public override void SetAllActuatorSpeeds(float normalisedSpeed)
@@ -80,13 +67,6 @@ public class ModbusRoboticsController : RoboticsController
 		foreach(Actuator a in m_actuators.Values)
 			SetActuatorSpeed (a.GetID(), normalisedSpeed);
 	}
-
-//	public override void SetAllActuatorSpeeds(List<float> speeds)
-//	{
-//		int count = Mathf.Min (speeds.Count, m_actuators.Count);
-//		foreach(Actuator a in m_actuators.Values)			
-//			SetActuatorSpeed (i, speeds[i]);
-//	}
 
 	public override void StopActuator(int actuatorID)
 	{
@@ -108,41 +88,37 @@ public class ModbusRoboticsController : RoboticsController
 
 	public override ActuatorState GetActuatorState (int actuatorID)
 	{
-		//MB_BRIDGE_CURRENT =	100,
-		//MB_BATT_VOLTAGE = 101,
-		//MB_MAX_BATT_VOLTAGE = 102,
-		//MB_MIN_BATT_VOLTAGE = 103,
-		//MB_BOARD_TEMPERATURE = 104,	
-
 		//TODO: run on separate thread?
-		byte id = (byte)actuatorID;
-		ushort startRegister = (ushort)ModbusRegister.MB_BRIDGE_CURRENT;
-		ushort numToRead = 5;
+		//TODO: Fill out full state
+		//TODO: Remap registers so we can do a state update with a single read
 
-		ushort [] result = m_modbus.ReadHoldingRegisters (id, startRegister, numToRead);
-		ActuatorState s = new ActuatorState ();
-		if (result != null && result.Length > 0) 
+		ActuatorState s = new ActuatorState();
+
+		ushort[] diagnostics;
+		if (ReadRegisters (actuatorID, ModbusRegister.MB_BRIDGE_CURRENT, 5, out diagnostics)) 
 		{
-			s.m_bridgeCurrent = result [0];
-			s.m_batteryVoltage = result [1];
-			s.m_boardTemperature = result [4];
+			s.m_bridgeCurrent = diagnostics[0];
+			s.m_batteryVoltage = diagnostics[1];
+			s.m_boardTemperature = diagnostics[4];
+		}
+			
+		ushort[] currentrips;
+		if (ReadRegisters (actuatorID, ModbusRegister.MB_CURRENT_TRIPS_INWARD, 2, out currentrips)) 			
+		{
+			s.m_innerCurrentTrips = currentrips[0];
+			s.m_outerCurrentTrips = currentrips[1];
 		}
 
-		ushort [] currentrips =  m_modbus.ReadHoldingRegisters ((byte)actuatorID,
-							(ushort)ModbusRegister.MB_CURRENT_TRIPS_INWARD,
-							(ushort)2);
-		
-		if (currentrips != null && currentrips.Length > 0) 
+		ushort[] extentSwitches;
+		if (ReadRegisters (actuatorID, ModbusRegister.MB_INWARD_ENDSTOP_STATE, 2, out extentSwitches)) 			
 		{
-			s.m_innerTrips = currentrips [0];
-			s.m_outerTrips = currentrips [1];
+			s.m_atInnerLimit = extentSwitches[0] > 0;
+			s.m_atOuterLimit = extentSwitches[1] > 0;
 		}
-
+			
 		//Hacky state update here
 		if (actuatorID < m_actuators.Count)
 			m_actuators[actuatorID].m_state = s;
-
-		//TODO: Fill out full state
 
 		return s;
 	}
@@ -163,17 +139,27 @@ public class ModbusRoboticsController : RoboticsController
 		m_useMultiRegister = doUseMultiRegister;
 	}
 
-	//
-	// Helper function to return the speed and direction from a given normalised speed (-1.0f to 1.0f)
-	//
-	private void GetSpeedAndDirection (float normalisedSpeed, out ushort speed, out ushort direction)
+	bool ReadRegisters(int actuatorID, ModbusRegister startRegister, int count, out ushort [] result)
 	{
-		speed =  Convert.ToUInt16(Math.Abs(normalisedSpeed) * 255.0f);
+		result =  m_modbus.ReadHoldingRegisters ((byte)actuatorID, (ushort)startRegister, (ushort)count);
+		return result != null && result.Length == count;
+	}
 
-		direction = STILL;				//still by default
-		if (normalisedSpeed > 0.0f)			
-			direction = FORWARDS;		//forwards
-		else if (normalisedSpeed > 0.0f)
-			direction = BACKWARDS;		//backwards
+	//Loop thorugh each actuator and update its state
+	IEnumerator UpdateActuatorStateLoop()
+	{
+		int index = -1;
+		while (true) {
+			int [] actuatorIDs = m_actuators.Keys.ToArray();
+			int actuatorCount = actuatorIDs.Length;
+			if (actuatorCount > 0)
+			{
+				index = (index + 1) % actuatorCount;
+				int currentID = actuatorIDs [index];
+				ActuatorState state = GetActuatorState(currentID);
+				//Debug.Log ("Actuator " + currentID + ": " + state.ToString ());
+			}
+			yield return new WaitForSeconds(m_actuatorStateUpdateInterval);
+		}
 	}
 }
