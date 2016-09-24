@@ -23,6 +23,8 @@ public struct ActuatorState
 	//Current trips
 	public int m_innerCurrentLimit;
 	public int m_outerCurrentLimit;
+	public bool m_innerCurrentTripped;
+	public bool m_outerCurrentTripped;
 	public int m_innerCurrentTrips;	//Number of current trips in reverse since boot
 	public int m_outerCurrentTrips;	//Number of current trips in forward since boot
 
@@ -34,6 +36,14 @@ public struct ActuatorState
 	public bool m_atOuterLimit;
 	public int m_innerLimitCount;
 	public int m_outerLimitCount;
+
+	public void ClearTripsAndLimits()
+	{
+		m_innerCurrentTripped = false;
+		m_outerCurrentTripped = false;
+		m_atInnerLimit = false;
+		m_atOuterLimit = false;
+	}
 
 	public override string ToString()
 	{

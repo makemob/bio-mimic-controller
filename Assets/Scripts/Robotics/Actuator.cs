@@ -110,6 +110,16 @@ public class Actuator : Debuggable
 		m_moveSpeed = normalisedSpeed;
 	}
 
+	public void SetState(ActuatorState newState)
+	{
+		if (newState.m_innerCurrentTrips > m_state.m_innerCurrentTrips)
+			newState.m_innerCurrentTripped = true;
+		if (newState.m_outerCurrentTrips > m_state.m_outerCurrentTrips)
+			newState.m_outerCurrentTripped = true;
+
+		m_state = newState;
+	}
+
 	void UpdateTargetPosition()
 	{
 		if (m_baseJoint) 
