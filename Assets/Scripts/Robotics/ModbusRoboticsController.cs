@@ -40,7 +40,7 @@ public class ModbusRoboticsController : RoboticsController
 		//TODO: Check writing immediately no longer locks up. We should be ok.
 
 		m_modbus.WriteSingleRegister((byte)actuator.GetID(), 
-									 (ushort)ModbusRegister.MB_DEFAULT_CURRENT_LIMIT_INWARD, 
+									 (ushort)ModbusRegister.MB_CURRENT_LIMIT_INWARD, 
 									 (ushort)actuator.m_config.inwardCurrentLimit);
 		
 		m_modbus.WriteSingleRegister((byte)actuator.GetID(), 
@@ -103,7 +103,7 @@ public class ModbusRoboticsController : RoboticsController
 		StopAllActuators ();
 	}
 
-	public override ActuatorState GetActuatorState (int actuatorID)
+	public override ActuatorState ReadActuatorState (int actuatorID)
 	{
 		//TODO: run on separate thread?
 		//TODO: Fill out full state
@@ -132,16 +132,35 @@ public class ModbusRoboticsController : RoboticsController
 			s.m_atInnerLimit = extentSwitches[0] > 0;
 			s.m_atOuterLimit = extentSwitches[1] > 0;
 		}
-			
 
+		ushort[] currentLimits;
+		if (ReadRegisters (actuatorID, ModbusRegister.MB_CURRENT_LIMIT_INWARD, 2, out extentSwitches)) 			
+		{
+			s.m_innerCurrentLimit = extentSwitches[0];
+			s.m_outerCurrentLimit = extentSwitches[1];
+		}
 
 		return s;
 	}
 
+	public override ActuatorState GetActuatorState(int actuatorID)
+	{
+		return m_actuators[actuatorID].m_state;
+	}
+
+	public override ActuatorState [] GetAllActuatorStates()
+	{
+		List<ActuatorState> states = new List<ActuatorState> ();
+		foreach (Actuator a in m_actuators.Values) {
+			states.Add (a.m_state);
+		}
+		return states.ToArray();
+	}
+		
 	public override void UpdateAllActuatorStates()
 	{
 		foreach(Actuator a in m_actuators.Values)
-			GetActuatorState(a.GetID());
+			ReadActuatorState(a.GetID());
 	}
 
 	public void ToggleMultiRegister()
@@ -171,7 +190,7 @@ public class ModbusRoboticsController : RoboticsController
 			{
 				index = (index + 1) % actuatorCount;
 				int currentID = actuatorIDs [index];
-				ActuatorState state = GetActuatorState(currentID);
+				ActuatorState state = ReadActuatorState(currentID);
 				UpdateActuator (m_actuators [currentID], state);
 			}
 			yield return new WaitForSeconds(m_actuatorStateUpdateInterval);

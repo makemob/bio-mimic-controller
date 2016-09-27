@@ -8,8 +8,8 @@ public class MasterController : MonoBehaviour, IMasterController
 	public string m_configFile = "Config";
 	public UKI.Config m_config;
 
-	public RoboticsController [] m_roboticsControllers;
-	public LightingController [] m_lightingControllers;
+	public RoboticsController m_roboticsControllers;
+	public LightingController m_lightingControllers;
 
 	public static MasterController Instance;
 
@@ -40,19 +40,14 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void Startup ()
 	{
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.Startup ();
-		
-		foreach (LightingController l in m_lightingControllers)
-			l.Startup ();
+		m_roboticsControllers.Startup ();	
+		m_lightingControllers.Startup ();
 	}
 
 	public void Shutdown ()
 	{
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.Shutdown();
-		foreach (LightingController l in m_lightingControllers)
-			l.Shutdown ();
+		m_roboticsControllers.Shutdown();
+		m_lightingControllers.Shutdown();
 	}
 
 	public void Stop()
@@ -69,16 +64,14 @@ public class MasterController : MonoBehaviour, IMasterController
 		
 	public void StopRobotics ()
 	{
-		StopAllCoroutines();
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.Stop();
+		//StopAllCoroutines();
+		m_roboticsControllers.Stop();
 	}
 		
 	public void StopLighting ()
 	{
-		StopAllCoroutines();
-		foreach (LightingController l in m_lightingControllers)
-			l.Stop();
+		//StopAllCoroutines();
+		m_lightingControllers.Stop();
 	}
 
 	public bool RegisterActuator(Actuator a)
@@ -92,48 +85,39 @@ public class MasterController : MonoBehaviour, IMasterController
 			return false;
 		}
 
-		bool registrationSuccess = true;
-		foreach (RoboticsController r in m_roboticsControllers)
-			registrationSuccess = registrationSuccess && r.RegisterActuator(a);
+		bool registrationSuccess = m_roboticsControllers.RegisterActuator (a);
 
 		return registrationSuccess;
 	}
 
 	public void SetActuatorSpeed (int actuatorID, float speed)
 	{
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.SetActuatorSpeed(actuatorID, speed);
+		m_roboticsControllers.SetActuatorSpeed(actuatorID, speed);
 	}
 
 	public void StopActuator (int actuatorID)
 	{
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.StopActuator(actuatorID);
+		m_roboticsControllers.StopActuator(actuatorID);
 	}
 
 	public void StopAllActuators ()
 	{
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.StopAllActuators();
+		m_roboticsControllers.StopAllActuators();
 	}
 
 	public void AllUp()
 	{
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.SetAllActuatorSpeeds(1.0f);
+		m_roboticsControllers.SetAllActuatorSpeeds(1.0f);
 	}
 
 	public void AllDown()
 	{
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.SetAllActuatorSpeeds(-1.0f);
+		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
 	}
 
 	public void Wave()
 	{
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.SetAllActuatorSpeeds(-1.0f);
-
+		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
 		//TODO Implement wait until all down, then commence wave function
 	}
 
@@ -144,35 +128,51 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void UpdateAllActuatorStates()
 	{
-		foreach (RoboticsController r in m_roboticsControllers) {
-			r.UpdateAllActuatorStates();
-		}
+		m_roboticsControllers.UpdateAllActuatorStates();
 	}
 
 	public void UpdateActuatorState(int actuatorID)
 	{
-		foreach (RoboticsController r in m_roboticsControllers) {
-			ActuatorState state = r.GetActuatorState (actuatorID);
-			Debug.Log ("Actuator State: " + state.ToString());
-		}
+		ActuatorState state = m_roboticsControllers.GetActuatorState (actuatorID);
+		Debug.Log ("Actuator State: " + state.ToString());
 	}
 
 	public IEnumerator CallibrateCoroutine()
 	{
-		foreach (RoboticsController r in m_roboticsControllers)
-				r.SetAllActuatorSpeeds(-1.0f);
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.SetAllActuatorSpeeds(-1.0f);
+		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
+		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
 
-		yield return new WaitForSeconds(4.0f);
+		bool stillRetracting = true;
+		while (stillRetracting) {
+			ActuatorState [] states = m_roboticsControllers.GetAllActuatorStates ();
+			stillRetracting = false;
+			foreach (ActuatorState a in states) {
+				if (!a.m_atInnerLimit) {
+					stillRetracting = true;
+				}
+			}
+			yield return new WaitForSeconds(1.0f);
+		}
 
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.SetAllActuatorSpeeds(1.0f);
+		//All should be retracted now
 
-		yield return new WaitForSeconds(4.0f);
+		m_roboticsControllers.SetAllActuatorSpeeds(1.0f);
 
-		foreach (RoboticsController r in m_roboticsControllers)
-			r.SetAllActuatorSpeeds(-1.0f);
+		bool stillExtending = true;
+		while (stillExtending) {
+			ActuatorState [] states = m_roboticsControllers.GetAllActuatorStates ();
+			stillExtending = false;
+			foreach (ActuatorState a in states) {
+				if (!a.m_atOuterLimit) {
+					stillExtending = true;
+				}
+			}
+			yield return new WaitForSeconds(1.0f);
+		}
+
+		//All should be extended now
+
+		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
 
 		//TODO Implement wait until all downlo then commence wave function
 	}
@@ -188,5 +188,23 @@ public class MasterController : MonoBehaviour, IMasterController
 	{
 		string json = JsonUtility.ToJson(m_config, true);
 		File.WriteAllText("Assets/Resources/" + m_configFile, json);
+	}
+
+	private IEnumerator WaitForAllActuatorsToRetract()
+	{
+		bool stillRetracting = true;
+		while (stillRetracting) 
+		{
+			ActuatorState [] states = m_roboticsControllers.GetAllActuatorStates ();
+			stillRetracting = false;
+			foreach (ActuatorState a in states) 
+			{
+				if (!a.m_atInnerLimit) {
+					stillRetracting = true;
+					break;
+				}
+			}
+			yield return new WaitForSeconds(1.0f);
+		}
 	}
 }
