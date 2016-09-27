@@ -41,13 +41,13 @@ public class MasterController : MonoBehaviour, IMasterController
 	public void Startup ()
 	{
 		m_roboticsControllers.Startup ();	
-		m_lightingControllers.Startup ();
+		//m_lightingControllers.Startup ();
 	}
 
 	public void Shutdown ()
 	{
 		m_roboticsControllers.Shutdown();
-		m_lightingControllers.Shutdown();
+		//m_lightingControllers.Shutdown();
 	}
 
 	public void Stop()
@@ -71,7 +71,7 @@ public class MasterController : MonoBehaviour, IMasterController
 	public void StopLighting ()
 	{
 		//StopAllCoroutines();
-		m_lightingControllers.Stop();
+		//m_lightingControllers.Stop();
 	}
 
 	public bool RegisterActuator(Actuator a)

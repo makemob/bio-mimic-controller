@@ -1,0 +1,21 @@
+{
+    "version": 1,
+    "actuators": [
+        {
+            "name": "Test0",
+            "id": 10,
+            "minExtent": 0.0,
+            "maxExtent": 0.5,
+            "inwardCurrentLimit": 1700,
+            "outwardCurrentLimit": 1700
+        },
+	{
+            "name": "Test1",
+            "id": 11,
+            "minExtent": 0.0,
+            "maxExtent": 0.5,
+            "inwardCurrentLimit": 1700,
+            "outwardCurrentLimit": 1700
+        }
+    ]
+}
