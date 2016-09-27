@@ -142,6 +142,8 @@ public class MasterController : MonoBehaviour, IMasterController
 		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
 		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
 
+		Debug.Log ("CALLIBRATION: RETRACTING...");
+
 		bool stillRetracting = true;
 		while (stillRetracting) {
 			ActuatorState [] states = m_roboticsControllers.GetAllActuatorStates ();
@@ -155,8 +157,13 @@ public class MasterController : MonoBehaviour, IMasterController
 		}
 
 		//All should be retracted now
+		Debug.Log ("CALLIBRATION: RETRACTION COMPLETE.");
+
 
 		m_roboticsControllers.SetAllActuatorSpeeds(1.0f);
+
+		Debug.Log ("CALLIBRATION: EXTENDING...");
+
 
 		bool stillExtending = true;
 		while (stillExtending) {
@@ -171,8 +178,10 @@ public class MasterController : MonoBehaviour, IMasterController
 		}
 
 		//All should be extended now
+		Debug.Log ("CALLIBRATION: EXTENSION COMPLETE.");
 
-		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
+
+		m_roboticsControllers.SetAllActuatorSpeeds(0.0f);
 
 		//TODO Implement wait until all downlo then commence wave function
 	}
