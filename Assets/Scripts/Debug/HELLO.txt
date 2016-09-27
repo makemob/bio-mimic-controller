@@ -1,21 +1,3 @@
-Are you there?
-Yeah Skype playing up..
-:)
-No go. shit this keyboard sucks
-
-Can you set current limit to 2500
-
-you are really quiet
-
-I'm going to restart team viewer. What is the password again?
-2xng58
-
-how's that?
-
-let me know when you're ready
-
-phone connection seems dodgy but it might just be that you're away from the phone.
-
 TimeoutException: The operation has timed-out.
 System.IO.Ports.WinSerialStream.Read (System.Byte[] buffer, Int32 offset, Int32 count)
 System.IO.Ports.SerialPort.Read (System.Byte[] buffer, Int32 offset, Int32 count)

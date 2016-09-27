@@ -86,15 +86,6 @@ public class Actuator : Debuggable
 		}
 
 		m_previousNormalisedPosition = m_currentNormalisedPosition;
-
-		//if (Mathf.Abs(m_moveSpeed) > 0.0001f) 
-		//{
-	//		if (m_state.m_innerCurrentTrips > 0 || m_state.m_outerCurrentTrips > 0) {
-	//			SetActuatorSpeed (0.0f);
-	//			Debug.Log ("Stopping actuator " + GetID() + " due to current trip.");
-	//		}
-	//	}
-		
 	}
 
 	public float GetNormalisedPosition() 

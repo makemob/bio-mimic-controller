@@ -85,10 +85,26 @@ public class ModbusComms : SerialComms
 
 	public ushort [] ReadHoldingRegisters(byte slaveID, ushort startRegister, ushort numRegistersToRead)
 	{
-		if (m_modbusMaster != null && m_serial.IsOpen)
-			return m_modbusMaster.ReadHoldingRegisters(slaveID, startRegister, numRegistersToRead);
+		ushort[] result = null;
+		//Debug.Log(Time.realtimeSinceStartup + " Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
 
-		return null;
+		try {
+			if (m_modbusMaster != null && m_serial.IsOpen)
+			{
+				result = m_modbusMaster.ReadHoldingRegisters(slaveID, startRegister, numRegistersToRead);
+				Debug.Log(Time.realtimeSinceStartup + " Finised Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
+				if (result != null) {
+					foreach (ushort d in result)
+						Debug.Log ("    Data: " + d);
+				}
+			}
+		}
+		catch {
+			Debug.Log(Time.realtimeSinceStartup + " Failed to read holding register.");
+			return null;
+		}
+		
+		return result;
 	}
 
 	public void ClearCommandQueue()

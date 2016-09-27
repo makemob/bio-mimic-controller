@@ -172,6 +172,7 @@ public class MasterController : MonoBehaviour, IMasterController
 			foreach (ActuatorState a in states) {
 				if (!a.m_atOuterLimit) {
 					stillExtending = true;
+					break;
 				}
 			}
 			yield return new WaitForSeconds(1.0f);

@@ -43,8 +43,6 @@ public struct ActuatorState
 		m_outerCurrentTripped = false;
 		m_atInnerLimit = false;
 		m_atOuterLimit = false;
-		m_innerCurrentTrips = 0;
-		m_outerCurrentTrips = 0;
 	}
 
 	public override string ToString()

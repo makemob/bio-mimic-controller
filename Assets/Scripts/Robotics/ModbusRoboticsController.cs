@@ -134,10 +134,10 @@ public class ModbusRoboticsController : RoboticsController
 		}
 
 		ushort[] currentLimits;
-		if (ReadRegisters (actuatorID, ModbusRegister.MB_CURRENT_LIMIT_INWARD, 2, out extentSwitches)) 			
+		if (ReadRegisters (actuatorID, ModbusRegister.MB_CURRENT_LIMIT_INWARD, 2, out currentLimits)) 			
 		{
-			s.m_innerCurrentLimit = extentSwitches[0];
-			s.m_outerCurrentLimit = extentSwitches[1];
+			s.m_innerCurrentLimit = currentLimits[0];
+			s.m_outerCurrentLimit = currentLimits[1];
 		}
 
 		return s;
@@ -204,12 +204,24 @@ public class ModbusRoboticsController : RoboticsController
 
 		if (actuator.m_state.m_atInnerLimit) {
 			actuator.SetActuatorSpeed(0.0f);
+			Debug.Log ("Inner limit detected on actuator " + actuator.GetID ());
 		}
 
 		if (actuator.m_state.m_atOuterLimit) {
+			Debug.Log ("Outer limit detected on actuator " + actuator.GetID ());
 			actuator.SetActuatorSpeed(0.0f);
 		}
 
+		if (actuator.m_state.m_innerCurrentTripped) {
+			Debug.Log ("Inner current tripped on actuator " + actuator.GetID ());
+			actuator.SetActuatorSpeed (0.0f);
+		}
+
+		if (actuator.m_state.m_outerCurrentTripped) {
+			Debug.Log ("Outer current tripped on actuator " + actuator.GetID ());
+			actuator.SetActuatorSpeed (0.0f);
+		}
+			
 		//Debug.Log ("Actuator " + currentID + ": " + state.ToString ());
 	}
 
