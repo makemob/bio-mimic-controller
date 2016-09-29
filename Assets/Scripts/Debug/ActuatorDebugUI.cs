@@ -53,6 +53,14 @@ public class ActuatorDebugUI : DebugUIElement
 
 	}
 
+	public void Highlight(bool doHighlight)
+	{
+		if (doHighlight) 
+			m_actuator.GetComponent<HighlightMesh> ().Highlight();
+		else
+			m_actuator.GetComponent<HighlightMesh> ().ClearColor();	
+	}
+
 	private int GetActuatorID()
 	{
 		return m_actuator.GetID();

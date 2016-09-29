@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-public class DebugPanel : MonoBehaviour 
+public class DebugPanel : MonoBehaviour
 {
 	public string m_title;				//Title of panel to be drawn in UI
 	public Text m_titleText;			//UI text element to draw title
