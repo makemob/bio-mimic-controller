@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class ActuatorDebugUI : DebugUIElement 
+public class ActuatorDebugUI : DebugUIElement, IPointerEnterHandler, IPointerExitHandler
 {
 	public Actuator m_actuator;
 	public Text m_label;
@@ -10,8 +11,21 @@ public class ActuatorDebugUI : DebugUIElement
 	public GraphElement m_sensorBar;
 	public Text m_state;
 
+	public void OnPointerEnter(PointerEventData e)
+	{
+		GetComponent<Image> ().color = new Color32 (255, 128, 128, 128);
+	}
+
+	public void OnPointerExit(PointerEventData e)
+	{
+		GetComponent<Image> ().color = new Color32 (255, 255, 255, 128);
+	}
+
+
 	void Update () 
 	{
+		
+		//GetComponent<Selectable>().OnDeselect(
 		if (m_actuator)
 		{
 			if (m_label)
