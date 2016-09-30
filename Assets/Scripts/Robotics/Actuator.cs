@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using UKI;
 
 
@@ -23,6 +24,8 @@ public class Actuator : Debuggable
 	public bool m_autoMoveAngle = false;
 	public bool m_autoMoveClamped = false;
 	public float m_autoMovePeriod = 1.0f;
+
+	public UnityEvent m_onStateUpdate;
 
 	[Range(0.0f, 360.0f)]
 	public float m_currentAngle = 0.0f;
@@ -111,6 +114,9 @@ public class Actuator : Debuggable
 			newState.m_outerCurrentTripped = true;
 
 		m_state = newState;
+
+		m_onStateUpdate.Invoke ();
+
 	}
 
 	void UpdateTargetPosition()

@@ -8,6 +8,7 @@ public class ActuatorDebugUI : DebugUIElement
 	public Text m_label;
 	public GraphElement m_simulationBar;
 	public GraphElement m_sensorBar;
+	public Text m_state;
 
 	void Update () 
 	{
@@ -29,8 +30,10 @@ public class ActuatorDebugUI : DebugUIElement
 
 	public override void SetDebuggableObject(GameObject debuggableObject)
 	{
-		if (debuggableObject)
-			m_actuator = debuggableObject.GetComponent<Actuator>();
+		if (debuggableObject) {
+			m_actuator = debuggableObject.GetComponent<Actuator> ();
+			m_actuator.m_onStateUpdate.AddListener (DrawState);
+		}
 	}
 
 	public void OnUp()
@@ -64,5 +67,10 @@ public class ActuatorDebugUI : DebugUIElement
 	private int GetActuatorID()
 	{
 		return m_actuator.GetID();
+	}
+
+	private void DrawState()
+	{
+		m_state.text = m_actuator.m_state.ToString ();
 	}
 }
