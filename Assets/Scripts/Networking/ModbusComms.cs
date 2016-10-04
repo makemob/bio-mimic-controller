@@ -23,7 +23,8 @@ public class ModbusComms : SerialComms
 	const int MAX_ACTUATORS = 16;
 
 	private ModbusSerialMaster m_modbusMaster;
-	private CommandQueue m_commandQueue;
+	private CommandQueueThreaded m_commandQueue;
+	private DateTime m_startTime;
 
 	//
 	// Startup the modbus connection and commence the command queue, enforcing gaps between all networking calls
@@ -34,9 +35,12 @@ public class ModbusComms : SerialComms
 
 		base.Startup();
 
+		StartClock ();
+
 		m_modbusMaster = Modbus.Device.ModbusSerialMaster.CreateRtu(m_serial);
+
 		if (!m_commandQueue)
-			m_commandQueue = gameObject.AddComponent<CommandQueue> ();
+			m_commandQueue = gameObject.AddComponent<CommandQueueThreaded> ();
 		m_commandQueue.Run();
 
 		Debug.Log("Minimum interval is " + GetMinimumInterval(m_baudRate));
@@ -63,7 +67,7 @@ public class ModbusComms : SerialComms
 		QueueInternalCommand (() => {
 			if (m_modbusMaster != null && m_serial.IsOpen)
 				m_modbusMaster.WriteSingleRegister(slaveID, register, data);
-			Debug.Log(Time.realtimeSinceStartup + " ModbusSingleRegister. SlaveID: " + slaveID + " Register: " + register + " Data:" + data);
+			Debug.Log(GetClock() + " ModbusSingleRegister. SlaveID: " + slaveID + " Register: " + register + " Data:" + data);
 		});
 
 	}
@@ -78,7 +82,7 @@ public class ModbusComms : SerialComms
 				dataString += u.ToString() + " ";
 			dataString += "]";
 			
-			Debug.Log(Time.realtimeSinceStartup + " ModbusMultiRegister. SlaveID: " + slaveID + " Register: " + startRegister + " Data:" + dataString);
+			Debug.Log(GetClock() + " ModbusMultiRegister. SlaveID: " + slaveID + " Register: " + startRegister + " Data:" + dataString);
 
 		});
 	}
@@ -92,7 +96,7 @@ public class ModbusComms : SerialComms
 			if (m_modbusMaster != null && m_serial.IsOpen)
 			{
 				result = m_modbusMaster.ReadHoldingRegisters(slaveID, startRegister, numRegistersToRead);
-				Debug.Log(Time.realtimeSinceStartup + " Finised Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
+				Debug.Log(GetClock() + " Finised Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
 				if (result != null) {
 					foreach (ushort d in result)
 						Debug.Log ("    Data: " + d);
@@ -100,7 +104,7 @@ public class ModbusComms : SerialComms
 			}
 		}
 		catch {
-			Debug.Log(Time.realtimeSinceStartup + " Failed to read holding register.");
+			//Debug.Log(Time.realtimeSinceStartup + " Failed to read holding register.");
 			return null;
 		}
 		
@@ -149,4 +153,14 @@ public class ModbusComms : SerialComms
 		return minimumInterval;
 	}
 
+	private void StartClock()
+	{
+		m_startTime = System.DateTime.UtcNow;
+	}
+
+	private float GetClock()
+	{
+		System.TimeSpan t = System.DateTime.UtcNow - m_startTime;
+		return (float)(t.TotalMilliseconds/1000.0);
+	}
 }
