@@ -10,6 +10,11 @@ public class OrbitCamera : MonoBehaviour
 	private Vector3 m_velocity;	//x = left right orbit, y = up down orbit, z = zoom
 	private Vector3 m_lastMousePosition;
 
+	private Vector3 Target
+	{
+		get { return transform.parent ? transform.parent.position : Vector3.zero; }
+	}
+
 	void Update()
 	{
 		//Update mouse position
@@ -45,16 +50,16 @@ public class OrbitCamera : MonoBehaviour
 		}
 
 		//Translate zoom
-		Vector3 toParent = transform.parent.position - transform.position;
-		Vector3 directionToParent = toParent.normalized;
+		Vector3 toTarget = Target - transform.position;
+		Vector3 directionToParent = toTarget.normalized;
 		float moveThisFrame = m_velocity.z * Time.deltaTime;
-		float distanceToParent = Mathf.Clamp(toParent.magnitude + moveThisFrame, m_minZoom, m_maxZoom);
-		transform.position = transform.parent.position - directionToParent * distanceToParent;
+		float distanceToParent = Mathf.Clamp(toTarget.magnitude + moveThisFrame, m_minZoom, m_maxZoom);
+		transform.position = Target - directionToParent * distanceToParent;
 
 		//Rotate around
-		transform.LookAt(transform.parent.position);
-		transform.RotateAround(transform.parent.position, Vector3.up, m_velocity.x * Time.deltaTime);
-		transform.RotateAround(transform.parent.position, transform.right, m_velocity.y * Time.deltaTime);
+		transform.LookAt(Target);
+		transform.RotateAround(Target, Vector3.up, m_velocity.x * Time.deltaTime);
+		transform.RotateAround(Target, transform.right, m_velocity.y * Time.deltaTime);
 
 		//Reduce the velocity
 		m_velocity = m_velocity - m_velocity * 0.1f;
@@ -62,8 +67,4 @@ public class OrbitCamera : MonoBehaviour
 			m_velocity = Vector3.zero;
 	}
 		
-	public void SetTarget(Transform t)
-	{
-		transform.SetParent (t, false);
-	}
 }
