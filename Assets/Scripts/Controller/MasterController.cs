@@ -137,56 +137,6 @@ public class MasterController : MonoBehaviour, IMasterController
 		Debug.Log ("Actuator State: " + state.ToString());
 	}
 
-	public IEnumerator CallibrateCoroutine()
-	{
-		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
-		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
-
-		Debug.Log ("CALLIBRATION: RETRACTING...");
-
-		bool stillRetracting = true;
-		while (stillRetracting) {
-			ActuatorState [] states = m_roboticsControllers.GetAllActuatorStates ();
-			stillRetracting = false;
-			foreach (ActuatorState a in states) {
-				if (!a.m_atInnerLimit) {
-					stillRetracting = true;
-				}
-			}
-			yield return new WaitForSeconds(1.0f);
-		}
-
-		//All should be retracted now
-		Debug.Log ("CALLIBRATION: RETRACTION COMPLETE.");
-
-
-		m_roboticsControllers.SetAllActuatorSpeeds(1.0f);
-
-		Debug.Log ("CALLIBRATION: EXTENDING...");
-
-
-		bool stillExtending = true;
-		while (stillExtending) {
-			ActuatorState [] states = m_roboticsControllers.GetAllActuatorStates ();
-			stillExtending = false;
-			foreach (ActuatorState a in states) {
-				if (!a.m_atOuterLimit) {
-					stillExtending = true;
-					break;
-				}
-			}
-			yield return new WaitForSeconds(1.0f);
-		}
-
-		//All should be extended now
-		Debug.Log ("CALLIBRATION: EXTENSION COMPLETE.");
-
-
-		m_roboticsControllers.SetAllActuatorSpeeds(0.0f);
-
-		//TODO Implement wait until all downlo then commence wave function
-	}
-
 	public void LoadConfig()
 	{
 		//TODO: Store in game directory or somewhere easy to find.
@@ -200,21 +150,66 @@ public class MasterController : MonoBehaviour, IMasterController
 		File.WriteAllText("Assets/Resources/" + m_configFile, json);
 	}
 
-	private IEnumerator WaitForAllActuatorsToRetract()
+	private IEnumerator CallibrateCoroutine()
 	{
-		bool stillRetracting = true;
-		while (stillRetracting) 
+		CallibrationResults Results = new CallibrationResults ();
+
+		Debug.Log ("===============================================");
+		Debug.Log ("                 CALLIBRATING                  ");
+		Debug.Log ("===============================================");
+
+		Debug.Log ("CALLIBRATION: RETRACTING...");
+		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
+		yield return new WaitUntil (AllActuatorsAtInnerLimit);
+		yield return new WaitForSeconds (1.0f);
+
+		Debug.Log ("CALLIBRATION: RETRACTION COMPLETE. EXTENDING...");
+		m_roboticsControllers.SetAllActuatorSpeeds(1.0f);
+		float startExtensionTime = Time.realtimeSinceStartup;
+		yield return new WaitUntil (AllActuatorsAtOuterLimit);
+		float endExtensionTime = Time.realtimeSinceStartup;
+		yield return new WaitForSeconds (1.0f);
+
+		Debug.Log ("CALLIBRATION: EXTENSION COMPLETE. RETRACTING...");
+		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
+		float startRetractionTime = Time.realtimeSinceStartup;
+		yield return new WaitUntil (AllActuatorsAtInnerLimit);
+		float endRetractionTime = Time.realtimeSinceStartup;
+
+		//Collate results
+		Results.m_extensionTime = endExtensionTime - startExtensionTime;
+		Results.m_retractionTime = endRetractionTime - startRetractionTime;
+
+		Debug.Log ("===============================================");
+		Debug.Log ("           CALLIBRATION RESULTS                ");
+		Debug.Log ("");
+		Debug.Log (Results.ToString());
+		Debug.Log ("");
+		Debug.Log ("===============================================");
+
+	}
+
+	private bool AllActuatorsAtInnerLimit()
+	{
+		ActuatorState [] states = m_roboticsControllers.GetAllActuatorStates ();
+		foreach (ActuatorState a in states) 
 		{
-			ActuatorState [] states = m_roboticsControllers.GetAllActuatorStates ();
-			stillRetracting = false;
-			foreach (ActuatorState a in states) 
-			{
-				if (!a.m_atInnerLimit) {
-					stillRetracting = true;
-					break;
-				}
-			}
-			yield return new WaitForSeconds(1.0f);
+			if (!a.m_atInnerLimit)
+				return false;
 		}
+
+		return true;
+	}
+
+	private bool AllActuatorsAtOuterLimit()
+	{
+		ActuatorState [] states = m_roboticsControllers.GetAllActuatorStates ();
+		foreach (ActuatorState a in states) 
+		{
+			if (!a.m_atOuterLimit)
+				return false;
+		}
+
+		return true;
 	}
 }
