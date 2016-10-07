@@ -9,21 +9,23 @@ public class CommandQueueThreaded : MonoBehaviour
 	private Thread m_commandThread;
 	private object m_lock;
 	private System.DateTime m_startTime;
+	private volatile bool m_running;
+
+	void Awake()
+	{
+		m_queue = new Queue<ICommand>();
+		m_lock = new Object();
+	}
 
 	void OnEnable()
 	{
-		m_queue = new Queue<ICommand>();
 		m_commandThread = new Thread(ProcessCommands);
-		m_lock = new Object();
+		Run ();
 	}
 
 	void OnDisable()
 	{
-		lock (m_lock) 
-		{
-			m_commandThread.Abort ();
-			m_queue.Clear ();
-		}
+		Stop ();
 	}
 
 	//Commence command queue processing
@@ -31,10 +33,13 @@ public class CommandQueueThreaded : MonoBehaviour
 	{
 		lock (m_lock) 
 		{
+			m_running = true;
 			m_commandThread.Start();
 		}
 
 		StartClock ();
+
+		Debug.Log ("Command queue thread started.");
 	}
 
 	//Cease processing commands
@@ -42,8 +47,11 @@ public class CommandQueueThreaded : MonoBehaviour
 	{
 		lock (m_lock) 
 		{
-			m_commandThread.Abort ();
+			m_running = false;
+			m_queue.Clear ();
 		}
+
+		Debug.Log ("Command queue thread stopped.");
 	}
 
 	//Add a new command
@@ -67,7 +75,7 @@ public class CommandQueueThreaded : MonoBehaviour
 	//This runs as a coroutine, processing commands with a given command delay in between
 	private void ProcessCommands() 
 	{
-		while (true) 
+		while (m_running) 
 		{
 			ICommand currentCommand = null;
 
@@ -89,7 +97,6 @@ public class CommandQueueThreaded : MonoBehaviour
 			}
 		}
 	}	
-
 
 	private void StartClock()
 	{

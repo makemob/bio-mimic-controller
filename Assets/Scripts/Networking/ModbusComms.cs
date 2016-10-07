@@ -41,7 +41,6 @@ public class ModbusComms : SerialComms
 
 		if (!m_commandQueue)
 			m_commandQueue = gameObject.AddComponent<CommandQueueThreaded> ();
-		m_commandQueue.Run();
 
 		Debug.Log("Minimum interval is " + GetMinimumInterval(m_baudRate));
 
