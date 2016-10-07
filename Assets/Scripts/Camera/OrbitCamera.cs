@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class OrbitCamera : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class OrbitCamera : MonoBehaviour
 
 	private Vector3 m_velocity;	//x = left right orbit, y = up down orbit, z = zoom
 	private Vector3 m_lastMousePosition;
+	private bool m_rotatingWithMouse = false;
+	private bool m_zoomingWithMouse = false;
 
 	private Vector3 Target
 	{
@@ -17,6 +20,11 @@ public class OrbitCamera : MonoBehaviour
 
 	void Update()
 	{
+		//Check mouse button status, ensuing we are not using a button
+		bool mouseOverGameObject = EventSystem.current.IsPointerOverGameObject ();
+		m_rotatingWithMouse = m_rotatingWithMouse ? Input.GetMouseButton (0) : !mouseOverGameObject && Input.GetMouseButtonDown (0);
+		m_zoomingWithMouse = m_zoomingWithMouse ? Input.GetMouseButton (1) : !mouseOverGameObject && Input.GetMouseButtonDown (1);
+
 		//Update mouse position
 		Vector3 mousePosition = Input.mousePosition;
 		Vector3 mouseDelta = mousePosition - m_lastMousePosition;
@@ -35,16 +43,16 @@ public class OrbitCamera : MonoBehaviour
 			m_velocity.z += Time.deltaTime * -m_zoomSpeed;
 		if (Input.GetKey (KeyCode.S))
 			m_velocity.z += Time.deltaTime * m_zoomSpeed;
-		
+
 		//Alter xy velocity if clicking
-		if (Input.GetMouseButton (0)) 
+		if (m_rotatingWithMouse) 
 		{
 			m_velocity.x += mouseDelta.x * Time.deltaTime * m_orbitSpeed;
 			m_velocity.y += mouseDelta.y * Time.deltaTime * -m_orbitSpeed;	//y-inverted
 		}
 
 		//Alter zoom if double touching
-		if (Input.GetMouseButton (1) || Input.touchCount > 1) 
+		if (m_zoomingWithMouse) 
 		{
 			m_velocity.z += mouseDelta.y * Time.deltaTime * m_zoomSpeed;
 		}
