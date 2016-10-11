@@ -70,6 +70,11 @@ public class ActuatorDebugUI : DebugUIElement, IPointerEnterHandler, IPointerExi
 
 	}
 
+	public void OnTest()
+	{
+		MasterController.Instance.CallibrateActuator (GetActuatorID ());
+	}
+
 	public void Highlight(bool doHighlight)
 	{
 		if (doHighlight) 

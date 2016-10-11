@@ -36,6 +36,7 @@ public class Actuator : Debuggable
 	public float m_moveSpeed = 0.0f;
 	public float m_moveSpeedScale = 0.5f;	//Change this to tune for now
 
+
 	ConfigurableJoint m_baseJoint;
 	float m_previousNormalisedPosition = 0.0f;
 

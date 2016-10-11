@@ -123,7 +123,12 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void Callibrate()
 	{
-		StartCoroutine(CallibrateCoroutine());
+		StartCoroutine(CallibrateAllCoroutine());
+	}
+
+	public void CallibrateActuator(int id)
+	{
+		StartCoroutine(CallibrateActuatorCoroutine(id));
 	}
 
 	public void UpdateAllActuatorStates()
@@ -150,7 +155,7 @@ public class MasterController : MonoBehaviour, IMasterController
 		File.WriteAllText("Assets/Resources/" + m_configFile, json);
 	}
 
-	private IEnumerator CallibrateCoroutine()
+	private IEnumerator CallibrateAllCoroutine()
 	{
 		CallibrationResults Results = new CallibrationResults ();
 
@@ -187,6 +192,55 @@ public class MasterController : MonoBehaviour, IMasterController
 		Debug.Log ("");
 		Debug.Log ("===============================================");
 
+	}
+
+	private IEnumerator CallibrateActuatorCoroutine(int id)
+	{
+		CallibrationResults Results = new CallibrationResults ();
+
+		Debug.Log ("===============================================");
+		Debug.Log ("           CALLIBRATING ACTUATOR " + id);
+		Debug.Log ("===============================================");
+
+		Debug.Log ("CALLIBRATION: RETRACTING...");
+		m_roboticsControllers.SetActuatorSpeed(id, -1.0f);
+		yield return new WaitUntil (() => ActuatorAtInnerLimit(id));
+		yield return new WaitForSeconds (1.0f);
+
+		Debug.Log ("CALLIBRATION: RETRACTION COMPLETE. EXTENDING...");
+		m_roboticsControllers.SetActuatorSpeed(id, 1.0f);
+		float startExtensionTime = Time.realtimeSinceStartup;
+		yield return new WaitUntil (() => ActuatorAtOuterLimit(id));
+		float endExtensionTime = Time.realtimeSinceStartup;
+		yield return new WaitForSeconds (1.0f);
+
+		Debug.Log ("CALLIBRATION: EXTENSION COMPLETE. RETRACTING...");
+		m_roboticsControllers.SetActuatorSpeed(id, -1.0f);
+		float startRetractionTime = Time.realtimeSinceStartup;
+		yield return new WaitUntil (() => ActuatorAtInnerLimit(id));
+		float endRetractionTime = Time.realtimeSinceStartup;
+
+		//Collate results
+		Results.m_extensionTime = endExtensionTime - startExtensionTime;
+		Results.m_retractionTime = endRetractionTime - startRetractionTime;
+
+		Debug.Log ("===============================================");
+		Debug.Log ("           CALLIBRATION RESULTS                ");
+		Debug.Log ("");
+		Debug.Log (Results.ToString());
+		Debug.Log ("");
+		Debug.Log ("===============================================");
+
+	}
+
+	private bool ActuatorAtInnerLimit(int id)
+	{
+		return m_roboticsControllers.GetActuatorState(id).m_atInnerLimit;
+	}
+
+	private bool ActuatorAtOuterLimit(int id)
+	{
+		return m_roboticsControllers.GetActuatorState(id).m_atInnerLimit;
 	}
 
 	private bool AllActuatorsAtInnerLimit()
