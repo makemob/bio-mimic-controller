@@ -37,7 +37,14 @@ public class ModbusComms : SerialComms
 
 		StartClock ();
 
-		m_modbusMaster = Modbus.Device.ModbusSerialMaster.CreateRtu(m_serial);
+		try 
+		{
+			m_modbusMaster = Modbus.Device.ModbusSerialMaster.CreateRtu(m_serial);
+		}
+		catch (Exception e) 
+		{
+			Debug.LogError (e);
+		}
 
 		if (!m_commandQueue)
 			m_commandQueue = gameObject.AddComponent<CommandQueueThreaded> ();
@@ -58,15 +65,32 @@ public class ModbusComms : SerialComms
 		m_commandQueue.Clear();
 
 		//TODO: Send a final stop message??
-		m_modbusMaster.Dispose ();
+		try 
+		{			
+			m_modbusMaster.Dispose ();
+		}
+		catch (Exception e) 
+		{
+			Debug.LogError (e);
+		}
 	}
 
 	public void WriteSingleRegister(byte slaveID, ushort register, ushort data)
 	{
 		QueueInternalCommand (() => {
-			if (m_modbusMaster != null && m_serial.IsOpen)
-				m_modbusMaster.WriteSingleRegister(slaveID, register, data);
+
 			Debug.Log(GetClock() + " ModbusSingleRegister. SlaveID: " + slaveID + " Register: " + register + " Data:" + data);
+
+			try 
+			{
+				if (m_modbusMaster != null && m_serial.IsOpen)
+					m_modbusMaster.WriteSingleRegister(slaveID, register, data);
+			}
+			catch (Exception e)
+			{
+				Debug.LogError(e);
+			}
+
 		});
 
 	}
@@ -74,14 +98,22 @@ public class ModbusComms : SerialComms
 	public void WriteMultipleRegisters(byte slaveID, ushort startRegister, ushort [] data)
 	{
 		QueueInternalCommand (() => {
-			if (m_modbusMaster != null && m_serial.IsOpen)
-				m_modbusMaster.WriteMultipleRegisters(slaveID, startRegister, data);
+
 			string dataString = "[";
 			foreach(ushort u in data)
 				dataString += u.ToString() + " ";
 			dataString += "]";
-			
 			Debug.Log(GetClock() + " ModbusMultiRegister. SlaveID: " + slaveID + " Register: " + startRegister + " Data:" + dataString);
+
+			try 
+			{
+				if (m_modbusMaster != null && m_serial.IsOpen)
+					m_modbusMaster.WriteMultipleRegisters(slaveID, startRegister, data);
+			}
+			catch (Exception e)
+			{
+				Debug.LogError(e);
+			}		
 
 		});
 	}
@@ -91,7 +123,8 @@ public class ModbusComms : SerialComms
 		ushort[] result = null;
 		//Debug.Log(Time.realtimeSinceStartup + " Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
 
-		try {
+		try 
+		{
 			if (m_modbusMaster != null && m_serial.IsOpen)
 			{
 				result = m_modbusMaster.ReadHoldingRegisters(slaveID, startRegister, numRegistersToRead);
@@ -102,8 +135,11 @@ public class ModbusComms : SerialComms
 				}
 			}
 		}
-		catch {
-			//Debug.Log(Time.realtimeSinceStartup + " Failed to read holding register.");
+		catch (Exception e)
+		{
+			Debug.Log(Time.realtimeSinceStartup + " Failed to read holding register.");
+			Debug.LogError(e);
+
 			return null;
 		}
 		
