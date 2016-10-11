@@ -95,6 +95,11 @@ public class MasterController : MonoBehaviour, IMasterController
 		m_roboticsControllers.SetActuatorSpeed(actuatorID, speed);
 	}
 
+	public void SetActuatorCallibration(int actuatorID, CallibrationResults results)
+	{
+		m_roboticsControllers.SetActuatorCallibration (actuatorID, results);
+	}
+
 	public void StopActuator (int actuatorID)
 	{
 		m_roboticsControllers.StopActuator(actuatorID);
@@ -191,6 +196,8 @@ public class MasterController : MonoBehaviour, IMasterController
 		Debug.Log (Results.ToString());
 		Debug.Log ("");
 		Debug.Log ("===============================================");
+
+		//m_roboticsControllers.SetActuatorSpeed
 
 	}
 

@@ -107,6 +107,13 @@ public class Actuator : Debuggable
 		m_moveSpeed = normalisedSpeed;
 	}
 
+	public void SetCallibration(CallibrationResults results)
+	{
+		float averageTime = (results.m_extensionTime + results.m_retractionTime) * 0.5f;
+		if (averageTime != 0.0f)
+			m_moveSpeed = 1.0f/averageTime;
+	}
+
 	public void SetState(ActuatorState newState)
 	{
 		if (newState.m_innerCurrentTrips > m_state.m_innerCurrentTrips)

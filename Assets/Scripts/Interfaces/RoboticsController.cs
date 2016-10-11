@@ -14,6 +14,8 @@ namespace UKI
 
 		public abstract void SetActuatorSpeed (int actuatorID, float speed);
 
+		public abstract void SetActuatorCallibration (int actuatorID, CallibrationResults results);
+
 		public abstract void SetAllActuatorSpeeds (float speed);
 
 		//public abstract void SetAllActuatorSpeeds (List<float> speeds);

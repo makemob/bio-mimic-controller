@@ -79,6 +79,11 @@ public class ModbusRoboticsController : RoboticsController
 		m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_MOTOR_SETPOINT, (ushort)(normalisedSpeed * 89.0f));
 	}
 
+	public override void SetActuatorCallibration(int actuatorID, CallibrationResults results)
+	{
+		m_actuators [actuatorID].SetCallibration (results);
+	}
+
 	public override void SetAllActuatorSpeeds(float normalisedSpeed)
 	{
 		foreach(Actuator a in m_actuators.Values)
