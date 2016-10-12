@@ -23,7 +23,7 @@ public class ModbusComms : SerialComms
 	const int MAX_ACTUATORS = 16;
 
 	private ModbusSerialMaster m_modbusMaster;
-	private CommandQueueThreaded m_commandQueue;
+	private CommandQueue m_commandQueue;
 	private DateTime m_startTime;
 
 	//
@@ -47,7 +47,7 @@ public class ModbusComms : SerialComms
 		}
 
 		if (!m_commandQueue)
-			m_commandQueue = gameObject.AddComponent<CommandQueueThreaded> ();
+			m_commandQueue = gameObject.AddComponent<CommandQueue> ();
 
 		Debug.Log("Minimum interval is " + GetMinimumInterval(m_baudRate));
 
@@ -127,12 +127,14 @@ public class ModbusComms : SerialComms
 		{
 			if (m_modbusMaster != null && m_serial.IsOpen)
 			{
+				//Debug.Log(GetClock() + " Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
+
 				result = m_modbusMaster.ReadHoldingRegisters(slaveID, startRegister, numRegistersToRead);
-				Debug.Log(GetClock() + " Finised Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
-				if (result != null) {
-					foreach (ushort d in result)
-						Debug.Log ("    Data: " + d);
-				}
+				//Debug.Log(GetClock() + " Finised Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
+				//if (result != null) {
+				//	foreach (ushort d in result)
+				//		Debug.Log ("    Data: " + d);
+				//}
 			}
 		}
 		catch (Exception e)

@@ -2,28 +2,28 @@
     "version": 1,
     "actuators": [
         {
-            "name": "HindHip",
-            "id": 0,
+            "name": "FrontHip",
+            "id": 4,
             "minExtent": 0.0,
             "maxExtent": 0.5,
-            "inwardCurrentLimit": 1700,
-            "outwardCurrentLimit": 1700
+            "inwardCurrentLimit": 2500,
+            "outwardCurrentLimit": 2500
         },
         {
-            "name": "HindKnee",
-            "id": 1,
+            "name": "FrontKnee",
+            "id": 5,
             "minExtent": 0.0,
             "maxExtent": 0.5,
-            "inwardCurrentLimit": 1700,
-            "outwardCurrentLimit": 1700
+            "inwardCurrentLimit": 2500,
+            "outwardCurrentLimit": 2500
         },
         {
-            "name": "HindAnkle",
-            "id": 7,
+            "name": "FrontAnkle",
+            "id": 6,
             "minExtent": 0.0,
             "maxExtent": 0.5,
-            "inwardCurrentLimit": 1700,
-            "outwardCurrentLimit": 1700
+            "inwardCurrentLimit": 2500,
+            "outwardCurrentLimit": 2500
         }
     ]
 }

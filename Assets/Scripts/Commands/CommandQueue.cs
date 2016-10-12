@@ -8,6 +8,15 @@ public class CommandQueue : MonoBehaviour {
 	public Queue<ICommand> m_queue = new Queue<ICommand>();
 	private Coroutine m_commandProcessing = null;
 
+	void OnEnable()
+	{
+		Run ();
+	}
+
+	void OnDisable()
+	{
+		Stop ();
+	}
 	//Commence command queue processing
 	public void Run()
 	{

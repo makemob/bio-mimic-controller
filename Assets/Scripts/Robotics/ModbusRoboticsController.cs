@@ -138,12 +138,12 @@ public class ModbusRoboticsController : RoboticsController
 			s.m_atOuterLimit = extentSwitches[1] > 0;
 		}
 
-		ushort[] currentLimits;
-		if (ReadRegisters (actuatorID, ModbusRegister.MB_CURRENT_LIMIT_INWARD, 2, out currentLimits)) 			
-		{
-			s.m_innerCurrentLimit = currentLimits[0];
-			s.m_outerCurrentLimit = currentLimits[1];
-		}
+//		ushort[] currentLimits;
+//		if (ReadRegisters (actuatorID, ModbusRegister.MB_CURRENT_LIMIT_INWARD, 2, out currentLimits)) 			
+//		{
+//			s.m_innerCurrentLimit = currentLimits[0];
+//			s.m_outerCurrentLimit = currentLimits[1];
+//		}
 
 		return s;
 	}
