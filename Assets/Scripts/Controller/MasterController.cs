@@ -256,15 +256,16 @@ public class MasterController : MonoBehaviour, IMasterController
 		Debug.Log ("TESTING: RETRACTING...");
 		m_roboticsControllers.SetActuatorSpeed(id, -1.0f);
 		yield return new WaitUntil (() => ActuatorAtInnerLimit(id));
-		yield return new WaitForSeconds (1.0f);
-
-		Debug.Log ("TESTING: EXTENDING FOR 5sec...");
-		m_roboticsControllers.SetActuatorSpeed(id, 1.0f);
 		yield return new WaitForSeconds (5.0f);
+
+		Debug.Log ("TESTING: EXTENDING FOR 15sec...");
+		m_roboticsControllers.SetActuatorSpeed(id, 1.0f);
+		yield return new WaitForSeconds (15.0f);
 		m_roboticsControllers.SetActuatorSpeed(id, 0.0f);
 		Debug.Log ("Expected extension: " + m_roboticsControllers.GetActuatorState(id).m_predictedExtension);
-		yield return new WaitForSeconds (1.0f);
+		//yield return new WaitForSeconds (60.0f);
 
+		/*
 		Debug.Log ("TESTING: EXTENSION COMPLETE. RETRACTING...");
 		m_roboticsControllers.SetActuatorSpeed(id, -1.0f);
 		yield return new WaitUntil (() => ActuatorAtInnerLimit(id));
@@ -274,7 +275,7 @@ public class MasterController : MonoBehaviour, IMasterController
 		yield return new WaitForSeconds (10.0f);
 		m_roboticsControllers.SetActuatorSpeed(id, 0.0f);
 		Debug.Log ("Expected extension: " + m_roboticsControllers.GetActuatorState(id).m_predictedExtension);
-		yield return new WaitForSeconds (1.0f);
+		yield return new WaitForSeconds (60.0f);
 
 		Debug.Log ("TESTING: EXTENSION COMPLETE. RETRACTING...");
 		m_roboticsControllers.SetActuatorSpeed(id, -1.0f);
@@ -285,11 +286,12 @@ public class MasterController : MonoBehaviour, IMasterController
 		yield return new WaitForSeconds (20.0f);
 		m_roboticsControllers.SetActuatorSpeed(id, 0.0f);
 		Debug.Log ("Expected extension: " + m_roboticsControllers.GetActuatorState(id).m_predictedExtension);
-		yield return new WaitForSeconds (1.0f);
+		yield return new WaitForSeconds (60.0f);
 
 		Debug.Log ("TESTING: EXTENSION COMPLETE. RETRACTING...");
 		m_roboticsControllers.SetActuatorSpeed(id, -1.0f);
 		yield return new WaitUntil (() => ActuatorAtInnerLimit(id));
+		*/
 	}
 
 	private bool ActuatorAtInnerLimit(int id)
@@ -324,5 +326,10 @@ public class MasterController : MonoBehaviour, IMasterController
 		}
 
 		return true;
+	}
+
+	public void ResetEmergencyStopForAll()
+	{
+		m_roboticsControllers.ResetEmergencyStopForAll ();
 	}
 }

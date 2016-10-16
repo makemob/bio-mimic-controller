@@ -33,5 +33,8 @@ namespace UKI
 		public abstract ActuatorState [] GetAllActuatorStates ();
 
 		public abstract void UpdateAllActuatorStates();
+
+		public abstract void ResetEmergencyStopForAll ();
+
 	}
 }

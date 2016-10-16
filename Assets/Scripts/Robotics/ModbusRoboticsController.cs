@@ -204,16 +204,19 @@ public class ModbusRoboticsController : RoboticsController
 
 	void UpdateActuator(Actuator actuator, ActuatorState newState)
 	{
+		bool wasAtInnerLimit = actuator.m_state.m_atInnerLimit;
+		bool wasAtOuterLimit = actuator.m_state.m_atOuterLimit;
+
 		actuator.SetState(newState);
 		//TODO: trigger event 
 
-		if (actuator.m_state.m_atInnerLimit) {
+		if (actuator.m_state.m_atInnerLimit && actuator.m_moveSpeed < 0.0f) {
 			actuator.SetActuatorSpeed(0.0f);
-			Debug.Log ("Inner limit detected on actuator " + actuator.GetID ());
+			//Debug.Log ("Inner limit detected on actuator " + actuator.GetID ());
 		}
 
-		if (actuator.m_state.m_atOuterLimit) {
-			Debug.Log ("Outer limit detected on actuator " + actuator.GetID ());
+		if (actuator.m_state.m_atOuterLimit && actuator.m_moveSpeed > 0.0f) {
+			//Debug.Log ("Outer limit detected on actuator " + actuator.GetID ());
 			actuator.SetActuatorSpeed(0.0f);
 		}
 
@@ -232,7 +235,17 @@ public class ModbusRoboticsController : RoboticsController
 
 	void ResetEmergencyStop(int actuatorID)
 	{
-		m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_RESET_ESTOP, (ushort)0x5050);	
 		m_actuators[actuatorID].m_state.ClearTripsAndLimits();	//Clear here just so state is immediately correct and we don't have to wait for a state read
+		m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_RESET_ESTOP, (ushort)0x5050);	
+	}
+
+	public override void ResetEmergencyStopForAll()
+	{
+		foreach(Actuator a in m_actuators.Values)
+		{
+			int actuatorID = a.GetID ();
+			m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_RESET_ESTOP, (ushort)0x5050);	
+			m_actuators[actuatorID].m_state.ClearTripsAndLimits();	//Clear here just so state is immediately correct and we don't have to wait for a state read
+		}
 	}
 }

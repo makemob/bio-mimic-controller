@@ -106,6 +106,9 @@ public class Actuator : Debuggable
 
 	public void SetActuatorSpeed(float normalisedSpeed)
 	{
+		if (GetID () == 6 && normalisedSpeed == 0.0f) {
+			normalisedSpeed = 0.0f;
+		}
 		m_moveSpeed = normalisedSpeed;
 	}
 
