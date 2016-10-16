@@ -89,6 +89,8 @@ public class Actuator : Debuggable
 			UpdateTargetPosition ();
 		}
 
+
+
 		m_previousNormalisedPosition = m_currentNormalisedPosition;
 	}
 
@@ -122,6 +124,8 @@ public class Actuator : Debuggable
 			newState.m_outerCurrentTripped = true;
 
 		m_state = newState;
+		m_state.m_predictedExtension = -1000.0f * m_currentNormalisedPosition * (m_maxPosition - m_minPosition);
+
 
 		m_onStateUpdate.Invoke ();
 
@@ -133,6 +137,9 @@ public class Actuator : Debuggable
 		{
 			m_baseJoint.GetComponent<Rigidbody> ().WakeUp ();
 			m_baseJoint.targetPosition = new Vector3 (0.0f, Mathf.Lerp (m_minPosition, m_maxPosition, m_currentNormalisedPosition), 0.0f);
+
+			m_state.m_predictedExtension = -1000.0f * m_currentNormalisedPosition * (m_maxPosition - m_minPosition);
+			m_onStateUpdate.Invoke ();
 		}
 	}
 

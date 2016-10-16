@@ -37,6 +37,9 @@ public struct ActuatorState
 	public int m_innerLimitCount;
 	public int m_outerLimitCount;
 
+	//Prediction
+	public float m_predictedExtension;
+
 	public void ClearTripsAndLimits()
 	{
 		m_innerCurrentTripped = false;
@@ -58,7 +61,8 @@ public struct ActuatorState
 			"\nouterCurrentLimit: " +  m_outerCurrentLimit +
 			"\ninnerTrips: " + m_innerCurrentTrips +
 			"\nouterTrips: " + m_outerCurrentTrips + 
-			"\nvoltageTrips: " + m_voltageTrips;
+			"\nvoltageTrips: " + m_voltageTrips +
+			"\nextension (mm): " + (int)m_predictedExtension;
 
 		return output;
 
