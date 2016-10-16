@@ -133,7 +133,14 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void CallibrateActuator(int id)
 	{
-		StartCoroutine(CallibrateActuatorCoroutine(id));
+		//HACK: Let's test for now.
+		TestActuator (id);
+		//StartCoroutine(CallibrateActuatorCoroutine(id));
+	}
+
+	public void TestActuator(int id)
+	{
+		StartCoroutine (ActuatorAccuracyTestCoroutine (id));
 	}
 
 	public void UpdateAllActuatorStates()
@@ -238,6 +245,51 @@ public class MasterController : MonoBehaviour, IMasterController
 		Debug.Log ("");
 		Debug.Log ("===============================================");
 
+	}
+
+	private IEnumerator ActuatorAccuracyTestCoroutine(int id)
+	{
+		Debug.Log ("===============================================");
+		Debug.Log ("           TESTING ACTUATOR " + id);
+		Debug.Log ("===============================================");
+
+		Debug.Log ("TESTING: RETRACTING...");
+		m_roboticsControllers.SetActuatorSpeed(id, -1.0f);
+		yield return new WaitUntil (() => ActuatorAtInnerLimit(id));
+		yield return new WaitForSeconds (1.0f);
+
+		Debug.Log ("TESTING: EXTENDING FOR 5sec...");
+		m_roboticsControllers.SetActuatorSpeed(id, 1.0f);
+		yield return new WaitForSeconds (5.0f);
+		m_roboticsControllers.SetActuatorSpeed(id, 0.0f);
+		Debug.Log ("Expected extension: " + m_roboticsControllers.GetActuatorState(id).m_predictedExtension);
+		yield return new WaitForSeconds (1.0f);
+
+		Debug.Log ("TESTING: EXTENSION COMPLETE. RETRACTING...");
+		m_roboticsControllers.SetActuatorSpeed(id, -1.0f);
+		yield return new WaitUntil (() => ActuatorAtInnerLimit(id));
+
+		Debug.Log ("TESTING: EXTENDING FOR 10sec...");
+		m_roboticsControllers.SetActuatorSpeed(id, 1.0f);
+		yield return new WaitForSeconds (10.0f);
+		m_roboticsControllers.SetActuatorSpeed(id, 0.0f);
+		Debug.Log ("Expected extension: " + m_roboticsControllers.GetActuatorState(id).m_predictedExtension);
+		yield return new WaitForSeconds (1.0f);
+
+		Debug.Log ("TESTING: EXTENSION COMPLETE. RETRACTING...");
+		m_roboticsControllers.SetActuatorSpeed(id, -1.0f);
+		yield return new WaitUntil (() => ActuatorAtInnerLimit(id));
+
+		Debug.Log ("TESTING: EXTENDING FOR 20sec...");
+		m_roboticsControllers.SetActuatorSpeed(id, 1.0f);
+		yield return new WaitForSeconds (20.0f);
+		m_roboticsControllers.SetActuatorSpeed(id, 0.0f);
+		Debug.Log ("Expected extension: " + m_roboticsControllers.GetActuatorState(id).m_predictedExtension);
+		yield return new WaitForSeconds (1.0f);
+
+		Debug.Log ("TESTING: EXTENSION COMPLETE. RETRACTING...");
+		m_roboticsControllers.SetActuatorSpeed(id, -1.0f);
+		yield return new WaitUntil (() => ActuatorAtInnerLimit(id));
 	}
 
 	private bool ActuatorAtInnerLimit(int id)
