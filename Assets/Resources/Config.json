@@ -2,55 +2,55 @@
     "version": 1,
     "actuators": [
         {
-            "name": "HindHip",
-            "id": 0,
-            "minExtent": 0.0,
-            "maxExtent": 0.115,
-            "inwardCurrentLimit": 1700,
-            "outwardCurrentLimit": 1700
-        },
-        {
-            "name": "HindKnee",
-            "id": 1,
-            "minExtent": 0.0,
-            "maxExtent": 0.194,
-            "inwardCurrentLimit": 1700,
-            "outwardCurrentLimit": 1700
-        },
-        {
-            "name": "HindAnkle",
-            "id": 2,
-            "minExtent": 0.0,
-            "maxExtent": 0.190,
-            "inwardCurrentLimit": 1700,
-            "outwardCurrentLimit": 1700
-        },
-        {
-            "name": "MidHip",
-            "id": 3,
-            "minExtent": 0.0,
-            "maxExtent": 0.115,
-            "inwardCurrentLimit": 1700,
-            "outwardCurrentLimit": 1700
-        },
-        {
-            "name": "MidKnee",
+            "name": "RightHindHip",
             "id": 4,
             "minExtent": 0.0,
+            "maxExtent": 0.115,
+            "inwardCurrentLimit": 2500,
+            "outwardCurrentLimit": 2500
+        },
+        {
+            "name": "RightHindKnee",
+            "id": 5,
+            "minExtent": 0.0,
+            "maxExtent": 0.194,
+            "inwardCurrentLimit": 2500,
+            "outwardCurrentLimit": 2500
+        },
+        {
+            "name": "RightHindAnkle",
+            "id": 6,
+            "minExtent": 0.0,
+            "maxExtent": 0.190,
+            "inwardCurrentLimit": 2500,
+            "outwardCurrentLimit": 2500
+        }
+        {
+            "name": "RightMidHip",
+            "id": 9,
+            "minExtent": 0.0,
+            "maxExtent": 0.115,
+            "inwardCurrentLimit": 1700,
+            "outwardCurrentLimit": 1700
+        },
+        {
+            "name": "RightMidKnee",
+            "id": 8,
+            "minExtent": 0.0,
             "maxExtent": 0.194,
             "inwardCurrentLimit": 1700,
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "MidAnkle",
-            "id": 5,
+            "name": "RightMidAnkle",
+            "id": 10,
             "minExtent": 0.0,
             "maxExtent": 0.190,
             "inwardCurrentLimit": 1700,
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "FrontHip",
+            "name": "RightFrontHip",
             "id": 6,
             "minExtent": 0.0,
             "maxExtent": 0.115,
@@ -58,7 +58,7 @@
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "FrontKnee",
+            "name": "RightFrontKnee",
             "id": 7,
             "minExtent": 0.0,
             "maxExtent": 0.194,
@@ -66,7 +66,7 @@
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "FrontAnkle",
+            "name": "RightFrontAnkle",
             "id": 8,
             "minExtent": 0.0,
             "maxExtent": 0.190,
