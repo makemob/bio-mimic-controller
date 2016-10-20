@@ -19,6 +19,8 @@ public class Actuator : Debuggable
 
 	public float m_minPosition = 0.0f;
 	public float m_maxPosition = 1.0f;
+	public float m_minLimit = 0.0f;
+	public float m_maxLimit = 0.29f;
 
 	public MoveType m_moveType;
 	public bool m_autoMoveAngle = false;
@@ -26,6 +28,7 @@ public class Actuator : Debuggable
 	public float m_autoMovePeriod = 1.0f;
 
 	public UnityEvent m_onStateUpdate;
+	public UnityEvent m_onMaxLimitReached;
 
 	[Range(0.0f, 360.0f)]
 	public float m_currentAngle = 0.0f;
@@ -39,6 +42,10 @@ public class Actuator : Debuggable
 
 	ConfigurableJoint m_baseJoint;
 	float m_previousNormalisedPosition = 0.0f;
+	static readonly float ARM_INITIAL_EXTENT = -0.038f;	//Arm extension when fully retracted.
+	static readonly float ARM_FULL_EXTENT = -0.328f;	//Arm extension when fully retracted.
+
+	static readonly float ARM_LENGTH = 0.29f; 
 
 	void Start () 
 	{
@@ -143,6 +150,13 @@ public class Actuator : Debuggable
 
 			m_state.m_predictedExtension = GetExtensionMillimetres ();
 
+			if (m_baseJoint.targetPosition.y <= m_maxLimit)
+			{
+				Debug.LogWarning ("Max limit of " + 1000.0f * -m_maxLimit + "mm reached.");
+				m_onMaxLimitReached.Invoke ();
+				SetActuatorSpeed (0.0f);	//simulation only
+			}
+
 			m_onStateUpdate.Invoke ();
 		}
 	}
@@ -150,6 +164,13 @@ public class Actuator : Debuggable
 	void ApplyConfig()
 	{
 		gameObject.name = m_config.name;
+
+		m_minPosition = ARM_INITIAL_EXTENT;
+		m_maxPosition = ARM_FULL_EXTENT;
+
+		m_minLimit = ARM_INITIAL_EXTENT - m_config.minExtent;
+		m_maxLimit = ARM_INITIAL_EXTENT - m_config.maxExtent;
+
 	}
 
 	public int GetExtensionMillimetres()

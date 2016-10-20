@@ -46,6 +46,9 @@ public class ModbusRoboticsController : RoboticsController
 		m_modbus.WriteSingleRegister((byte)actuator.GetID(), 
 									 (ushort)ModbusRegister.MB_CURRENT_LIMIT_OUTWARD, 
 									 (ushort)actuator.m_config.outwardCurrentLimit);
+
+		actuator.m_onMaxLimitReached.RemoveAllListeners ();
+		actuator.m_onMaxLimitReached.AddListener(() => { this.StopActuator (actuator.GetID ());} );
 		
 		//TODO: Sort dictionary
 		//m_actuators.Sort((a,b) => { return a.m_id.CompareTo(b.m_id); });

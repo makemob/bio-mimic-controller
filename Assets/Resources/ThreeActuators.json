@@ -5,7 +5,7 @@
             "name": "Test0",
             "id": 0,
             "minExtent": 0.0,
-            "maxExtent": 0.5,
+            "maxExtent": 0.29,
             "inwardCurrentLimit": 1700,
             "outwardCurrentLimit": 1700
         },
@@ -13,7 +13,7 @@
             "name": "Test1",
             "id": 1,
             "minExtent": 0.0,
-            "maxExtent": 0.5,
+            "maxExtent": 0.29,
             "inwardCurrentLimit": 1700,
             "outwardCurrentLimit": 1700
         },
@@ -21,7 +21,7 @@
             "name": "Test2",
             "id": 4,
             "minExtent": 0.0,
-            "maxExtent": 0.5,
+            "maxExtent": 0.29,
             "inwardCurrentLimit": 1700,
             "outwardCurrentLimit": 1700
         }
