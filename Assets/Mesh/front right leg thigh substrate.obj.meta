@@ -1,7 +1,7 @@
 fileFormatVersion: 2
-guid: af6ed59f8db734628b25ba1f6f773017
-timeCreated: 1434537227
-licenseType: Free
+guid: 9a4f7fefbae064904a27486fd5265730
+timeCreated: 1477998091
+licenseType: Pro
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
@@ -54,7 +54,7 @@ ModelImporter:
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 1
-    tangentImportMode: 4
+    tangentImportMode: 3
   importAnimation: 1
   copyAvatar: 0
   humanDescription:

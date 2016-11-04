@@ -2,7 +2,7 @@
     "version": 1,
     "actuators": [
         {
-            "name": "HindHip",
+            "name": "RightHindHip",
             "id": 0,
             "minExtent": 0.0,
             "maxExtent": 0.115,
@@ -10,7 +10,7 @@
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "HindKnee",
+            "name": "RightHindKnee",
             "id": 1,
             "minExtent": 0.0,
             "maxExtent": 0.194,
@@ -18,7 +18,7 @@
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "HindAnkle",
+            "name": "RightHindAnkle",
             "id": 2,
             "minExtent": 0.0,
             "maxExtent": 0.190,
@@ -26,7 +26,7 @@
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "MidHip",
+            "name": "RightMidHip",
             "id": 3,
             "minExtent": 0.0,
             "maxExtent": 0.115,
@@ -34,7 +34,7 @@
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "MidKnee",
+            "name": "RightMidKnee",
             "id": 4,
             "minExtent": 0.0,
             "maxExtent": 0.194,
@@ -42,7 +42,7 @@
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "MidAnkle",
+            "name": "RightMidAnkle",
             "id": 5,
             "minExtent": 0.0,
             "maxExtent": 0.190,
@@ -50,7 +50,7 @@
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "FrontHip",
+            "name": "RightFrontHip",
             "id": 6,
             "minExtent": 0.0,
             "maxExtent": 0.115,
@@ -58,7 +58,7 @@
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "FrontKnee",
+            "name": "RightFrontKnee",
             "id": 7,
             "minExtent": 0.0,
             "maxExtent": 0.194,
@@ -66,7 +66,7 @@
             "outwardCurrentLimit": 1700
         },
         {
-            "name": "FrontAnkle",
+            "name": "RightFrontAnkle",
             "id": 8,
             "minExtent": 0.0,
             "maxExtent": 0.190,
