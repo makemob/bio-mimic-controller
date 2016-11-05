@@ -7,14 +7,29 @@ public class AligmentHinge : MonoBehaviour
 {
 	public GameObject start;
 	public GameObject end;
+	public GameObject centre;
+	public bool hideNodes = true;
 
 	private Vector3 lastStart;
 	private Vector3 lastEnd;
 
 	void Update () 
-	{		
+	{	
+			
 		if (start && end) 
 		{
+			if (hideNodes) {
+				start.hideFlags |= HideFlags.HideInHierarchy;
+				end.hideFlags |= HideFlags.HideInHierarchy;
+				if (centre)
+					centre.hideFlags |= HideFlags.HideInHierarchy;
+			} else {
+				start.hideFlags &= ~HideFlags.HideInHierarchy;
+				end.hideFlags &= ~HideFlags.HideInHierarchy;
+				if (centre)
+					centre.hideFlags &= ~HideFlags.HideInHierarchy;
+			}
+
 			if (lastStart == start.transform.position && lastEnd == end.transform.position) 
 			{
 				start.transform.LookAt (end.transform);
