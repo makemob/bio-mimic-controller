@@ -3,7 +3,7 @@
     "actuators": [
         {
             "name": "RightRearHip",
-            "id": 0,
+            "id": 4,
             "minExtent": 0.0,
             "maxExtent": 0.115,
             "inwardCurrentLimit": 1700,
@@ -11,7 +11,7 @@
         },
         {
             "name": "RightRearKnee",
-            "id": 1,
+            "id": 5,
             "minExtent": 0.0,
             "maxExtent": 0.194,
             "inwardCurrentLimit": 1700,
@@ -19,7 +19,7 @@
         },
         {
             "name": "RightRearAnkle",
-            "id": 2,
+            "id": 6,
             "minExtent": 0.0,
             "maxExtent": 0.190,
             "inwardCurrentLimit": 1700,
@@ -27,7 +27,7 @@
         },
         {
             "name": "RightMidHip",
-            "id": 3,
+            "id": 7,
             "minExtent": 0.0,
             "maxExtent": 0.115,
             "inwardCurrentLimit": 1700,
@@ -35,7 +35,7 @@
         },
         {
             "name": "RightMidKnee",
-            "id": 4,
+            "id": 8,
             "minExtent": 0.0,
             "maxExtent": 0.194,
             "inwardCurrentLimit": 1700,
@@ -43,7 +43,7 @@
         },
         {
             "name": "RightMidAnkle",
-            "id": 5,
+            "id": 9,
             "minExtent": 0.0,
             "maxExtent": 0.190,
             "inwardCurrentLimit": 1700,
@@ -51,7 +51,7 @@
         },
         {
             "name": "RightFrontHip",
-            "id": 6,
+            "id": 10,
             "minExtent": 0.0,
             "maxExtent": 0.115,
             "inwardCurrentLimit": 1700,
@@ -59,7 +59,7 @@
         },
         {
             "name": "RightFrontKnee",
-            "id": 7,
+            "id": 11,
             "minExtent": 0.0,
             "maxExtent": 0.194,
             "inwardCurrentLimit": 1700,
@@ -67,7 +67,7 @@
         },
         {
             "name": "RightFrontAnkle",
-            "id": 8,
+            "id": 12,
             "minExtent": 0.0,
             "maxExtent": 0.190,
             "inwardCurrentLimit": 1700,
