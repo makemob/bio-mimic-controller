@@ -332,4 +332,33 @@ public class MasterController : MonoBehaviour, IMasterController
 	{
 		m_roboticsControllers.ResetEmergencyStopForAll ();
 	}
+
+	private bool m_looping = false;
+	public void StartLoopTest()
+	{
+		m_looping = true;
+		StartCoroutine ("LoopTestCoroutine");
+	}
+
+	public void StopLoopTest()
+	{
+		m_looping = false;
+		StopCoroutine ("LoopTestCoroutine");
+		StopAllActuators ();
+	}
+
+	private IEnumerator LoopTestCoroutine()
+	{
+		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
+		//yield return new WaitUntil (AllActuatorsAtInnerLimit);
+		yield return new WaitForSeconds (5.0f);
+
+		while (m_looping) 
+		{
+			m_roboticsControllers.SetAllActuatorSpeeds (1.0f);
+			yield return new WaitForSeconds (5.0f);
+			m_roboticsControllers.SetAllActuatorSpeeds (-1.0f);
+			yield return new WaitForSeconds (5.0f);
+		}
+	}
 }
