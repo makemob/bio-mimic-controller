@@ -149,9 +149,9 @@ public class Actuator : Debuggable
 
 			m_state.m_predictedExtension = GetExtensionMillimetres ();
 
-			if (m_baseJoint.targetPosition.y <= m_maxLimit)
+			if (m_state.m_predictedExtension >= m_maxLimit)
 			{
-				Debug.LogWarning ("Max limit of " + 1000.0f * -m_maxLimit + "mm reached.");
+				Debug.LogWarning ("Max limit of " + 1000.0f * m_maxLimit + "mm reached.");
 				m_onMaxLimitReached.Invoke ();
 				SetActuatorSpeed (0.0f);	//simulation only
 			}
@@ -167,9 +167,10 @@ public class Actuator : Debuggable
 		m_minPosition = ARM_INITIAL_EXTENT;
 		m_maxPosition = ARM_FULL_EXTENT;
 
-		m_minLimit = ARM_INITIAL_EXTENT - m_config.minExtent;
-		m_maxLimit = ARM_INITIAL_EXTENT - m_config.maxExtent;
-
+		//m_minLimit = ARM_INITIAL_EXTENT - m_config.minExtent;
+		//m_maxLimit = ARM_INITIAL_EXTENT - m_config.maxExtent;
+		m_minLimit = m_config.minExtent;
+		m_maxLimit = m_config.maxExtent;
 	}
 
 	public int GetExtensionMillimetres()
