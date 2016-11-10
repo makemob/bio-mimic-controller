@@ -5,7 +5,7 @@
             "name": "RightRearHip",
             "id": 4,
             "minExtent": 0.0,
-            "maxExtent": 160.0,
+            "maxExtent": 66.0,
             "inwardCurrentLimit": 500,
             "outwardCurrentLimit": 500
         },
@@ -13,7 +13,7 @@
             "name": "RightRearKnee",
             "id": 5,
             "minExtent": 0.0,
-            "maxExtent": 194.0,
+            "maxExtent": 125.0,
             "inwardCurrentLimit": 500,
             "outwardCurrentLimit": 500
         },
@@ -21,7 +21,7 @@
             "name": "RightRearAnkle",
             "id": 6,
             "minExtent": 0.0,
-            "maxExtent": 190.0,
+            "maxExtent": 139.0,
             "inwardCurrentLimit": 500,
             "outwardCurrentLimit": 500
         },
@@ -29,7 +29,7 @@
             "name": "RightMidHip",
             "id": 7,
             "minExtent": 0.0,
-            "maxExtent": 115.0,
+            "maxExtent": 80.0,
             "inwardCurrentLimit": 500,
             "outwardCurrentLimit": 500
         },
@@ -37,7 +37,7 @@
             "name": "RightMidKnee",
             "id": 8,
             "minExtent": 0.0,
-            "maxExtent": 194.0,
+            "maxExtent": 171.0,
             "inwardCurrentLimit": 500,
             "outwardCurrentLimit": 500
         },
@@ -45,7 +45,7 @@
             "name": "RightMidAnkle",
             "id": 9,
             "minExtent": 0.0,
-            "maxExtent": 190.0,
+            "maxExtent": 182.0,
             "inwardCurrentLimit": 500,
             "outwardCurrentLimit": 500
         },
@@ -53,7 +53,7 @@
             "name": "RightFrontHip",
             "id": 10,
             "minExtent": 0.0,
-            "maxExtent": 115.0,
+            "maxExtent": 112.0,
             "inwardCurrentLimit": 500,
             "outwardCurrentLimit": 500
         },
@@ -61,7 +61,7 @@
             "name": "RightFrontKnee",
             "id": 11,
             "minExtent": 0.0,
-            "maxExtent": 194.0,
+            "maxExtent": 53.0,
             "inwardCurrentLimit": 500,
             "outwardCurrentLimit": 500
         },
@@ -69,7 +69,7 @@
             "name": "RightFrontAnkle",
             "id": 12,
             "minExtent": 0.0,
-            "maxExtent": 190.0,
+            "maxExtent": 186.0,
             "inwardCurrentLimit": 500,
             "outwardCurrentLimit": 500
         }
