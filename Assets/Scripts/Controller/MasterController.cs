@@ -337,6 +337,7 @@ public class MasterController : MonoBehaviour, IMasterController
 	public void StartLoopTest()
 	{
 		m_looping = true;
+		StopAllCoroutines ();
 		StartCoroutine ("LoopTestCoroutine");
 	}
 
@@ -350,8 +351,8 @@ public class MasterController : MonoBehaviour, IMasterController
 	private IEnumerator LoopTestCoroutine()
 	{
 		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
-		//yield return new WaitUntil (AllActuatorsAtInnerLimit);
-		yield return new WaitForSeconds (5.0f);
+		//yield return new WaitUntil (AllActuatorsAtInnerLimit);	//Need to ensure switches set on already retracted actuators for this to work
+		yield return new WaitForSeconds(5.0f);
 
 		while (m_looping) 
 		{
@@ -361,4 +362,39 @@ public class MasterController : MonoBehaviour, IMasterController
 			yield return new WaitForSeconds (5.0f);
 		}
 	}
+
+	//
+	// External networking interface
+	//
+
+	public void SetUKIMode(int mode)
+	{
+		Debug.Log ("Mode set to: " + mode);
+
+		switch (mode) 
+		{
+		case 0:
+			ResetEmergencyStopForAll ();
+			break;
+		case 1:
+			Debug.LogWarning ("Boarding not yet implemented");
+			break;
+		case 2:
+			StartLoopTest ();
+			break;
+		case 3:
+			Stop ();
+			break;
+		default:
+			Debug.LogWarning ("Unhandled mode: " + mode);
+			break;
+		}
+	}
+
+	public void SetUKISpeed(float speed)
+	{
+		Debug.Log ("Speed change not yet implemented. Speed: " + speed);
+
+	}
+
 }
