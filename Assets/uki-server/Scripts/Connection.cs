@@ -1,7 +1,12 @@
 ﻿using UnityEngine.Networking;
 
 
-// this is the 'player' NetworkBehaviour which represents a connection from a client device
+// This is the player gameobject representing a connection from a client.
+// This class is instantiated on both the client and server.
+// [Command] methods execute code on the server-side instance only.
+// [ClientRpc] methods execute code on the client-side instance only.
+
+
 public class Connection : NetworkBehaviour
 {
 	[SyncVar]	// this field is synchronised back to remote client
@@ -20,8 +25,7 @@ public class Connection : NetworkBehaviour
 			ServerNetworkManager.Instance.RemoveConnection(this);
 	}
 
-	// commands are sent from client to server
-	// commands are executed only on the server-side instance of the client
+	// commands (client -> server) - code executed on server-side only
 	[Command]
 	private void CmdSetUKIMode(int mode)
 	{
@@ -35,9 +39,14 @@ public class Connection : NetworkBehaviour
 	}
 
 
+	// client rpcs (server -> client) - code executed on client-side only
+	[ClientRpc]
+	private void RpcRefreshStatus(UKIStatus status) { }
+
+
 	public void RefreshStatus(UKIStatus status)
 	{
-		// TODO
+		RpcRefreshStatus(status);
 
 		m_fromServer++;	// test
 	}
