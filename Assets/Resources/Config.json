@@ -72,6 +72,78 @@
             "maxExtent": 186.0,
             "inwardCurrentLimit": 500,
             "outwardCurrentLimit": 500
+        },
+        {
+            "name": "LeftRearHip",
+            "id": 13,
+            "minExtent": 0.0,
+            "maxExtent": 66.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
+        },
+        {
+            "name": "LeftRearKnee",
+            "id": 14,
+            "minExtent": 0.0,
+            "maxExtent": 125.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
+        },
+        {
+            "name": "LeftRearAnkle",
+            "id": 15,
+            "minExtent": 0.0,
+            "maxExtent": 139.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
+        },
+        {
+            "name": "LeftMidHip",
+            "id": 16,
+            "minExtent": 0.0,
+            "maxExtent": 80.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
+        },
+        {
+            "name": "LeftMidKnee",
+            "id": 17,
+            "minExtent": 0.0,
+            "maxExtent": 171.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
+        },
+        {
+            "name": "LeftMidAnkle",
+            "id": 18,
+            "minExtent": 0.0,
+            "maxExtent": 182.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
+        },
+        {
+            "name": "LeftFrontHip",
+            "id": 19,
+            "minExtent": 0.0,
+            "maxExtent": 112.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
+        },
+        {
+            "name": "LeftFrontKnee",
+            "id": 20,
+            "minExtent": 0.0,
+            "maxExtent": 53.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
+        },
+        {
+            "name": "LeftFrontAnkle",
+            "id": 21,
+            "minExtent": 0.0,
+            "maxExtent": 186.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
         }
     ]
 }
