@@ -21,6 +21,15 @@ namespace UKI
 			}
 			return false;
 		}
+
+		public int GetActuatorID(string _name)
+		{
+			ActuatorConfig dummy = new ActuatorConfig();
+			if (FindActuator (_name, ref dummy))
+				return dummy.id;
+
+			return -1;
+		}
 	}
 
 	[System.Serializable]
