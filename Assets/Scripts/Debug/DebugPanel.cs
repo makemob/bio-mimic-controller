@@ -67,7 +67,8 @@ public class DebugPanel : MonoBehaviour
 
 	private void SortElements()
 	{
-		SortChildrenByName(m_elementParent);
+		//SortChildrenByName(m_elementParent);
+		SortChildrenByID(m_elementParent);
 	}
 
 	static private void SortChildrenByName(Transform parent)
@@ -89,4 +90,37 @@ public class DebugPanel : MonoBehaviour
 			children[i].SetSiblingIndex(i);
 		}
 	}
+
+	static private void SortChildrenByID(Transform parent)
+	{
+		List<Transform> children = new List<Transform>(parent.childCount);
+
+		//Create list of transforms
+		for(int i=0; i< parent.childCount; i++)
+		{
+			children.Add(parent.GetChild(i));
+		}
+
+		//Sort transforms by name
+		children.Sort((a,b) => {
+			ActuatorDebugUI aActuator = a.gameObject.GetComponent<ActuatorDebugUI>();
+			ActuatorDebugUI bActuator = b.gameObject.GetComponent<ActuatorDebugUI>();
+			if (aActuator && bActuator)
+			{
+				return aActuator.m_actuator.GetID().CompareTo(bActuator.m_actuator.GetID());
+			}
+			else
+			{
+				return a.name.CompareTo(b.name);
+			}
+		});
+
+		//Re-add transforms with new indices
+		for(int i=0; i<parent.childCount; i++)
+		{
+			children[i].SetSiblingIndex(i);
+		}
+	}
+
+
 }

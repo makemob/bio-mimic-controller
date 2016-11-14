@@ -29,7 +29,7 @@ public class ActuatorDebugUI : DebugUIElement, IPointerEnterHandler, IPointerExi
 		if (m_actuator)
 		{
 			if (m_label)
-				m_label.text = m_actuator.m_config.name;
+				m_label.text = m_actuator.m_config.id.ToString();
 
 			if (m_simulationBar)
 			{

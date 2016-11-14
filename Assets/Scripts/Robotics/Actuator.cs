@@ -55,9 +55,9 @@ public class Actuator : Debuggable
 				return;	//Failed to register, prevent startup of this actuator
 		}
 
-		CreateDebugObject();
-
 		ApplyConfig ();
+
+		CreateDebugObject();
 
         if (m_movingPart)
 		{
