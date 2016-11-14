@@ -9,8 +9,8 @@
 
 public class Connection : NetworkBehaviour
 {
-	[SyncVar]	// this field is synchronised back to remote client
-	public int m_fromServer;
+	//[SyncVar]	// this field is synchronised back to remote client
+	//public int m_fromServer;
 
 
 	private void Start()
@@ -27,15 +27,27 @@ public class Connection : NetworkBehaviour
 
 	// commands (client -> server) - code executed on server-side only
 	[Command]
-	private void CmdSetUKIMode(int mode)
+	private void CmdSetUKILegMode(int mode)
 	{
-		ServerNetworkManager.Instance.SetUKIMode(this, mode);
+		ServerNetworkManager.Instance.SetUKILegMode(this, mode);
 	}
 
 	[Command]
-	private void CmdSetUKISpeed(float speed)
+	private void CmdSetUKILegSpeed(float speed)
 	{
-		ServerNetworkManager.Instance.SetUKISpeed(this, speed);
+		ServerNetworkManager.Instance.SetUKILegSpeed(this, speed);
+	}
+
+	[Command]
+	private void CmdSetUKIWingMode(int mode)
+	{
+		ServerNetworkManager.Instance.SetUKIWingMode(this, mode);
+	}
+
+	[Command]
+	private void CmdSetUKIWingSpeed(float speed)
+	{
+		ServerNetworkManager.Instance.SetUKIWingSpeed(this, speed);
 	}
 
 
@@ -48,7 +60,7 @@ public class Connection : NetworkBehaviour
 	{
 		RpcRefreshStatus(status);
 
-		m_fromServer++;	// test
+		//m_fromServer++;	// test
 	}
 }
 
