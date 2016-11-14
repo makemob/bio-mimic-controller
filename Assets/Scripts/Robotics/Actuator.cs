@@ -41,6 +41,7 @@ public class Actuator : Debuggable
 
 	ConfigurableJoint m_baseJoint;
 	float m_previousNormalisedPosition = 0.0f;
+	float m_desiredPosition = 0.0f;
 
 	static readonly float ARM_INITIAL_EXTENT = -0.038f;	//Arm extension when fully retracted.
 	static readonly float ARM_FULL_EXTENT = -0.328f;	//Arm extension when fully retracted.
@@ -98,6 +99,16 @@ public class Actuator : Debuggable
 		m_previousNormalisedPosition = m_currentNormalisedPosition;
 
 		GetExtensionMillimetres ();
+	}
+
+	public void SetDesiredPosition(float newPosition)
+	{
+		m_desiredPosition = newPosition;
+	}
+
+	public float GetNormalisedDesiredPosition()
+	{
+		return NormalisedExtension(m_desiredPosition);
 	}
 
 	public float GetNormalisedPosition() 
@@ -176,5 +187,11 @@ public class Actuator : Debuggable
 	public int GetExtensionMillimetres()
 	{
 		return (int)(-1000.0f * m_currentNormalisedPosition * (m_maxPosition - m_minPosition));
+	}
+
+	public float NormalisedExtension(float extensionInMillimetres)
+	{
+		float extensionInMetres = m_minPosition + (-extensionInMillimetres / 1000.0f);
+		return (extensionInMetres - m_minPosition)/(m_maxPosition - m_minPosition);
 	}
 }

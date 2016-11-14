@@ -37,8 +37,11 @@ public class ActuatorDebugUI : DebugUIElement, IPointerEnterHandler, IPointerExi
 				m_simulationBar.SetNormalisedValue(position);
 			}
 
-			if (m_sensorBar)
-				m_sensorBar.SetNormalisedValue(0.5f);
+			if (m_sensorBar) 
+			{
+				float position = m_actuator.GetNormalisedDesiredPosition ();
+				m_sensorBar.SetNormalisedValue (position);
+			}
 		}
 	}
 

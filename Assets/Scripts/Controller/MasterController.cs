@@ -297,6 +297,11 @@ public class MasterController : MonoBehaviour, IMasterController
 		*/
 	}
 
+//	private bool AllActuatorsStopped(int[] ids)
+//	{
+//		return m_roboticsControllers.GetActuatorState(id).m_atInnerLimit;
+//	}
+
 	private bool ActuatorAtInnerLimit(int id)
 	{
 		return m_roboticsControllers.GetActuatorState(id).m_atInnerLimit;
@@ -351,6 +356,28 @@ public class MasterController : MonoBehaviour, IMasterController
 		StopAllActuators ();
 	}
 
+	public void BoardingPose()
+	{
+		int hip = GetActuatorIDByName ("LeftFrontHip");
+		int knee = GetActuatorIDByName ("LeftFrontKnee");
+		int ankle = GetActuatorIDByName ("LeftFrontAnkle");
+
+		int[] actuators = { hip, knee, ankle };
+		float[] positions = { 100.0f, 0.0f, 100.0f };
+
+		MoveToPose (actuators, positions);
+	}
+
+	public void DrivingPose()
+	{
+		Debug.LogError ("Driving pose not implemented!");
+	}
+
+	public void TestPose()
+	{
+		Debug.LogError ("Test pose not implemented!");
+	}
+
 	private IEnumerator LoopTestCoroutine()
 	{
 		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
@@ -364,6 +391,49 @@ public class MasterController : MonoBehaviour, IMasterController
 			m_roboticsControllers.SetAllActuatorSpeeds (-1.0f);
 			yield return new WaitForSeconds (5.0f);
 		}
+	}
+
+	private int GetActuatorIDByName(string name)
+	{
+		return m_config.GetActuatorID(name);
+	}
+
+	private void MoveToPose(int [] actuatorIDs, float [] extensions)
+	{
+		StartCoroutine(MoveToPose_Coroutine(actuatorIDs, extensions));
+	}
+
+	private IEnumerator MoveToPose_Coroutine(int [] ids, float [] positions)
+	{
+		int completed = 0;
+		for(int i=0; i < ids.Length; i++)
+		{
+			StartCoroutine(MoveActuatorToPosition_Coroutine (ids[i], positions[i], () => { 
+				completed = completed + 1;
+				Debug.Log("Completed: " + completed);
+			}));
+		}
+
+		yield return new WaitUntil (() => { return completed == ids.Length; });
+		Debug.Log("All Completed: " + completed);
+	}
+
+	private IEnumerator MoveActuatorToPosition_Coroutine(int id, float desiredExtension, Action onFinished)
+	{
+		m_roboticsControllers.MoveActuatorTowardsPosition (id, desiredExtension);
+		yield return new WaitUntil (() => m_roboticsControllers.CloseEnoughToPosition (id, desiredExtension));
+		m_roboticsControllers.StopActuator (id);
+
+		onFinished ();
+	}
+
+	private bool CloseEnoughToDesiredPosition(int id, float desiredPosition)
+	{
+		const float tolerance = 10.0f;
+		float error = desiredPosition - m_roboticsControllers.GetActuatorState (id).m_predictedExtension;
+
+		//TODO: Take movement sign in to account for overshoot
+		return Mathf.Abs(error) < tolerance;
 	}
 
 	//
@@ -397,88 +467,5 @@ public class MasterController : MonoBehaviour, IMasterController
 	public void SetUKISpeed(float speed)
 	{
 		Debug.Log ("Speed change not yet implemented. Speed: " + speed);
-
 	}
-
-	private int GetActuatorIDByName(string name)
-	{
-		return m_config.GetActuatorID(name);
-	}
-
-	public void BoardingPose()
-	{
-		int hip = GetActuatorIDByName ("LeftFrontHip");
-		int knee = GetActuatorIDByName ("LeftFrontKnee");
-		int ankle = GetActuatorIDByName ("LeftFrontAnkle");
-
-		int[] actuators = { hip, knee, ankle };
-		float[] positions = { 100.0f, 0.0f, 100.0f };
-	
-		MoveToPose (actuators, positions);
-	}
-
-	public void MoveToPose(int [] actuatorIDs, float [] extensions)
-	{
-		StartCoroutine(MoveToPose_Coroutine(actuatorIDs, extensions));
-	}
-
-	private IEnumerator MoveToPose_Coroutine(int [] ids, float [] positions)
-	{
-		int completed = 0;
-		for(int i=0; i < ids.Length; i++)
-		{
-			StartCoroutine(MoveActuatorToPosition_Coroutine (ids[i], positions[i], () => { 
-				completed = completed + 1;
-				Debug.Log("Completed: " + completed);
-			}));
-		}
-
-		yield return new WaitUntil (() => { return completed == ids.Length; });
-		Debug.Log("All Completed: " + completed);
-	}
-
-	private IEnumerator MoveActuatorToPosition_Coroutine(int id, float desiredExtension, Action onFinished)
-	{
-		ActuatorState s = m_roboticsControllers.GetActuatorState (id);
-		bool closeEnough = CloseEnoughToDesiredPosition (id, desiredExtension);
-
-		if (!closeEnough)
-		{
-			float positionError = desiredExtension - s.m_predictedExtension;
-			m_roboticsControllers.SetActuatorSpeed (id, Mathf.Sign (positionError) * 1.0f);
-			yield return new WaitUntil (() => CloseEnoughToDesiredPosition (id, desiredExtension));
-			m_roboticsControllers.StopActuator (id);
-		}
-
-		onFinished ();
-	}
-
-	public bool CloseEnoughToDesiredPosition(int id, float desiredPosition)
-	{
-		const float tolerance = 10.0f;
-		float error = desiredPosition - m_roboticsControllers.GetActuatorState (id).m_predictedExtension;
-
-		//TODO: Take movement sign in to account for overshoot
-		return Mathf.Abs(error) < tolerance;
-	}
-
-	public bool AllCoroutinesFinished(List<Coroutine> coroutines)
-	{
-		foreach (var v in coroutines) {
-			if (v != null)
-				return false;
-		}
-		return true;
-	}
-
-	public void DrivingPose()
-	{
-		Debug.LogError ("Driving pose not implemented!");
-	}
-
-	public void TestPose()
-	{
-		Debug.LogError ("Test pose not implemented!");
-	}
-
 }

@@ -56,6 +56,28 @@ public class ModbusRoboticsController : RoboticsController
 		return true;
 	}
 
+	public override void MoveActuatorTowardsPosition (int actuatorID, float position)
+	{
+		m_actuators [actuatorID].SetDesiredPosition (position);
+		bool closeEnough = CloseEnoughToPosition (actuatorID, position);
+
+		if (!closeEnough) 
+		{
+			float positionError = position - m_actuators[actuatorID].m_state.m_predictedExtension;
+			SetActuatorSpeed (actuatorID, Mathf.Sign (positionError) * 1.0f);
+		}
+	}
+
+	public override bool CloseEnoughToPosition (int actuatorID, float position)
+	{
+		const float tolerance = 10.0f;
+		float error = position - m_actuators[actuatorID].m_state.m_predictedExtension;
+
+		//TODO: Take movement sign in to account for overshoot
+		return Mathf.Abs(error) < tolerance;
+
+	}
+
 	public override void SetActuatorSpeed(int actuatorID, float normalisedSpeed)
 	{
 		//Check inner current trip limit 
@@ -252,4 +274,5 @@ public class ModbusRoboticsController : RoboticsController
 			m_actuators[actuatorID].m_state.ClearTripsAndLimits();	//Clear here just so state is immediately correct and we don't have to wait for a state read
 		}
 	}
+
 }

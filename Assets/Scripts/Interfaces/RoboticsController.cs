@@ -12,6 +12,10 @@ namespace UKI
 
 		public abstract bool RegisterActuator(Actuator actuator);
 
+		public abstract void MoveActuatorTowardsPosition (int actuatorID, float position);
+
+		public abstract bool CloseEnoughToPosition (int actuatorID, float position);
+
 		public abstract void SetActuatorSpeed (int actuatorID, float speed);
 
 		public abstract void SetActuatorCallibration (int actuatorID, CallibrationResults results);
