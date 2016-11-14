@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UKI;
 
@@ -403,16 +405,71 @@ public class MasterController : MonoBehaviour, IMasterController
 		return m_config.GetActuatorID(name);
 	}
 
-//	public void MoveToPose(int [] actuatorIDs, float [] extensions)
-//	{
-//		StartCoroutine(MoveToPose_Coroutine(actuatorIDs, extensions);
-//	}
-//
-//	private IEnumerator MoveToPose_Coroutine(int [] actuatorIDs, float [] extensions)
-//	{
-//
-//
-//	}
+	public void BoardingPose()
+	{
+		int hip = GetActuatorIDByName ("LeftFrontHip");
+		int knee = GetActuatorIDByName ("LeftFrontKnee");
+		int ankle = GetActuatorIDByName ("LeftFrontAnkle");
+
+		int[] actuators = { hip, knee, ankle };
+		float[] positions = { 100.0f, 0.0f, 100.0f };
+	
+		MoveToPose (actuators, positions);
+	}
+
+	public void MoveToPose(int [] actuatorIDs, float [] extensions)
+	{
+		StartCoroutine(MoveToPose_Coroutine(actuatorIDs, extensions));
+	}
+
+	private IEnumerator MoveToPose_Coroutine(int [] ids, float [] positions)
+	{
+		int completed = 0;
+		for(int i=0; i < ids.Length; i++)
+		{
+			StartCoroutine(MoveActuatorToPosition_Coroutine (ids[i], positions[i], () => { 
+				completed = completed + 1;
+				Debug.Log("Completed: " + completed);
+			}));
+		}
+
+		yield return new WaitUntil (() => { return completed == ids.Length; });
+		Debug.Log("All Completed: " + completed);
+	}
+
+	private IEnumerator MoveActuatorToPosition_Coroutine(int id, float desiredExtension, Action onFinished)
+	{
+		ActuatorState s = m_roboticsControllers.GetActuatorState (id);
+		bool closeEnough = CloseEnoughToDesiredPosition (id, desiredExtension);
+
+		if (!closeEnough)
+		{
+			float positionError = desiredExtension - s.m_predictedExtension;
+			m_roboticsControllers.SetActuatorSpeed (id, Mathf.Sign (positionError) * 1.0f);
+			yield return new WaitUntil (() => CloseEnoughToDesiredPosition (id, desiredExtension));
+			m_roboticsControllers.StopActuator (id);
+		}
+
+		onFinished ();
+	}
+
+	public bool CloseEnoughToDesiredPosition(int id, float desiredPosition)
+	{
+		const float tolerance = 10.0f;
+		float error = desiredPosition - m_roboticsControllers.GetActuatorState (id).m_predictedExtension;
+
+		//TODO: Take movement sign in to account for overshoot
+		return Mathf.Abs(error) < tolerance;
+	}
+
+	public bool AllCoroutinesFinished(List<Coroutine> coroutines)
+	{
+		foreach (var v in coroutines) {
+			if (v != null)
+				return false;
+		}
+		return true;
+	}
 
 	public void DrivingPose()
 	{
@@ -424,69 +481,4 @@ public class MasterController : MonoBehaviour, IMasterController
 		Debug.LogError ("Test pose not implemented!");
 	}
 
-	public void BoardingPose()
-	{
-		StartCoroutine (BoardingPose_Coroutine ());
-	}
-
-	//Quick hacked in boarding pose. TODO: Generalise!
-	private IEnumerator BoardingPose_Coroutine()
-	{
-		int hip = GetActuatorIDByName ("LeftFrontHip");
-		int knee = GetActuatorIDByName ("LeftFrontKnee");
-		int ankle = GetActuatorIDByName ("LeftFrontAnkle");
-		if (hip != -1 &&
-		    knee != -1 &&
-		    ankle != -1) 
-		{
-			m_roboticsControllers.SetActuatorSpeed (hip, 1.0f);
-			m_roboticsControllers.SetActuatorSpeed (knee, -1.0f);
-			m_roboticsControllers.SetActuatorSpeed (ankle, 1.0f);
-
-			Debug.Log ("Starting Boarding pose...");
-
-			bool hipMoving = true;
-			bool kneeMoving = true;
-			bool ankleMoving = true;
-
-			while (hipMoving || kneeMoving || ankleMoving) 
-			{
-				ActuatorState hipState = m_roboticsControllers.GetActuatorState (hip);
-				ActuatorState kneeState = m_roboticsControllers.GetActuatorState (knee);
-				ActuatorState ankleState = m_roboticsControllers.GetActuatorState (ankle);
-
-				float hipExtension = hipState.m_predictedExtension;
-				float kneeExtension = kneeState.m_predictedExtension;
-				float ankleExtension = ankleState.m_predictedExtension;
-
-				//TODO: Test for current trip or other stoppage
-
-				if (hipMoving && hipExtension > 100.0f) {
-					StopActuator (hip);
-					hipMoving = false;
-				}
-
-				if (kneeMoving = kneeExtension < 10.0f) {
-					StopActuator (knee);
-					kneeMoving = false;
-				}
-
-				if (ankleMoving && ankleExtension > 100.0f) {
-					StopActuator (ankle);
-					ankleMoving = false;
-				}
-
-				yield return null;
-
-			}
-
-			Debug.Log ("Boarding pose complete!");
-
-		} 
-		else 
-		{
-			Debug.LogError ("Could not locate actuators for boarding pose!");
-		}
-
-	}
 }
