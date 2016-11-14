@@ -144,6 +144,38 @@
             "maxExtent": 186.0,
             "inwardCurrentLimit": 500,
             "outwardCurrentLimit": 500
+        },
+        {
+            "name": "RightWingRotor",
+            "id": 22,
+            "minExtent": 0.0,
+            "maxExtent": 100.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
+        },
+		{
+            "name": "RightWingExtension",
+            "id": 23,
+            "minExtent": 0.0,
+            "maxExtent": 100.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
+        },
+		{
+            "name": "LeftWingRotor",
+            "id": 24,
+            "minExtent": 0.0,
+            "maxExtent": 100.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
+        },
+		{
+            "name": "LeftWingExtension",
+            "id": 25,
+            "minExtent": 0.0,
+            "maxExtent": 100.0,
+            "inwardCurrentLimit": 500,
+            "outwardCurrentLimit": 500
         }
     ]
 }
