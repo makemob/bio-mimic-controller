@@ -146,7 +146,7 @@
             "outwardCurrentLimit": 500
         },
         {
-            "name": "RightWingRotor",
+            "name": "RightWingRotate",
             "id": 22,
             "minExtent": 0.0,
             "maxExtent": 100.0,
@@ -154,7 +154,7 @@
             "outwardCurrentLimit": 500
         },
 		{
-            "name": "RightWingExtension",
+            "name": "RightWingRaise",
             "id": 23,
             "minExtent": 0.0,
             "maxExtent": 100.0,
@@ -162,7 +162,7 @@
             "outwardCurrentLimit": 500
         },
 		{
-            "name": "LeftWingRotor",
+            "name": "LeftWingRotate",
             "id": 24,
             "minExtent": 0.0,
             "maxExtent": 100.0,
@@ -170,7 +170,7 @@
             "outwardCurrentLimit": 500
         },
 		{
-            "name": "LeftWingExtension",
+            "name": "LeftWingRaise",
             "id": 25,
             "minExtent": 0.0,
             "maxExtent": 100.0,
