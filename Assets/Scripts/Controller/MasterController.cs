@@ -378,6 +378,46 @@ public class MasterController : MonoBehaviour, IMasterController
 		Debug.LogError ("Test pose not implemented!");
 	}
 
+	public void WingsPose1()
+	{
+		int leftWingRotate = GetActuatorIDByName ("LeftWingRotate");
+		int leftWingRaise = GetActuatorIDByName ("LeftWingRaise");
+		int rightWingRotate = GetActuatorIDByName ("RightWingRotate");
+		int rightWingRaise = GetActuatorIDByName ("RightWingRaise");
+
+		int[] actuators = { leftWingRotate, leftWingRaise, rightWingRotate, rightWingRaise };
+		float[] positions = { 100.0f, 100.0f, 100.0f, 100.0f };
+
+		MoveToPose (actuators, positions);
+	}
+
+	public void WingsPose2()
+	{
+		int leftWingRotate = GetActuatorIDByName ("LeftWingRotate");
+		int leftWingRaise = GetActuatorIDByName ("LeftWingRaise");
+		int rightWingRotate = GetActuatorIDByName ("RightWingRotate");
+		int rightWingRaise = GetActuatorIDByName ("RightWingRaise");
+
+		int[] actuators = { leftWingRotate, leftWingRaise, rightWingRotate, rightWingRaise };
+		float[] positions = { 0.0f, 100.0f, 0.0f, 100.0f };
+
+		MoveToPose (actuators, positions);
+	}
+
+	public void WingsPose3()
+	{
+		int leftWingRotate = GetActuatorIDByName ("LeftWingRotate");
+		int leftWingRaise = GetActuatorIDByName ("LeftWingRaise");
+		int rightWingRotate = GetActuatorIDByName ("RightWingRotate");
+		int rightWingRaise = GetActuatorIDByName ("RightWingRaise");
+
+		int[] actuators = { leftWingRotate, leftWingRaise, rightWingRotate, rightWingRaise };
+		float[] positions = { 100.0f, 0.0f, 100.0f, 0.0f };
+
+		MoveToPose (actuators, positions);
+	}
+
+
 	private IEnumerator LoopTestCoroutine()
 	{
 		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
