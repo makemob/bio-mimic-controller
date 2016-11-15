@@ -370,9 +370,11 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void DrivingPose()
 	{
-		//Debug.LogError ("Driving pose not implemented!");
-		Stop();
-		AllDown ();
+		Debug.LogError ("Driving pose not implemented!");
+		//Stop();
+		//AllDown ();
+		//StopCoroutine();
+
 	}
 
 	public void TestPose()
