@@ -11,14 +11,10 @@ public class CommandQueueThreaded : MonoBehaviour
 	private System.DateTime m_startTime;
 	private volatile bool m_running;
 
-	void Awake()
+	void OnEnable()
 	{
 		m_queue = new Queue<ICommand>();
 		m_lock = new Object();
-	}
-
-	void OnEnable()
-	{
 		m_commandThread = new Thread(ProcessCommands);
 		Run ();
 	}

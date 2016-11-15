@@ -24,7 +24,9 @@ public class ModbusComms : SerialComms
 
 	private ModbusSerialMaster m_modbusMaster;
 	private CommandQueue m_commandQueue;
+	//private CommandQueueThreaded m_commandQueue;
 	private DateTime m_startTime;
+	private bool m_running = false;
 
 	//
 	// Startup the modbus connection and commence the command queue, enforcing gaps between all networking calls
@@ -48,10 +50,14 @@ public class ModbusComms : SerialComms
 
 		if (!m_commandQueue)
 			m_commandQueue = gameObject.AddComponent<CommandQueue> ();
-
+		//if (!m_commandQueue)
+		//	m_commandQueue = gameObject.AddComponent<CommandQueueThreaded> ();
+		
 		Debug.Log("Minimum interval is " + GetMinimumInterval(m_baudRate));
 
 		Debug.Log ("ModbusComms ready");
+
+		m_running = true;
 	}
 
 	//
@@ -73,6 +79,8 @@ public class ModbusComms : SerialComms
 		{
 			Debug.LogError (e);
 		}
+
+		m_running = false;
 	}
 
 	public void WriteSingleRegister(byte slaveID, ushort register, ushort data)
@@ -156,6 +164,9 @@ public class ModbusComms : SerialComms
 
 	void Update()
 	{
+		if (!m_running)
+			return;
+		
 		if (m_readTimeout != m_modbusMaster.Transport.ReadTimeout)
 			m_modbusMaster.Transport.ReadTimeout = m_readTimeout;
 		
