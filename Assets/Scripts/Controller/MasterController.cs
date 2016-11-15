@@ -196,14 +196,14 @@ public class MasterController : MonoBehaviour, IMasterController
 		m_roboticsControllers.StopAllActuators();
 	}
 
-	public void AllUp()
+	public void LegsOut()
 	{
-		m_roboticsControllers.SetAllActuatorSpeeds(1.0f);
+		m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, 1.0f);
 	}
 
-	public void AllDown()
+	public void LegsIn()
 	{
-		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
+		m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, -1.0f);
 	}
 
 	public void Wave()
