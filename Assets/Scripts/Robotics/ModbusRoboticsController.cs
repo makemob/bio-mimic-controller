@@ -70,11 +70,14 @@ public class ModbusRoboticsController : RoboticsController
 
 	public override bool CloseEnoughToPosition (int actuatorID, float position)
 	{
-		const float tolerance = 10.0f;
+		const float tolerance = 5.0f;
 		float error = position - m_actuators[actuatorID].m_state.m_predictedExtension;
 
+		if (Mathf.Abs (error) < tolerance)
+			return true;
+		
 		//TODO: Take movement sign in to account for overshoot
-		return Mathf.Abs(error) < tolerance;
+		return false;
 
 	}
 
