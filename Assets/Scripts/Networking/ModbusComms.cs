@@ -87,7 +87,7 @@ public class ModbusComms : SerialComms
 	{
 		QueueInternalCommand (() => {
 
-			Debug.Log(GetClock() + " ModbusSingleRegister. SlaveID: " + slaveID + " Register: " + register + " Data:" + data);
+			//Debug.Log(GetClock() + " ModbusSingleRegister. SlaveID: " + slaveID + " Register: " + register + " Data:" + data);
 
 			try 
 			{

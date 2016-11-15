@@ -80,7 +80,7 @@ public class ServerNetworkManager : MonoBehaviour
 		RefreshAllClients();
 
 		//OnUKISetMode.Invoke(mode);
-		MasterController.Instance.SetUKIMode(mode);
+		MasterController.Instance.SetUKILegMode(mode);
 	}
 
 	public void SetUKILegSpeed(Connection connection, float speed)
@@ -100,6 +100,14 @@ public class ServerNetworkManager : MonoBehaviour
 		m_status.wingMode = mode;
 		m_status.netId = connection.netId.Value;
 		RefreshAllClients();
+
+		MasterController.Instance.SetUKIWingMode(mode);
+		//0 = stop
+		//1 = rotate + 
+		//2 = rotate -
+		//3 tilt +
+		//4 tilt -
+
 	}
 
 	public void SetUKIWingSpeed(Connection connection, float speed)

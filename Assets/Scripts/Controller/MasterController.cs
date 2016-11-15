@@ -478,22 +478,82 @@ public class MasterController : MonoBehaviour, IMasterController
 		return Mathf.Abs(error) < tolerance;
 	}
 
+	public void RotateWings(float direction)
+	{
+		int leftWingRotate = GetActuatorIDByName ("LeftWingRotate");
+		int rightWingRotate = GetActuatorIDByName ("RightWingRotate");
+		m_roboticsControllers.SetActuatorSpeed (leftWingRotate, direction);
+		m_roboticsControllers.SetActuatorSpeed (rightWingRotate, direction);
+
+	}
+
+	public void RaiseWings(float direction)
+	{
+		int leftWingRaise = GetActuatorIDByName ("LeftWingRaise");
+		int rightWingRaise = GetActuatorIDByName ("RightWingRaise");
+		m_roboticsControllers.SetActuatorSpeed (leftWingRaise, direction);
+		m_roboticsControllers.SetActuatorSpeed (rightWingRaise, direction);
+
+	}
+
+	public void StopWings()
+	{
+		int leftWingRotate = GetActuatorIDByName ("LeftWingRotate");
+		int rightWingRotate = GetActuatorIDByName ("RightWingRotate");
+		int leftWingRaise = GetActuatorIDByName ("LeftWingRaise");
+		int rightWingRaise = GetActuatorIDByName ("RightWingRaise");
+
+		m_roboticsControllers.StopActuator (leftWingRotate);
+		m_roboticsControllers.StopActuator (rightWingRotate);
+		m_roboticsControllers.StopActuator (leftWingRaise);
+		m_roboticsControllers.StopActuator (rightWingRaise);
+
+	}
+
 	//
 	// External networking interface
 	//
 
-	public void SetUKIMode(int mode)
+	public void SetUKIWingMode(int mode)
 	{
-		Debug.Log ("Mode set to: " + mode);
+		Debug.Log ("Wing mode set to: " + mode);
 		Stop ();
 
 		switch (mode) 
 		{
 		case 0:
-			ResetEmergencyStopForAll ();
+			StopWings ();
 			break;
 		case 1:
-			Debug.LogWarning ("Boarding not yet implemented");
+			RotateWings (1.0f);
+			break;
+		case 2:
+			RotateWings (-1.0f);
+			break;
+		case 3:
+			RaiseWings (1.0f);
+			break;
+		case 4:
+			RaiseWings (-1.0f);
+			break;
+		default:
+			Debug.LogWarning ("Unhandled mode: " + mode);
+			break;
+		}
+	}
+
+	public void SetUKILegMode(int mode)
+	{
+		Debug.Log ("Leg mode set to: " + mode);
+		Stop ();
+
+		switch (mode) 
+		{
+		case 0:
+			DrivingPose ();
+			break;
+		case 1:
+			BoardingPose ();
 			break;
 		case 2:
 			StartLoopTest ();
