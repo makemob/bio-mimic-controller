@@ -159,7 +159,7 @@
             "minExtent": 0.0,
             "maxExtent": 100.0,
             "inwardCurrentLimit": 800,
-            "outwardCurrentLimit": 1500
+            "outwardCurrentLimit": 2500
         },
 		{
             "name": "LeftWingRotate",
