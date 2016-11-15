@@ -5,8 +5,47 @@ using System.Collections.Generic;
 using System.IO;
 using UKI;
 
+
+
+
+
+
+
 public class MasterController : MonoBehaviour, IMasterController
 {
+	static readonly string LEFT_FRONT_HIP = "LeftFrontHip";
+	static readonly string LEFT_FRONT_KNEE = "LeftFrontKnee";
+	static readonly string LEFT_FRONT_ANKLE = "LeftFrontAnkle";
+
+	static readonly string LEFT_MID_HIP = "LeftMidHip";
+	static readonly string LEFT_MID_KNEE = "LeftMidKnee";
+	static readonly string LEFT_MID_ANKLE = "LeftMidAnkle";
+
+	static readonly string LEFT_REAR_HIP = "LeftRearHip";
+	static readonly string LEFT_REAR_KNEE = "LeftRearKnee";
+	static readonly string LEFT_REAR_ANKLE = "LeftRearAnkle";
+
+	static readonly string RIGHT_FRONT_HIP = "RightFrontHip";
+	static readonly string RIGHT_FRONT_KNEE = "RightFrontKnee";
+	static readonly string RIGHT_FRONT_ANKLE = "RightFrontAnkle";
+
+	static readonly string RIGHT_MID_HIP = "RightMidHip";
+	static readonly string RIGHT_MID_KNEE = "RightMidKnee";
+	static readonly string RIGHT_MID_ANKLE = "RightMidAnkle";
+
+	static readonly string RIGHT_REAR_HIP = "RightRearHip";
+	static readonly string RIGHT_REAR_KNEE = "RightRearKnee";
+	static readonly string RIGHT_REAR_ANKLE = "RightRearAnkle";
+
+	static readonly string LEFT_WING_ROTATE = "LeftWingRotate";
+	static readonly string LEFT_WING_RAISE = "LeftWingRaise";
+	static readonly string RIGHT_WING_ROTATE = "RightWingRotate";
+	static readonly string RIGHT_WING_RAISE = "RightWingRaise";
+
+
+
+
+
 
 	public string m_configFile = "Config";
 	public UKI.Config m_config;
@@ -16,14 +55,58 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public static MasterController Instance;
 
+	private List<int> ALL_LEGS;
+	private List<int> ALL_WINGS;
+
 	//
 	// Unity interface
 	//
 
 	void Awake() 
 	{ 
-		Instance = this; 
+		Instance = this;
+
 		LoadConfig();
+
+		List<string> legs = new List<string> ();
+		legs.Add(LEFT_FRONT_HIP);
+		legs.Add(LEFT_FRONT_KNEE);
+		legs.Add(LEFT_FRONT_ANKLE);
+
+		legs.Add(LEFT_MID_HIP);
+		legs.Add(LEFT_MID_KNEE);
+		legs.Add(LEFT_MID_ANKLE);
+
+		legs.Add(LEFT_REAR_HIP);
+		legs.Add(LEFT_REAR_KNEE);
+		legs.Add(LEFT_REAR_ANKLE);
+
+		legs.Add(RIGHT_FRONT_HIP);
+		legs.Add(RIGHT_FRONT_KNEE);
+		legs.Add(RIGHT_FRONT_ANKLE);
+
+		legs.Add(RIGHT_MID_HIP);
+		legs.Add(RIGHT_MID_KNEE);
+		legs.Add(RIGHT_MID_ANKLE);
+
+		legs.Add(RIGHT_REAR_HIP);
+		legs.Add(RIGHT_REAR_KNEE);
+		legs.Add(RIGHT_REAR_ANKLE);
+
+		List<string> wings = new List<string> ();
+		wings.Add (LEFT_WING_ROTATE);
+		wings.Add (LEFT_WING_RAISE);
+		wings.Add (RIGHT_WING_ROTATE);
+		wings.Add (RIGHT_WING_RAISE);
+
+		ALL_LEGS = new List<int> (legs.Count);
+		GetActuatorIDsByName (legs, ref ALL_LEGS);
+
+		ALL_WINGS = new List<int> (wings.Count);
+		GetActuatorIDsByName (wings, ref ALL_WINGS);
+
+
+
 	}
 
 	void Start() 
@@ -370,11 +453,15 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void DrivingPose()
 	{
-		Debug.LogError ("Driving pose not implemented!");
-		//Stop();
-		//AllDown ();
-		//StopCoroutine();
+		//Debug.LogError ("Driving pose not implemented!");
+		StopLegs();
 
+		int size = ALL_LEGS.Count;
+		List<float> positions = new List<float>(size);
+		for(int i=0; i < size; i++)
+			positions.Add(0.0f);
+		
+		StartCoroutine (MoveToPose_Coroutine (ALL_LEGS.ToArray(), positions.ToArray()));
 	}
 
 	public void TestPose()
@@ -430,9 +517,9 @@ public class MasterController : MonoBehaviour, IMasterController
 
 		while (m_looping) 
 		{
-			m_roboticsControllers.SetAllActuatorSpeeds (1.0f);
+			m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, 1.0f);
 			yield return new WaitForSeconds (5.0f);
-			m_roboticsControllers.SetAllActuatorSpeeds (-1.0f);
+			m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, -1.0f);
 			yield return new WaitForSeconds (5.0f);
 		}
 	}
@@ -440,6 +527,14 @@ public class MasterController : MonoBehaviour, IMasterController
 	private int GetActuatorIDByName(string name)
 	{
 		return m_config.GetActuatorID(name);
+	}
+
+	private void GetActuatorIDsByName(List<string> names, ref List<int> ids)
+	{
+		foreach(var name in names)
+		{
+			ids.Add (m_config.GetActuatorID (name));
+		}
 	}
 
 	private void MoveToPose(int [] actuatorIDs, float [] extensions)
@@ -476,8 +571,11 @@ public class MasterController : MonoBehaviour, IMasterController
 		const float tolerance = 10.0f;
 		float error = desiredPosition - m_roboticsControllers.GetActuatorState (id).m_predictedExtension;
 
+		if (Mathf.Abs (error) < tolerance)
+			return true;
+		
 		//TODO: Take movement sign in to account for overshoot
-		return Mathf.Abs(error) < tolerance;
+		return false;
 	}
 
 	public void RotateWings(float direction)
@@ -500,16 +598,21 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void StopWings()
 	{
-		int leftWingRotate = GetActuatorIDByName ("LeftWingRotate");
-		int rightWingRotate = GetActuatorIDByName ("RightWingRotate");
-		int leftWingRaise = GetActuatorIDByName ("LeftWingRaise");
-		int rightWingRaise = GetActuatorIDByName ("RightWingRaise");
+		foreach (int id in ALL_WINGS) 
+		{
+			m_roboticsControllers.StopActuator (id);
+		}
+	}
 
-		m_roboticsControllers.StopActuator (leftWingRotate);
-		m_roboticsControllers.StopActuator (rightWingRotate);
-		m_roboticsControllers.StopActuator (leftWingRaise);
-		m_roboticsControllers.StopActuator (rightWingRaise);
+	public void StopLegs()
+	{
+		StopCoroutine ("LoopTestCoroutine");
+		StopCoroutine ("MoveToPose_Coroutine");
 
+		foreach (int id in ALL_LEGS) 
+		{
+			m_roboticsControllers.StopActuator (id);
+		}
 	}
 
 	//
@@ -561,7 +664,7 @@ public class MasterController : MonoBehaviour, IMasterController
 			StartLoopTest ();
 			break;
 		case 3:
-			Stop ();
+			StopLegs ();
 			break;
 		default:
 			Debug.LogWarning ("Unhandled mode: " + mode);

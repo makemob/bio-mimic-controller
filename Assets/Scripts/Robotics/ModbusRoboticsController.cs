@@ -116,6 +116,13 @@ public class ModbusRoboticsController : RoboticsController
 			SetActuatorSpeed (a.GetID(), normalisedSpeed);
 	}
 
+	public override void SetActuatorSpeeds (List<int> ids, float normalisedSpeed)
+	{
+		foreach(int id in ids)
+			SetActuatorSpeed (id, normalisedSpeed);
+	}
+
+
 	public override void StopActuator(int actuatorID)
 	{
 		m_actuators[actuatorID].SetActuatorSpeed(0.0f);
