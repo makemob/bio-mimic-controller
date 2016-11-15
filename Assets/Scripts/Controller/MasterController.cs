@@ -370,7 +370,9 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void DrivingPose()
 	{
-		Debug.LogError ("Driving pose not implemented!");
+		//Debug.LogError ("Driving pose not implemented!");
+		Stop();
+		AllDown ();
 	}
 
 	public void TestPose()
@@ -483,6 +485,7 @@ public class MasterController : MonoBehaviour, IMasterController
 	public void SetUKIMode(int mode)
 	{
 		Debug.Log ("Mode set to: " + mode);
+		Stop ();
 
 		switch (mode) 
 		{
