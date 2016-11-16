@@ -183,12 +183,14 @@ public class MasterController : MonoBehaviour, IMasterController
 
 		bool registrationSuccess = m_roboticsControllers.RegisterActuator (a);
 
-		if (a.GetID () == GetActuatorIDByName (LEFT_WING_RAISE) ||
-		    a.GetID () == GetActuatorIDByName (LEFT_WING_ROTATE) ||
-		    a.GetID () == GetActuatorIDByName (RIGHT_WING_RAISE) ||
-			a.GetID () == GetActuatorIDByName (RIGHT_WING_ROTATE)) 
+		if (registrationSuccess) 
 		{
-			m_roboticsControllers.SetActuatorAcceleration (a.GetID (), 0.8f);
+			if (a.GetID () == GetActuatorIDByName (LEFT_WING_RAISE) ||
+			   a.GetID () == GetActuatorIDByName (LEFT_WING_ROTATE) ||
+			   a.GetID () == GetActuatorIDByName (RIGHT_WING_RAISE) ||
+			   a.GetID () == GetActuatorIDByName (RIGHT_WING_ROTATE)) {
+				m_roboticsControllers.SetActuatorAcceleration (a.GetID (), 0.8f);
+			}
 		}
 
 		return registrationSuccess;
