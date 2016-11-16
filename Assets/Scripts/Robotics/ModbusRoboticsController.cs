@@ -191,30 +191,21 @@ public class ModbusRoboticsController : RoboticsController
 			s.m_outerCurrentTrips = data [6];
 			s.m_voltageTrips = data [7];
 
-			s.m_atInnerLimit = data [14] > 0;
-			s.m_atOuterLimit = data [15] > 0;
+			//s.m_atInnerLimit = data [14] > 0;	//This doesn't work. Can we rely on count remaining the same and so simply test if this number has gone up by one?
+			//s.m_atOuterLimit = data [15] > 0;
 			s.m_heartBeat = data [16];
-
-			//MB_VOLTAGE_TRIPS = 207,
-			//MB_ESTOP = 208, d
-			//MB_RESET_ESTOP = 209,
-			//MB_MOTOR_PWM_FREQ_MSW =	210,
-			//MB_MOTOR_PWM_FREQ_LSW =	211,
-			//MB_MOTOR_PWM_DUTY_MSW =	212,
-			//MB_MOTOR_PWM_DUTY_LSW =	213,
-			//MB_INWARD_ENDSTOP_COUNT = 214,
-			//MB_OUTWARD_ENDSTOP_COUNT = 215,
 
 			s.m_innerCurrentTrips = data[0];
 			s.m_outerCurrentTrips = data[1];
 		}
 
-//		ushort[] extentSwitches;
-//		if (ReadRegisters (actuatorID, ModbusRegister.MB_INWARD_ENDSTOP_STATE, 2, out extentSwitches)) 			
-//		{
-//			s.m_atInnerLimit = extentSwitches[0] > 0;
-//			s.m_atOuterLimit = extentSwitches[1] > 0;
-//		}
+		//Add second read back in for now, for reliable microswitch test
+		ushort[] extentSwitches;
+		if (ReadRegisters (actuatorID, ModbusRegister.MB_INWARD_ENDSTOP_STATE, 2, out extentSwitches)) 			
+		{
+			s.m_atInnerLimit = extentSwitches[0] > 0;
+			s.m_atOuterLimit = extentSwitches[1] > 0;
+		}
 
 //		ushort[] currentLimits;
 //		if (ReadRegisters (actuatorID, ModbusRegister.MB_CURRENT_LIMIT_INWARD, 2, out currentLimits)) 			
