@@ -466,6 +466,8 @@ public class MasterController : MonoBehaviour, IMasterController
 	{
 		ResetEmergencyStopForAll ();
 
+		StopLegs ();
+
 		int hip = GetActuatorIDByName ("LeftFrontHip");
 		int knee = GetActuatorIDByName ("LeftFrontKnee");
 		int ankle = GetActuatorIDByName ("LeftFrontAnkle");
