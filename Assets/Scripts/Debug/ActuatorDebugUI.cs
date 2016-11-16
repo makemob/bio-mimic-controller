@@ -11,14 +11,27 @@ public class ActuatorDebugUI : DebugUIElement, IPointerEnterHandler, IPointerExi
 	public GraphElement m_sensorBar;
 	public Text m_state;
 
+	private Color m_canvasColor;
+	private bool m_highighlighted;
+
 	public void OnPointerEnter(PointerEventData e)
 	{
-		GetComponent<Image> ().color = new Color32 (255, 128, 128, 128);
+		m_canvasColor = new Color32 (128, 128, 255, 128);
+		m_highighlighted = true;
+		//GetComponent<Image> ().color = new Color32 (255, 128, 128, 128);
+	}
+
+	public void OnPointerStay(PointerEventData e)
+	{
+		OnPointerEnter (e);
 	}
 
 	public void OnPointerExit(PointerEventData e)
 	{
-		GetComponent<Image> ().color = new Color32 (255, 255, 255, 128);
+		m_highighlighted = false;
+		m_canvasColor = new Color32 (255, 255, 255, 128);
+
+		//GetComponent<Image> ().color = new Color32 (255, 255, 255, 128);
 	}
 
 
@@ -42,6 +55,37 @@ public class ActuatorDebugUI : DebugUIElement, IPointerEnterHandler, IPointerExi
 				float position = m_actuator.GetNormalisedDesiredPosition ();
 				m_sensorBar.SetNormalisedValue (position);
 			}
+
+
+			if (!m_highighlighted) 
+			{
+				Color newColor = new Color (1.0f, 1.0f, 1.0f, 0.5f);
+
+				//if (m_actuator.m_state.m_innerCurrentTripped || m_actuator.m_state.m_outerCurrentTripped) 
+				if (m_actuator.m_moveSpeed > 0.0f) {
+					newColor.r = 0.0f;
+					newColor.g = 0.8f;
+					newColor.b = 0.0f;
+
+				} 
+				else if (m_actuator.m_moveSpeed < 0.0f) 
+				{
+					newColor.r = 0.0f;
+					newColor.g = 0.8f;
+					newColor.b = 0.8f;
+
+				}
+				else if (m_actuator.m_state.m_innerCurrentTripped || m_actuator.m_state.m_outerCurrentTripped) {
+					newColor.r = 0.9f;
+					newColor.g = 0.0f;
+					newColor.b = 0.0f;
+				}
+
+				m_canvasColor = newColor;
+			}
+
+			GetComponent<Image>().color = m_canvasColor;
+
 		}
 	}
 
