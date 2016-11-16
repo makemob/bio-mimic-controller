@@ -56,6 +56,9 @@ public struct ActuatorState
 
 	public override string ToString()
 	{
+		int innerTrip = m_innerCurrentTripped ? 1 : 0;
+		int outerTrip = m_outerCurrentTripped ? 1 : 0;
+
 		string output = 
 			//"errorCount: " + m_errorCount +			
 			//"\nbridgeCurrent: " + m_bridgeCurrent +
@@ -69,8 +72,8 @@ public struct ActuatorState
 			//"\ninnerTrips: " + m_innerCurrentTrips +
 			//"\nouterTrips: " + m_outerCurrentTrips + 
 			//"\nvoltageTrips: " + m_voltageTrips +
-			"\ncurrentTripInner: " + m_innerCurrentTripped +
-			"\ncurrentTripOuter: " + m_outerCurrentTripped +
+			"\ncurrentTripInner: " + innerTrip +
+			"\ncurrentTripOuter: " + outerTrip +
 			"\nextension (mm): " + (int)m_predictedExtension;
 
 		return output;
