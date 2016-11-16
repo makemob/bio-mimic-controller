@@ -66,6 +66,7 @@ public struct ActuatorState
 			//"errorCount: " + m_errorCount +			
 			"\nbridgeCurrent: " + m_bridgeCurrent +
 			"\nbatteryVoltage: " + m_batteryVoltage +
+			"\voltageTrips: " + m_voltageTrips +
 			//"\nboardTemperature: " + m_boardTemperature +
 			//"\nmotorSetPoint: " + m_motorSetPoint +
 			"\nmotorSpeed: " + m_motorSpeed +

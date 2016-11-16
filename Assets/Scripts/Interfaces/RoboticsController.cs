@@ -16,6 +16,8 @@ namespace UKI
 
 		public abstract bool CloseEnoughToPosition (int actuatorID, float position);
 
+		public abstract void SetActuatorAcceleration(int actuatorID, float acceleration);
+
 		public abstract void SetActuatorSpeed (int actuatorID, float speed);
 
 		public abstract void SetActuatorCallibration (int actuatorID, CallibrationResults results);
@@ -23,8 +25,6 @@ namespace UKI
 		public abstract void SetAllActuatorSpeeds (float speed);
 
 		public abstract void SetActuatorSpeeds (List<int> ids, float normalisedSpeed);
-
-
 
 		//public abstract void SetAllActuatorSpeeds (List<float> speeds);
 

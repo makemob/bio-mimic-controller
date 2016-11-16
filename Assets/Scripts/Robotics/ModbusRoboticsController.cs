@@ -49,7 +49,7 @@ public class ModbusRoboticsController : RoboticsController
 
 		actuator.m_onMaxLimitReached.RemoveAllListeners ();
 		actuator.m_onMaxLimitReached.AddListener(() => { this.StopActuator (actuator.GetID ());} );
-		
+
 		//TODO: Sort dictionary
 		//m_actuators.Sort((a,b) => { return a.m_id.CompareTo(b.m_id); });
 
@@ -119,6 +119,12 @@ public class ModbusRoboticsController : RoboticsController
 		m_actuators[actuatorID].SetActuatorSpeed(normalisedSpeed);
 		m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_MOTOR_SETPOINT, (ushort)(normalisedSpeed * 30.0f));	//0.89
 	}
+
+	public override void SetActuatorAcceleration(int actuatorID, float acceleration)
+	{
+		m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_MOTOR_ACCEL, (ushort)(acceleration * 100.0f));	//0.89
+	}
+
 
 	public override void SetActuatorCallibration(int actuatorID, CallibrationResults results)
 	{
