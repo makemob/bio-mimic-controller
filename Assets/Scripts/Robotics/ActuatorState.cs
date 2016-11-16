@@ -56,7 +56,8 @@ public struct ActuatorState
 
 	public override string ToString()
 	{
-		string output = "errorCount: " + m_errorCount +			
+		string output = 
+			//"errorCount: " + m_errorCount +			
 			//"\nbridgeCurrent: " + m_bridgeCurrent +
 			//"\nbatteryVoltage: " + m_batteryVoltage +
 			//"\nboardTemperature: " + m_boardTemperature +
