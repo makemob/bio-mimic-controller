@@ -6,158 +6,158 @@
             "id": 4,
             "minExtent": 0.0,
             "maxExtent": 66.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "RightRearKnee",
             "id": 5,
             "minExtent": 0.0,
             "maxExtent": 125.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "RightRearAnkle",
             "id": 6,
             "minExtent": 0.0,
             "maxExtent": 139.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "RightMidHip",
             "id": 7,
             "minExtent": 0.0,
             "maxExtent": 80.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "RightMidKnee",
             "id": 8,
             "minExtent": 0.0,
             "maxExtent": 171.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "RightMidAnkle",
             "id": 9,
             "minExtent": 0.0,
             "maxExtent": 182.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "RightFrontHip",
             "id": 10,
             "minExtent": 0.0,
             "maxExtent": 112.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "RightFrontKnee",
             "id": 11,
             "minExtent": 0.0,
             "maxExtent": 53.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "RightFrontAnkle",
             "id": 12,
             "minExtent": 0.0,
             "maxExtent": 186.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "LeftRearHip",
             "id": 13,
             "minExtent": 0.0,
             "maxExtent": 66.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "LeftRearKnee",
             "id": 14,
             "minExtent": 0.0,
             "maxExtent": 125.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "LeftRearAnkle",
             "id": 15,
             "minExtent": 0.0,
             "maxExtent": 139.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "LeftMidHip",
             "id": 16,
             "minExtent": 0.0,
             "maxExtent": 80.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "LeftMidKnee",
             "id": 17,
             "minExtent": 0.0,
             "maxExtent": 171.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "LeftMidAnkle",
             "id": 18,
             "minExtent": 0.0,
             "maxExtent": 182.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "LeftFrontHip",
             "id": 19,
             "minExtent": 0.0,
             "maxExtent": 112.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "LeftFrontKnee",
             "id": 20,
             "minExtent": 0.0,
             "maxExtent": 53.0,
-            "inwardCurrentLimit": 800,
-            "outwardCurrentLimit": 800
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "LeftFrontAnkle",
             "id": 21,
             "minExtent": 0.0,
             "maxExtent": 186.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
         {
             "name": "RightWingRotate",
             "id": 25,
             "minExtent": 0.0,
-            "maxExtent": 100.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "maxExtent": 130.0,
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
 		{
             "name": "RightWingRaise",
             "id": 26,
             "minExtent": 0.0,
-            "maxExtent": 100.0,
+            "maxExtent": 230.0,
             "inwardCurrentLimit": 800,
             "outwardCurrentLimit": 2500
         },
@@ -165,17 +165,17 @@
             "name": "LeftWingRotate",
             "id": 22,
             "minExtent": 0.0,
-            "maxExtent": 100.0,
-            "inwardCurrentLimit": 500,
-            "outwardCurrentLimit": 500
+            "maxExtent": 130.0,
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 1000
         },
 		{
             "name": "LeftWingRaise",
             "id": 23,
             "minExtent": 0.0,
-            "maxExtent": 100.0,
+            "maxExtent": 230.0,
             "inwardCurrentLimit": 800,
-            "outwardCurrentLimit": 1500
+            "outwardCurrentLimit": 2500
         }
     ]
 }
