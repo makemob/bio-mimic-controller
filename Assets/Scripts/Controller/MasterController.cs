@@ -57,6 +57,7 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	private List<int> ALL_LEGS;
 	private List<int> ALL_WINGS;
+	private List<int> ALL_ANKLES;
 
 	//
 	// Unity interface
@@ -99,14 +100,23 @@ public class MasterController : MonoBehaviour, IMasterController
 		wings.Add (RIGHT_WING_ROTATE);
 		wings.Add (RIGHT_WING_RAISE);
 
+
+		List<string> ankles = new List<string>();
+		ankles.Add (LEFT_FRONT_ANKLE);
+		ankles.Add (LEFT_MID_ANKLE);
+		ankles.Add (LEFT_REAR_ANKLE);
+		ankles.Add (RIGHT_FRONT_ANKLE);
+		ankles.Add (RIGHT_MID_ANKLE);
+		ankles.Add (RIGHT_REAR_ANKLE);
+
 		ALL_LEGS = new List<int> (legs.Count);
 		GetActuatorIDsByName (legs, ref ALL_LEGS);
 
 		ALL_WINGS = new List<int> (wings.Count);
 		GetActuatorIDsByName (wings, ref ALL_WINGS);
 
-
-
+		ALL_ANKLES = new List<int> (ankles.Count);
+		GetActuatorIDsByName (ankles, ref ALL_ANKLES);
 	}
 
 	void Start() 
@@ -466,6 +476,11 @@ public class MasterController : MonoBehaviour, IMasterController
 		MoveToPose (actuators, positions);
 	}
 
+	bool IsAnkle(int actuatorID)
+	{
+		return ALL_ANKLES.Contains (actuatorID);
+	}
+		
 	public void DrivingPose()
 	{
 		//Debug.LogError ("Driving pose not implemented!");
@@ -476,8 +491,13 @@ public class MasterController : MonoBehaviour, IMasterController
 
 		int size = ALL_LEGS.Count;
 		List<float> positions = new List<float>(size);
-		for(int i=0; i < size; i++)
-			positions.Add(0.0f);
+		for (int i = 0; i < size; i++) 
+		{
+			if (ALL_LEGS[i] == GetActuatorIDByName(LEFT_FRONT_ANKLE) || ALL_LEGS[i] == GetActuatorIDByName(RIGHT_FRONT_ANKLE))
+				positions.Add(80.0f);	//front ankles 80mm out. everything else 0
+			else
+				positions.Add (0.0f);
+		}
 		
 		StartCoroutine (MoveToPose_Coroutine (ALL_LEGS.ToArray(), positions.ToArray()));
 	}
@@ -531,7 +551,7 @@ public class MasterController : MonoBehaviour, IMasterController
 	{
 		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
 		yield return new WaitUntil (AllActuatorsAtInnerLimitOrRetracted);	//Need to ensure switches set on already retracted actuators for this to work
-		yield return new WaitForSeconds(1.0f);
+		yield return new WaitForSeconds(2.0f);
 
 		while (m_looping) 
 		{
@@ -567,12 +587,12 @@ public class MasterController : MonoBehaviour, IMasterController
 		{
 			StartCoroutine(MoveActuatorToPosition_Coroutine (ids[i], positions[i], () => { 
 				completed = completed + 1;
-				Debug.Log("Completed: " + completed);
+				//Debug.Log("Completed: " + completed);
 			}));
 		}
 
 		yield return new WaitUntil (() => { return completed == ids.Length; });
-		Debug.Log("All Completed: " + completed);
+		//Debug.Log("All Completed: " + completed);
 	}
 
 	private IEnumerator MoveActuatorToPosition_Coroutine(int id, float desiredExtension, Action onFinished)
