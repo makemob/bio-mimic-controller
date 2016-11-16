@@ -9,7 +9,8 @@ using UKI;
 [RequireComponent(typeof(ModbusComms))]
 public class ModbusRoboticsController : RoboticsController 
 {
-	public bool m_useMultiRegister = true;
+	//public bool m_useMultiRegister = true;
+	public bool m_useMultiRead = false;
 	//public int m_timeout = 1000;
 	public float m_actuatorStateUpdateInterval = 1.0f;	//Time between state updates 
 
@@ -190,6 +191,8 @@ public class ModbusRoboticsController : RoboticsController
 			s.m_innerCurrentTrips = data [5];
 			s.m_outerCurrentTrips = data [6];
 			s.m_voltageTrips = data [7];
+			s.m_innerLimitCount = data [14];
+			s.m_outerLimitCount = data [15];
 
 			//s.m_atInnerLimit = data [14] > 0;	//This doesn't work. Can we rely on count remaining the same and so simply test if this number has gone up by one?
 			//s.m_atOuterLimit = data [15] > 0;
@@ -200,19 +203,21 @@ public class ModbusRoboticsController : RoboticsController
 		}
 
 		//Add second read back in for now, for reliable microswitch test
-		ushort[] extentSwitches;
-		if (ReadRegisters (actuatorID, ModbusRegister.MB_INWARD_ENDSTOP_STATE, 2, out extentSwitches)) 			
-		{
-			s.m_atInnerLimit = extentSwitches[0] > 0;
-			s.m_atOuterLimit = extentSwitches[1] > 0;
-		}
-
-//		ushort[] currentLimits;
-//		if (ReadRegisters (actuatorID, ModbusRegister.MB_CURRENT_LIMIT_INWARD, 2, out currentLimits)) 			
+//		ushort[] extentSwitches;
+//		if (ReadRegisters (actuatorID, ModbusRegister.MB_INWARD_ENDSTOP_STATE, 2, out extentSwitches)) 			
 //		{
-//			s.m_innerCurrentLimit = currentLimits[0];
-//			s.m_outerCurrentLimit = currentLimits[1];
+//			s.m_atInnerLimit = extentSwitches[0] > 0;
+//			s.m_atOuterLimit = extentSwitches[1] > 0;
 //		}
+
+		if (m_useMultiRead) 
+		{
+			ushort[] currentLimits;
+			if (ReadRegisters (actuatorID, ModbusRegister.MB_CURRENT_LIMIT_INWARD, 2, out currentLimits)) {
+				s.m_innerCurrentLimit = currentLimits [0];
+				s.m_outerCurrentLimit = currentLimits [1];
+			}
+		}
 
 		return s;
 	}
@@ -251,12 +256,12 @@ public class ModbusRoboticsController : RoboticsController
 
 	public void ToggleMultiRegister()
 	{
-		m_useMultiRegister = !m_useMultiRegister;
+		//m_useMultiRegister = !m_useMultiRegister;
 	}
 
 	public void UseMultiRegister(bool doUseMultiRegister)
 	{
-		m_useMultiRegister = doUseMultiRegister;
+		//m_useMultiRegister = doUseMultiRegister;
 	}
 
 	bool ReadRegisters(int actuatorID, ModbusRegister startRegister, int count, out ushort [] result)
@@ -285,10 +290,19 @@ public class ModbusRoboticsController : RoboticsController
 
 	void UpdateActuator(Actuator actuator, ActuatorState newState)
 	{
-		bool wasAtInnerLimit = actuator.m_state.m_atInnerLimit;
-		bool wasAtOuterLimit = actuator.m_state.m_atOuterLimit;
+		int oldInnerLimitCount = actuator.m_state.m_innerLimitCount;
+		int oldOuterLimitCount = actuator.m_state.m_outerLimitCount;
 
 		actuator.SetState(newState);
+
+		if (!m_useMultiRead) 
+		{
+			if (actuator.m_state.m_innerLimitCount > oldInnerLimitCount)
+				actuator.m_state.m_atInnerLimit = true;
+
+			if (actuator.m_state.m_outerCurrentTrips > oldOuterLimitCount)
+				actuator.m_state.m_atOuterLimit = true;
+		}
 		//TODO: trigger event 
 
 		if (actuator.m_state.m_atInnerLimit && actuator.m_moveSpeed < 0.0f) {

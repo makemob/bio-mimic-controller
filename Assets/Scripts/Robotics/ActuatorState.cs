@@ -48,6 +48,7 @@ public struct ActuatorState
 		m_outerCurrentTripped = false;
 		m_atInnerLimit = false;
 		m_atOuterLimit = false;
+
 		m_heartBeat = 0;
 		//m_innerCurrentTrips = 0;
 		//m_outerCurrentTrips = 0;
@@ -66,19 +67,20 @@ public struct ActuatorState
 			//"errorCount: " + m_errorCount +			
 			"\nbridgeCurrent: " + m_bridgeCurrent +
 			"\nbatteryVoltage: " + m_batteryVoltage +
-			"\voltageTrips: " + m_voltageTrips +
 			//"\nboardTemperature: " + m_boardTemperature +
 			//"\nmotorSetPoint: " + m_motorSetPoint +
 			"\nmotorSpeed: " + m_motorSpeed +
 			"\nmotorAcceleration: " + m_motorAcceleration +
 			"\ninnerCurrentLimit: " + m_innerCurrentLimit +
 			"\nouterCurrentLimit: " + m_outerCurrentLimit +
-			//"\ninnerTrips: " + m_innerCurrentTrips +
-			//"\nouterTrips: " + m_outerCurrentTrips + 
-			//"\nvoltageTrips: " + m_voltageTrips +
+			"\ninnerMicroswitchCount: " + m_innerLimitCount +
+			"\nouterMicroswitchCount: " + m_outerLimitCount +
+			"\ninnerTrips: " + m_innerCurrentTrips +
+			"\nouterTrips: " + m_outerCurrentTrips + 
+			"\nvoltageTrips: " + m_voltageTrips +
 			"\nheartBeat: " + m_heartBeat +
-			"\ncurrentTripInner: " + innerTrip +
-			"\ncurrentTripOuter: " + outerTrip +
+			"\ncurrentTripInnerNow: " + innerTrip +
+			"\ncurrentTripOuterNow: " + outerTrip +
 			"\nextension (mm): " + (int)m_predictedExtension;
 
 		return output;
