@@ -290,11 +290,14 @@ public class ModbusRoboticsController : RoboticsController
 
 	public override void ResetEmergencyStopForAll()
 	{
-		foreach(Actuator a in m_actuators.Values)
-		{
-			int actuatorID = a.GetID ();
-			m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_RESET_ESTOP, (ushort)0x5050);	
-			m_actuators[actuatorID].m_state.ClearTripsAndLimits();	//Clear here just so state is immediately correct and we don't have to wait for a state read
+		foreach (Actuator a in m_actuators.Values) {
+			//TODO: only reset stopped actuators
+			//if (forceAll || a.m_state.m_innerCurrentTripped || a.m_state.m_outerCurrentTripped) 
+			{
+				int actuatorID = a.GetID ();
+				m_modbus.WriteSingleRegister ((byte)actuatorID, (ushort)ModbusRegister.MB_RESET_ESTOP, (ushort)0x5050);	
+				m_actuators [actuatorID].m_state.ClearTripsAndLimits ();	//Clear here just so state is immediately correct and we don't have to wait for a state read
+			}
 		}
 	}
 

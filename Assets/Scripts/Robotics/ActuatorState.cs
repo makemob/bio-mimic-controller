@@ -57,17 +57,19 @@ public struct ActuatorState
 	public override string ToString()
 	{
 		string output = "errorCount: " + m_errorCount +			
-			"\nbridgeCurrent: " + m_bridgeCurrent +
-			"\nbatteryVoltage: " + m_batteryVoltage +
-			"\nboardTemperature: " + m_boardTemperature +
-			"\nmotorSetPoint: " + m_motorSetPoint +
+			//"\nbridgeCurrent: " + m_bridgeCurrent +
+			//"\nbatteryVoltage: " + m_batteryVoltage +
+			//"\nboardTemperature: " + m_boardTemperature +
+			//"\nmotorSetPoint: " + m_motorSetPoint +
 			"\nmotorSpeed: " + m_motorSpeed +
-			"\nmotorAcceleration: " + m_motorAcceleration +
+			//"\nmotorAcceleration: " + m_motorAcceleration +
 			"\ninnerCurrentLimit: " + m_innerCurrentLimit +
-			"\nouterCurrentLimit: " +  m_outerCurrentLimit +
-			"\ninnerTrips: " + m_innerCurrentTrips +
-			"\nouterTrips: " + m_outerCurrentTrips + 
-			"\nvoltageTrips: " + m_voltageTrips +
+			"\nouterCurrentLimit: " + m_outerCurrentLimit +
+			//"\ninnerTrips: " + m_innerCurrentTrips +
+			//"\nouterTrips: " + m_outerCurrentTrips + 
+			//"\nvoltageTrips: " + m_voltageTrips +
+			"\ncurrentTripInner: " + m_innerCurrentTripped +
+			"\ncurrentTripOuter: " + m_outerCurrentTripped +
 			"\nextension (mm): " + (int)m_predictedExtension;
 
 		return output;

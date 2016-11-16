@@ -441,6 +441,7 @@ public class MasterController : MonoBehaviour, IMasterController
 	{
 		m_looping = true;
 		StopAllCoroutines ();
+		ResetEmergencyStopForAll ();
 		StartCoroutine ("LoopTestCoroutine");
 	}
 
@@ -453,6 +454,8 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void BoardingPose()
 	{
+		ResetEmergencyStopForAll ();
+
 		int hip = GetActuatorIDByName ("LeftFrontHip");
 		int knee = GetActuatorIDByName ("LeftFrontKnee");
 		int ankle = GetActuatorIDByName ("LeftFrontAnkle");
@@ -467,6 +470,9 @@ public class MasterController : MonoBehaviour, IMasterController
 	{
 		//Debug.LogError ("Driving pose not implemented!");
 		StopLegs();
+
+		ResetEmergencyStopForAll ();
+
 
 		int size = ALL_LEGS.Count;
 		List<float> positions = new List<float>(size);
