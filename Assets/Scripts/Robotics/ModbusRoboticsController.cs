@@ -239,6 +239,18 @@ public class ModbusRoboticsController : RoboticsController
 		}
 		return states.ToArray();
 	}
+
+	public override ActuatorState [] GetActuatorStates (List<int> ids)
+	{
+		List<ActuatorState> states = new List<ActuatorState> (ids.Count);
+		for(int i=0; i < ids.Count; i++)
+		{
+			int currentID = ids [i];
+			states.Add (m_actuators[currentID].m_state);
+		}
+		return states.ToArray();
+	}
+
 		
 	public override void UpdateAllActuatorStates()
 	{
