@@ -70,7 +70,7 @@ public class OrbitCamera : MonoBehaviour
 		transform.RotateAround(Target, transform.right, m_velocity.y * Time.deltaTime);
 
 		//Reduce the velocity
-		m_velocity = m_velocity - m_velocity * 0.1f;
+		m_velocity = m_velocity - m_velocity * 8.0f * Time.deltaTime;
 		if (m_velocity.sqrMagnitude < 0.1f)
 			m_velocity = Vector3.zero;
 	}

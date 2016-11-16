@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 
 [ExecuteInEditMode]
 public class AligmentHinge : MonoBehaviour 
@@ -18,7 +21,8 @@ public class AligmentHinge : MonoBehaviour
 			
 		if (start && end) 
 		{
-			if (hideNodes) {
+#if UNITY_EDITOR
+            if (hideNodes) {
 				start.hideFlags |= HideFlags.HideInHierarchy;
 				end.hideFlags |= HideFlags.HideInHierarchy;
 				if (centre)
@@ -29,8 +33,9 @@ public class AligmentHinge : MonoBehaviour
 				if (centre)
 					centre.hideFlags &= ~HideFlags.HideInHierarchy;
 			}
+#endif
 
-			if (lastStart == start.transform.position && lastEnd == end.transform.position) 
+            if (lastStart == start.transform.position && lastEnd == end.transform.position) 
 			{
 				start.transform.LookAt (end.transform);
 				end.transform.forward = start.transform.forward;
