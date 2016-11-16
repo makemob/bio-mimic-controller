@@ -407,6 +407,18 @@ public class MasterController : MonoBehaviour, IMasterController
 		return true;
 	}
 
+	private bool AllActuatorsAtInnerLimitOrRetracted()
+	{
+		ActuatorState [] states = m_roboticsControllers.GetAllActuatorStates ();
+		foreach (ActuatorState a in states) 
+		{
+			if (!(a.m_atInnerLimit || a.m_predictedExtension < 5.0f))
+				return false;
+		}
+
+		return true;
+	}
+
 	private bool AllActuatorsAtOuterLimit()
 	{
 		ActuatorState [] states = m_roboticsControllers.GetAllActuatorStates ();
@@ -512,8 +524,8 @@ public class MasterController : MonoBehaviour, IMasterController
 	private IEnumerator LoopTestCoroutine()
 	{
 		m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
-		//yield return new WaitUntil (AllActuatorsAtInnerLimit);	//Need to ensure switches set on already retracted actuators for this to work
-		yield return new WaitForSeconds(5.0f);
+		yield return new WaitUntil (AllActuatorsAtInnerLimitOrRetracted);	//Need to ensure switches set on already retracted actuators for this to work
+		yield return new WaitForSeconds(1.0f);
 
 		while (m_looping) 
 		{
@@ -564,18 +576,6 @@ public class MasterController : MonoBehaviour, IMasterController
 		m_roboticsControllers.StopActuator (id);
 
 		onFinished ();
-	}
-
-	private bool CloseEnoughToDesiredPosition(int id, float desiredPosition)
-	{
-		const float tolerance = 10.0f;
-		float error = desiredPosition - m_roboticsControllers.GetActuatorState (id).m_predictedExtension;
-
-		if (Mathf.Abs (error) < tolerance)
-			return true;
-		
-		//TODO: Take movement sign in to account for overshoot
-		return false;
 	}
 
 	public void RotateWings(float direction)

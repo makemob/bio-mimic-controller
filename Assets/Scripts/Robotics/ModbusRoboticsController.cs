@@ -10,7 +10,7 @@ using UKI;
 public class ModbusRoboticsController : RoboticsController 
 {
 	public bool m_useMultiRegister = true;
-	public int m_timeout = 1000;
+	//public int m_timeout = 1000;
 	public float m_actuatorStateUpdateInterval = 1.0f;	//Time between state updates 
 
 	ModbusComms m_modbus;
@@ -68,15 +68,27 @@ public class ModbusRoboticsController : RoboticsController
 		}
 	}
 
-	public override bool CloseEnoughToPosition (int actuatorID, float position)
+	public override bool CloseEnoughToPosition (int actuatorID, float desiredPosition)
 	{
 		const float tolerance = 5.0f;
-		float error = position - m_actuators[actuatorID].m_state.m_predictedExtension;
+		float error = desiredPosition - m_actuators[actuatorID].m_state.m_predictedExtension;
 
-		if (Mathf.Abs (error) < tolerance)
+		//This takes movement direction and overshoot in to account when testing for tolerance.
+		if (m_actuators [actuatorID].m_moveSpeed == 0.0f && Mathf.Abs(error) <= tolerance) 
+		{
 			return true;
+		}
+
+		if (m_actuators [actuatorID].m_moveSpeed > 0.0f && error <= tolerance) 
+		{
+			return true;
+		}
+
+		if (m_actuators [actuatorID].m_moveSpeed < 0.0f && error >= -tolerance) 
+		{
+			return true;
+		}
 		
-		//TODO: Take movement sign in to account for overshoot
 		return false;
 
 	}

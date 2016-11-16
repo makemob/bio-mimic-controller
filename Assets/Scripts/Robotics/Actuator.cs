@@ -98,7 +98,7 @@ public class Actuator : Debuggable
 
 		m_previousNormalisedPosition = m_currentNormalisedPosition;
 
-		GetExtensionMillimetres ();
+		//m_state.m_predictedExtension = GetExtensionMillimetres ();
 	}
 
 	public void SetDesiredPosition(float newPosition)
@@ -145,6 +145,13 @@ public class Actuator : Debuggable
 
 		m_state = newState;
 		m_state.m_predictedExtension = GetExtensionMillimetres ();
+
+		if (m_state.m_atInnerLimit) 
+		{
+			m_currentNormalisedPosition = 0.0f;
+			m_previousNormalisedPosition = 0.0f;
+			UpdateTargetPosition ();
+		}
 
 
 		m_onStateUpdate.Invoke ();
