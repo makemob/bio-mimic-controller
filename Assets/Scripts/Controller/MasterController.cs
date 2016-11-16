@@ -471,7 +471,7 @@ public class MasterController : MonoBehaviour, IMasterController
 		int ankle = GetActuatorIDByName ("LeftFrontAnkle");
 
 		int[] actuators = { hip, knee, ankle };
-		float[] positions = { 100.0f, 0.0f, 100.0f };
+		float[] positions = { 100.0f, 0.0f, 50.0f };
 
 		MoveToPose (actuators, positions);
 	}
