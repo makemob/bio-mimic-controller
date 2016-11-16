@@ -65,7 +65,7 @@ public struct ActuatorState
 			//"\nbatteryVoltage: " + m_batteryVoltage +
 			//"\nboardTemperature: " + m_boardTemperature +
 			//"\nmotorSetPoint: " + m_motorSetPoint +
-			"\nmotorSpeed: " + m_motorSpeed +
+			//"\nmotorSpeed: " + m_motorSpeed +
 			//"\nmotorAcceleration: " + m_motorAcceleration +
 			"\ninnerCurrentLimit: " + m_innerCurrentLimit +
 			"\nouterCurrentLimit: " + m_outerCurrentLimit +

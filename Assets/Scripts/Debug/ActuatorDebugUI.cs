@@ -138,7 +138,8 @@ public class ActuatorDebugUI : DebugUIElement, IPointerEnterHandler, IPointerExi
 	private void DrawState()
 	{
 		string maxExtentString = "\nmax (mm): " + m_actuator.m_config.maxExtent;
+		string moveSpeedString = "\nspeed: " + m_actuator.m_moveSpeed;
 
-		m_state.text = m_actuator.name + maxExtentString + m_actuator.m_state.ToString ();
+		m_state.text = m_actuator.name + maxExtentString + moveSpeedString + m_actuator.m_state.ToString ();
 	}
 }
