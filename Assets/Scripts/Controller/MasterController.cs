@@ -439,9 +439,26 @@ public class MasterController : MonoBehaviour, IMasterController
 		return true;
 	}
 
+	private bool AllLegsAtInnerLimit()
+	{
+		return ActuatorsAtInnerLimit(ALL_LEGS);
+	}
+		
 	private bool AllLegsAtInnerLimitOrRetracted()
 	{
 		return ActuatorsAtInnerLimitOrRetracted (ALL_LEGS);
+	}
+
+	private bool ActuatorsAtInnerLimit(List<int> ids)
+	{
+		ActuatorState [] states = m_roboticsControllers.GetActuatorStates (ids);
+		foreach (ActuatorState a in states) 
+		{
+			if (!(a.m_atInnerLimit))
+				return false;
+		}
+
+		return true;
 	}
 
 	private bool ActuatorsAtInnerLimitOrRetracted(List<int> ids)
@@ -578,7 +595,6 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	private IEnumerator LoopTestCoroutine()
 	{
-		//m_roboticsControllers.SetAllActuatorSpeeds(-1.0f);
 		m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, -1.0f);
 		yield return new WaitUntil (AllLegsAtInnerLimitOrRetracted);	//Need to ensure switches set on already retracted actuators for this to work
 		yield return new WaitForSeconds(2.0f);
@@ -588,7 +604,7 @@ public class MasterController : MonoBehaviour, IMasterController
 			m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, 1.0f);
 			yield return new WaitForSeconds (5.0f);
 			m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, -1.0f);
-			yield return new WaitForSeconds (5.0f);
+			yield return new WaitUntil (AllLegsAtInnerLimitOrRetracted);//WaitForSeconds (5.0f);
 		}
 	}
 
