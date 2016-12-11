@@ -307,7 +307,7 @@ public class ModbusRoboticsController : RoboticsController
 				if (newState.m_innerLimitCount > oldInnerLimitCount)
 					newState.m_atInnerLimit = true;
 
-				if (newState.m_outerCurrentTrips > oldOuterLimitCount)
+				if (newState.m_outerLimitCount > oldOuterLimitCount)
 					newState.m_atOuterLimit = true;
 			}
 
