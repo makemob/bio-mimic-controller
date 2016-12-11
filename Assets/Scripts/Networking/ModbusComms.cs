@@ -24,8 +24,8 @@ public class ModbusComms : SerialComms
 	const int MAX_ACTUATORS = 16;
 
 	private ModbusSerialMaster m_modbusMaster;
-	private CommandQueue m_commandQueue;
-	//private CommandQueueThreaded m_commandQueue;
+	//private CommandQueue m_commandQueue;
+	private CommandQueueThreaded m_commandQueue;
 	//private CommandQueueThreadPool m_commandQueue;
 	private DateTime m_startTime;
 	private bool m_running = false;
@@ -60,10 +60,10 @@ public class ModbusComms : SerialComms
 			Debug.LogError (e);
 		}
 
-		if (!m_commandQueue)
-			m_commandQueue = gameObject.AddComponent<CommandQueue> ();
 		//if (!m_commandQueue)
-		//	m_commandQueue = gameObject.AddComponent<CommandQueueThreaded> ();
+		//	m_commandQueue = gameObject.AddComponent<CommandQueue> ();
+		if (!m_commandQueue)
+			m_commandQueue = gameObject.AddComponent<CommandQueueThreaded> ();
 		//if (!m_commandQueue)
 		//	m_commandQueue = gameObject.AddComponent<CommandQueueThreadPool> ();
 
@@ -102,7 +102,7 @@ public class ModbusComms : SerialComms
 		QueueInternalCommand (() => {
 
 			if (m_logOutput)
-				Debug.Log(GetClock() + " ModbusSingleRegister. SlaveID: " + slaveID + " Register: " + register + " Data:" + data);
+				Debug.Log(GetClock() + "Write ModbusSingleRegister. SlaveID: " + slaveID + " Register: " + register + " Data:" + data);
 
 			try 
 			{
@@ -177,7 +177,7 @@ public class ModbusComms : SerialComms
 		QueueInternalCommand (() => {
 			
 			if (m_logOutput)
-				Debug.Log (Time.realtimeSinceStartup + " Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
+				Debug.Log (" Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
 
 			ushort [] result = null;
 
@@ -191,12 +191,13 @@ public class ModbusComms : SerialComms
 
 					float timeB = GetClockMS ();
 
-					Debug.Log ("ReadTime " + slaveID + ":" + (timeB - timeA).ToString ());
+					if (m_logReadTime)
+						Debug.Log ("ReadTime " + slaveID + ": " + (timeB - timeA).ToString ());
 				}
 			} 
 			catch (Exception e) 
 			{
-				Debug.Log (Time.realtimeSinceStartup + " Failed to read holding register.");
+				Debug.Log ("Failed to read holding register.");
 				Debug.LogError (e);
 			}
 		

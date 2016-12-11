@@ -596,9 +596,9 @@ public class MasterController : MonoBehaviour, IMasterController
 		while (m_looping) 
 		{
 			m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, 1.0f);
-			yield return new WaitForSecondsRealtime (4.0f);
+			yield return new WaitForSecondsRealtime (7.0f);
 			m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, -1.0f);
-			yield return new WaitForSecondsRealtime (4.5f);
+			yield return new WaitForSecondsRealtime (12.0f);
 			//yield return new WaitUntil (AllLegsAtInnerLimitOrRetracted);//WaitForSeconds (5.0f);
 		}
 	}

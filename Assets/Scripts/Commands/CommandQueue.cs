@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CommandQueue : MonoBehaviour {
 
-	public float m_commandDelay = 0.02f;				//Enforced time between commands
+	public float m_commandDelay = 0.08f;				//Enforced time between commands
 	public Queue<ICommand> m_queue = new Queue<ICommand>();
 	private Coroutine m_commandProcessing = null;
 
@@ -51,9 +51,10 @@ public class CommandQueue : MonoBehaviour {
 	{
 		while (true) 
 		{
-			yield return new WaitForSeconds(m_commandDelay);
+			yield return null; //WaitForSeconds(m_commandDelay);
 			if (m_queue.Count > 0)
 				m_queue.Dequeue().Execute();
 		}
+
 	}	
 }

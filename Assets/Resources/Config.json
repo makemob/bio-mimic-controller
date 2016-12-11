@@ -8,7 +8,7 @@
             "maxExtent": 66.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
         {
             "name": "RightRearKnee",
@@ -17,7 +17,7 @@
             "maxExtent": 125.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
         {
             "name": "RightRearAnkle",
@@ -26,7 +26,7 @@
             "maxExtent": 139.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
 
         },
         {
@@ -36,7 +36,7 @@
             "maxExtent": 80.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
 
         },
         {
@@ -46,7 +46,7 @@
             "maxExtent": 171.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
         {
             "name": "RightMidAnkle",
@@ -55,7 +55,7 @@
             "maxExtent": 182.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
         {
             "name": "RightFrontHip",
@@ -64,7 +64,7 @@
             "maxExtent": 112.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
         {
             "name": "RightFrontKnee",
@@ -73,7 +73,7 @@
             "maxExtent": 53.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
         {
             "name": "RightFrontAnkle",
@@ -82,7 +82,7 @@
             "maxExtent": 186.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
         {
             "name": "LeftRearHip",
@@ -145,7 +145,7 @@
             "maxExtent": 112.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
         {
             "name": "LeftFrontKnee",
@@ -154,7 +154,7 @@
             "maxExtent": 53.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
         {
             "name": "LeftFrontAnkle",
@@ -163,7 +163,7 @@
             "maxExtent": 186.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
         {
             "name": "RightWingRotate",
@@ -172,7 +172,7 @@
             "maxExtent": 130.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
 		{
             "name": "RightWingRaise",
@@ -181,7 +181,7 @@
             "maxExtent": 280.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 3000,
-			"enabled": true
+			"enabled": false
         },
 		{
             "name": "LeftWingRotate",
@@ -190,7 +190,7 @@
             "maxExtent": 130.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": true
+			"enabled": false
         },
 		{
             "name": "LeftWingRaise",
@@ -199,7 +199,7 @@
             "maxExtent": 280.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 2500,
-			"enabled": true
+			"enabled": false
         }
     ]
 }
