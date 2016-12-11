@@ -66,6 +66,7 @@ public class MasterController : MonoBehaviour, IMasterController
 	void Awake() 
 	{ 
 		Instance = this;
+		Application.targetFrameRate = 30;
 
 		LoadConfig();
 
