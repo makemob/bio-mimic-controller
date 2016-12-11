@@ -248,8 +248,10 @@ public class ModbusRoboticsController : RoboticsController
 		while (true) {
 			yield return new WaitForSeconds(m_actuatorStateUpdateInterval);
 
-			int [] actuatorIDs = m_actuators.Keys.ToArray();
-			int actuatorCount = actuatorIDs.Length;
+			List<int> actuatorIDs = m_actuators.Keys.ToList();
+			actuatorIDs.Sort ();
+
+			int actuatorCount = actuatorIDs.Count;
 			if (actuatorCount > 0)
 			{
 				index = (index + 1) % actuatorCount;
