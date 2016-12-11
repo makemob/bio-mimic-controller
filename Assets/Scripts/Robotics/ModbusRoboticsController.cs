@@ -48,6 +48,8 @@ public class ModbusRoboticsController : RoboticsController
 									 (ushort)ModbusRegister.MB_CURRENT_LIMIT_OUTWARD, 
 									 (ushort)actuator.m_config.outwardCurrentLimit);
 
+		ResetEmergencyStop (actuator.GetID ());
+			
 		actuator.m_onMaxLimitReached.RemoveAllListeners ();
 		actuator.m_onMaxLimitReached.AddListener(() => { this.StopActuator (actuator.GetID ());} );
 
