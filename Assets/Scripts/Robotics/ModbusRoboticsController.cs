@@ -198,8 +198,8 @@ public class ModbusRoboticsController : RoboticsController
 			//s.m_atOuterLimit = data [15] > 0;
 			s.m_heartBeat = data [16];
 
-			s.m_innerCurrentTrips = data[0];
-			s.m_outerCurrentTrips = data[1];
+			//s.m_innerCurrentTrips = data[0];
+			//s.m_outerCurrentTrips = data[1];
 		}
 
 		//Add second read back in for now, for reliable microswitch test
