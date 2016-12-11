@@ -157,9 +157,9 @@
             "name": "RightWingRaise",
             "id": 26,
             "minExtent": 0.0,
-            "maxExtent": 230.0,
-            "inwardCurrentLimit": 800,
-            "outwardCurrentLimit": 2500
+            "maxExtent": 280.0,
+            "inwardCurrentLimit": 1000,
+            "outwardCurrentLimit": 3000
         },
 		{
             "name": "LeftWingRotate",
@@ -173,8 +173,8 @@
             "name": "LeftWingRaise",
             "id": 23,
             "minExtent": 0.0,
-            "maxExtent": 230.0,
-            "inwardCurrentLimit": 800,
+            "maxExtent": 280.0,
+            "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 2500
         }
     ]
