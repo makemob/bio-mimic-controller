@@ -281,6 +281,8 @@ public class ModbusRoboticsController : RoboticsController
 	{
 		int index = -1;
 		while (true) {
+			yield return new WaitForSeconds(m_actuatorStateUpdateInterval);
+
 			int [] actuatorIDs = m_actuators.Keys.ToArray();
 			int actuatorCount = actuatorIDs.Length;
 			if (actuatorCount > 0)
@@ -290,7 +292,6 @@ public class ModbusRoboticsController : RoboticsController
 				ActuatorState state = ReadActuatorState(currentID);
 				UpdateActuator (m_actuators [currentID], state, true);
 			}
-			yield return new WaitForSeconds(m_actuatorStateUpdateInterval);
 		}
 	}
 
