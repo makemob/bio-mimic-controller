@@ -3,19 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 
-public class CommandQueueThreaded : MonoBehaviour
+public class CommandQueueThreadPool : MonoBehaviour
 {
 	private Queue<ICommand> m_queue;
-	private Thread m_commandThread;
 	private object m_lock;
+	private bool m_processing;
 	private System.DateTime m_startTime;
-	private volatile bool m_running;
+	private bool m_running = false;
 
 	void OnEnable()
 	{
 		m_queue = new Queue<ICommand>();
 		m_lock = new Object();
-		m_commandThread = new Thread(ProcessCommands);
 		Run ();
 	}
 
@@ -27,11 +26,7 @@ public class CommandQueueThreaded : MonoBehaviour
 	//Commence command queue processing
 	public void Run()
 	{
-		lock (m_lock) 
-		{
-			m_running = true;
-			m_commandThread.Start();
-		}
+		m_running = true;
 
 		StartClock ();
 
@@ -41,11 +36,8 @@ public class CommandQueueThreaded : MonoBehaviour
 	//Cease processing commands
 	public void Stop()
 	{
-		lock (m_lock) 
-		{
-			m_running = false;
-			m_queue.Clear ();
-		}
+		m_running = false;
+		m_queue.Clear ();
 
 		Debug.Log ("Command queue thread stopped.");
 	}
@@ -53,42 +45,49 @@ public class CommandQueueThreaded : MonoBehaviour
 	//Add a new command
 	public void Add(ICommand item) 
 	{
-		lock (m_lock) 
-		{
+		if (m_running)
 			m_queue.Enqueue (item);
-		}
 	}
 
 	//Clear command queue completely
 	public void Clear()
 	{
-		lock (m_lock) 
-		{
-			m_queue.Clear ();
-		}
+		m_queue.Clear ();
 	}
 
-	//This runs as a coroutine, processing commands with a given command delay in between
-	private void ProcessCommands() 
+	private void Update() 
 	{
-		while (m_running) 
+		if (m_running)
 		{
-			ICommand currentCommand = null;
+			bool canRun = false;
 
-			lock (m_lock) 
-			{
-				if (m_queue.Count > 0)
-					currentCommand = m_queue.Dequeue ();
+			lock (m_lock) {
+				canRun = !m_processing;
 			}
 
-			if (currentCommand != null) 
+			if (canRun) 
 			{
-				//double timeBefore = GetClock ();
+				ICommand currentCommand = null;
 
-				currentCommand.Execute ();
+				if (m_queue.Count > 0)
+					currentCommand = m_queue.Dequeue ();
 
-				//double timeAfter = GetClock ();
-				//Debug.Log ("CommandTime: " + (timeAfter - timeBefore).ToString ());
+				if (currentCommand != null) 
+				{
+					//double timeBefore = GetClock ();
+					lock (m_lock) {
+						m_processing = true;
+					}
+					ThreadPool.QueueUserWorkItem (new WaitCallback ((o) => {
+						currentCommand.Execute (); 
+						lock (m_lock) {
+							m_processing = false;
+						}
+					}));
+
+					//double timeAfter = GetClock ();
+					//Debug.Log ("CommandTime: " + (timeAfter - timeBefore).ToString ());
+				}
 			}
 		}
 	}	

@@ -25,6 +25,7 @@ public class ModbusComms : SerialComms
 	private ModbusSerialMaster m_modbusMaster;
 	private CommandQueue m_commandQueue;
 	//private CommandQueueThreaded m_commandQueue;
+	//private CommandQueueThreadPool m_commandQueue;
 	private DateTime m_startTime;
 	private bool m_running = false;
 
@@ -52,7 +53,9 @@ public class ModbusComms : SerialComms
 			m_commandQueue = gameObject.AddComponent<CommandQueue> ();
 		//if (!m_commandQueue)
 		//	m_commandQueue = gameObject.AddComponent<CommandQueueThreaded> ();
-		
+		//if (!m_commandQueue)
+		//	m_commandQueue = gameObject.AddComponent<CommandQueueThreadPool> ();
+
 		Debug.Log("Minimum interval is " + GetMinimumInterval(m_baudRate));
 
 		Debug.Log ("ModbusComms ready");
