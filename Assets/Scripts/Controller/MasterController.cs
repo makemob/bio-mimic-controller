@@ -170,7 +170,7 @@ public class MasterController : MonoBehaviour, IMasterController
 		if (!found) 
 		{
 			Debug.Log ("Actuator (" + a.name + ") not found. Disabling.");
-			a.gameObject.SetActive(false);
+			a.enabled = false;
 			return false;
 		}
 

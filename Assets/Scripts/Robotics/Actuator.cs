@@ -49,6 +49,19 @@ public class Actuator : Debuggable
 
 	void Start () 
 	{
+		if (m_movingPart)
+		{
+			//Need to loop through to find the correct joint as there may be multiple attached to this game object.
+			ConfigurableJoint [] allJoints = m_movingPart.GetComponents<ConfigurableJoint>();
+			for(int i=0; i < allJoints.Length; i++)
+			{
+				if (allJoints[i].connectedBody == m_base)
+					m_baseJoint = allJoints[i];
+			}
+		}
+
+		UpdateTargetPosition ();
+
 		if (MasterController.Instance) 
 		{
 			bool success = MasterController.Instance.RegisterActuator (this);
@@ -59,17 +72,6 @@ public class Actuator : Debuggable
 		ApplyConfig ();
 
 		CreateDebugObject();
-
-        if (m_movingPart)
-		{
-			//Need to loop through to find the correct joint as there may be multiple attached to this game object.
-			ConfigurableJoint [] allJoints = m_movingPart.GetComponents<ConfigurableJoint>();
-			for(int i=0; i < allJoints.Length; i++)
-			{
-				if (allJoints[i].connectedBody == m_base)
-					m_baseJoint = allJoints[i];
-			}
-		}
 
 		UpdateTargetPosition();
 	}
