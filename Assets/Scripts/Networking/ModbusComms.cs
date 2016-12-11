@@ -15,6 +15,7 @@ public class ModbusComms : SerialComms
 	public int m_writeTimeout = 200;	//milliseconds
 	public int m_waitToRetry = 200;		//milliseconds
 	public int m_retries = 3;			//max num retries
+	public bool m_logOutput = false;
 
 	//Register values from scarab
 	const ushort STILL = 0;
@@ -90,7 +91,8 @@ public class ModbusComms : SerialComms
 	{
 		QueueInternalCommand (() => {
 
-			//Debug.Log(GetClock() + " ModbusSingleRegister. SlaveID: " + slaveID + " Register: " + register + " Data:" + data);
+			if (m_logOutput)
+				Debug.Log(GetClock() + " ModbusSingleRegister. SlaveID: " + slaveID + " Register: " + register + " Data:" + data);
 
 			try 
 			{
@@ -132,7 +134,9 @@ public class ModbusComms : SerialComms
 	public ushort [] ReadHoldingRegisters(byte slaveID, ushort startRegister, ushort numRegistersToRead)
 	{
 		ushort[] result = null;
-		//Debug.Log(Time.realtimeSinceStartup + " Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
+
+		if (m_logOutput)
+			Debug.Log(Time.realtimeSinceStartup + " Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
 
 		try 
 		{
