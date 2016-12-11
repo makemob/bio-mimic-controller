@@ -154,7 +154,7 @@
             "maxExtent": 53.0,
             "inwardCurrentLimit": 1000,
             "outwardCurrentLimit": 1000,
-			"enabled": false
+			"enabled": true
         },
         {
             "name": "LeftFrontAnkle",
