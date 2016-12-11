@@ -50,14 +50,7 @@ public struct ActuatorState
 		m_outerCurrentTripped = false;
 		m_atInnerLimit = false;
 		m_atOuterLimit = false;
-
 		m_heartBeat = 0;
-		//m_innerCurrentTrips = 0;
-		//m_outerCurrentTrips = 0;
-		//m_innerLimitCount = 0;
-		//m_outerLimitCount = 0;
-
-
 	}
 
 	public override string ToString()
