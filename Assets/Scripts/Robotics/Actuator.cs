@@ -138,11 +138,6 @@ public class Actuator : Debuggable
 
 	public void SetState(ActuatorState newState)
 	{
-		if (newState.m_innerCurrentTrips > m_state.m_innerCurrentTrips)
-			newState.m_innerCurrentTripped = true;
-		if (newState.m_outerCurrentTrips > m_state.m_outerCurrentTrips)
-			newState.m_outerCurrentTripped = true;
-
 		m_state = newState;
 		m_state.m_predictedExtension = GetExtensionMillimetres ();
 
@@ -152,7 +147,6 @@ public class Actuator : Debuggable
 			m_previousNormalisedPosition = 0.0f;
 			UpdateTargetPosition ();
 		}
-
 
 		m_onStateUpdate.Invoke ();
 

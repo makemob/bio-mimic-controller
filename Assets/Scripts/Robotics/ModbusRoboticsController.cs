@@ -51,6 +51,10 @@ public class ModbusRoboticsController : RoboticsController
 		actuator.m_onMaxLimitReached.RemoveAllListeners ();
 		actuator.m_onMaxLimitReached.AddListener(() => { this.StopActuator (actuator.GetID ());} );
 
+		//Do an initial actuator read to determine current trip counts etc
+		ActuatorState state = ReadActuatorState(actuator.GetID());
+		UpdateActuator (actuator, state, false);				
+
 		//TODO: Sort dictionary
 		//m_actuators.Sort((a,b) => { return a.m_id.CompareTo(b.m_id); });
 
@@ -284,24 +288,33 @@ public class ModbusRoboticsController : RoboticsController
 				index = (index + 1) % actuatorCount;
 				int currentID = actuatorIDs [index];
 				ActuatorState state = ReadActuatorState(currentID);
-				UpdateActuator (m_actuators [currentID], state);
+				UpdateActuator (m_actuators [currentID], state, true);
 			}
 			yield return new WaitForSeconds(m_actuatorStateUpdateInterval);
 		}
 	}
 
-	void UpdateActuator(Actuator actuator, ActuatorState newState)
+	void UpdateActuator(Actuator actuator, ActuatorState newState, bool detectTripsAndSwitches)
 	{
-		int oldInnerLimitCount = actuator.m_state.m_innerLimitCount;
-		int oldOuterLimitCount = actuator.m_state.m_outerLimitCount;
-
-		if (!m_useMultiRead) 
+		if (detectTripsAndSwitches) 
 		{
-			if (newState.m_innerLimitCount > oldInnerLimitCount)
-				newState.m_atInnerLimit = true;
+			int oldInnerLimitCount = actuator.m_state.m_innerLimitCount;
+			int oldOuterLimitCount = actuator.m_state.m_outerLimitCount;
 
-			if (newState.m_outerCurrentTrips > oldOuterLimitCount)
-				newState.m_atOuterLimit = true;
+			//Set limit flags
+			if (!m_useMultiRead) { //TODO: Remove multi read option when we can!
+				if (newState.m_innerLimitCount > oldInnerLimitCount)
+					newState.m_atInnerLimit = true;
+
+				if (newState.m_outerCurrentTrips > oldOuterLimitCount)
+					newState.m_atOuterLimit = true;
+			}
+
+			//set trip flags
+			if (newState.m_innerCurrentTrips > actuator.m_state.m_innerCurrentTrips)
+				newState.m_innerCurrentTripped = true;
+			if (newState.m_outerCurrentTrips > actuator.m_state.m_outerCurrentTrips)
+				newState.m_outerCurrentTripped = true;
 		}
 
 		//TODO: Refactor this and wait on current and switch events properly!
