@@ -295,17 +295,16 @@ public class ModbusRoboticsController : RoboticsController
 		int oldInnerLimitCount = actuator.m_state.m_innerLimitCount;
 		int oldOuterLimitCount = actuator.m_state.m_outerLimitCount;
 
-		//TODO: Refactor this and wait on current and switch events properly!
-
 		if (!m_useMultiRead) 
 		{
-			if (actuator.m_state.m_innerLimitCount > oldInnerLimitCount)
-				actuator.m_state.m_atInnerLimit = true;
+			if (newState.m_innerLimitCount > oldInnerLimitCount)
+				newState.m_atInnerLimit = true;
 
-			if (actuator.m_state.m_outerCurrentTrips > oldOuterLimitCount)
-				actuator.m_state.m_atOuterLimit = true;
+			if (newState.m_outerCurrentTrips > oldOuterLimitCount)
+				newState.m_atOuterLimit = true;
 		}
 
+		//TODO: Refactor this and wait on current and switch events properly!
 		actuator.SetState(newState);
 
 		//TODO: trigger event 
