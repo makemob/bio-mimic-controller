@@ -12,7 +12,7 @@ public class EditorCameraSpeed
 	[MenuItem("Tools/Camera Speed &S")]
 	public static void CameraSpeed()
 	{
-		var window = GetWindow<EditorCameraSpeed>();
+		//var window = GetWindow<EditorCameraSpeed>();
 
 		// TODO: gets cleared each frame?
 		SceneView.onSceneGUIDelegate += OnSceneDelegate;
@@ -20,7 +20,7 @@ public class EditorCameraSpeed
 
 	static void CameraSpeedUpdate()
 	{
-		var e = Event.current;
+		//var e = Event.current;
 
 		// Tools.s_LockedViewTool is ViewTool.FPS when holding right-click down
 		// SceneView.OnGUI() calls SceneViewMotion.DoViewTool(self)
@@ -49,9 +49,9 @@ public class EditorCameraSpeed
 
 	public void OnGUI()
 	{
-		var event_ = Event.current;
-		var controlID = GUIUtility.GetControlID(FocusType.Passive);
-		var eventType = event_.GetTypeForControl(controlID);
+		//var event_ = Event.current;
+		//var controlID = GUIUtility.GetControlID(FocusType.Passive);
+		//var eventType = event_.GetTypeForControl(controlID);
 
 		cameraMoveSpeed = EditorGUILayout.Slider(cameraMoveSpeed, 0.0f, 10.0f);
 		cameraMoveSpeedCtrl = EditorGUILayout.Slider(cameraMoveSpeedCtrl, 0.1f, 1.0f);
@@ -73,7 +73,7 @@ public class EditorCameraSpeed
 
 		var scene_view_assembly = Assembly.GetAssembly(typeof(UnityEditor.SceneView));
 		var scene_view_motion_type = scene_view_assembly.GetType("UnityEditor.SceneViewMotion");
-		var scene_view_flyspeed_type = scene_view_assembly.GetType("UnityEditor.SceneViewMotion");
+		//var scene_view_flyspeed_type = scene_view_assembly.GetType("UnityEditor.SceneViewMotion");
 
 		var flyspeed_field = (FieldInfo)scene_view_motion_type.GetField("s_FlySpeed", BindingFlags.NonPublic | BindingFlags.Static);
 		var flyspeed = flyspeed_field.GetValue(null);

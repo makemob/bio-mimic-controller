@@ -46,7 +46,7 @@ public class Actuator : Debuggable
 
 	static readonly float ARM_INITIAL_EXTENT = -0.038f;	//Arm extension when fully retracted.
 	static readonly float ARM_FULL_EXTENT = -0.328f;	//Arm extension when fully retracted.
-	static readonly float ARM_LENGTH = 0.29f; 
+	//static readonly float ARM_LENGTH = 0.29f; 
 
 	void Start () 
 	{
