@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class ActuatorDebugUI : DebugUIElement, IPointerEnterHandler, IPointerExitHandler
 {
@@ -10,13 +11,14 @@ public class ActuatorDebugUI : DebugUIElement, IPointerEnterHandler, IPointerExi
 	public GraphElement m_simulationBar;
 	public GraphElement m_sensorBar;
 	public Text m_state;
+	public UnityEvent m_onActuatorRead;
 
 	private Color m_canvasColor;
 	private bool m_highighlighted;
 
 	public void OnPointerEnter(PointerEventData e)
 	{
-		m_canvasColor = new Color32 (128, 128, 255, 128);
+		m_canvasColor = new Color32 (192, 192, 192, 128);
 		m_highighlighted = true;
 		//GetComponent<Image> ().color = new Color32 (255, 128, 128, 128);
 	}
@@ -94,6 +96,7 @@ public class ActuatorDebugUI : DebugUIElement, IPointerEnterHandler, IPointerExi
 		if (debuggableObject) {
 			m_actuator = debuggableObject.GetComponent<Actuator> ();
 			m_actuator.m_onStateUpdate.AddListener (DrawState);
+			m_actuator.m_onActuatorRead.AddListener (m_onActuatorRead.Invoke);
 		}
 	}
 

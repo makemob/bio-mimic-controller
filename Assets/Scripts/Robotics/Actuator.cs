@@ -27,6 +27,7 @@ public class Actuator : Debuggable
 	public bool m_autoMoveClamped = false;
 	public float m_autoMovePeriod = 1.0f;
 
+	public UnityEvent m_onActuatorRead;
 	public UnityEvent m_onStateUpdate;
 	public UnityEvent m_onMaxLimitReached;
 
@@ -151,6 +152,7 @@ public class Actuator : Debuggable
 		}
 
 		m_onStateUpdate.Invoke ();
+		m_onActuatorRead.Invoke ();
 
 	}
 
