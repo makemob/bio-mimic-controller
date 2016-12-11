@@ -172,13 +172,15 @@ public class ModbusRoboticsController : RoboticsController
 		ActuatorState s = new ActuatorState();
 
 		//TODO: Re-enable 
-//		ushort[] diagnostics;
-//		if (ReadRegisters (actuatorID, ModbusRegister.MB_BRIDGE_CURRENT, 5, out diagnostics)) 
-//		{
-//			s.m_bridgeCurrent = diagnostics[0];
-//			s.m_batteryVoltage = diagnostics[1];
-//			s.m_boardTemperature = diagnostics[4];
-//		}
+		if (m_useMultiRead) 
+		{
+			ushort[] diagnostics;
+			if (ReadRegisters (actuatorID, ModbusRegister.MB_BRIDGE_CURRENT, 5, out diagnostics)) {
+				s.m_bridgeCurrent = diagnostics [0];
+				s.m_batteryVoltage = diagnostics [1];
+				s.m_boardTemperature = diagnostics [4];
+			}
+		}
 			
 		ushort[] data;
 		if (ReadRegisters (actuatorID, ModbusRegister.MB_MOTOR_SETPOINT, 17, out data)) 			
