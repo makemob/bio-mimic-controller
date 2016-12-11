@@ -31,6 +31,8 @@ public struct ActuatorState
 	//Voltage trips
 	public int m_voltageTrips;	//Number of voltage limit trips since boot
 
+	public int m_stopped;
+
 	//Limit microswitches
 	public bool m_atInnerLimit;
 	public bool m_atOuterLimit;
@@ -77,7 +79,7 @@ public struct ActuatorState
 			"\nouterMicroswitchCount: " + m_outerLimitCount +
 			"\ninnerTrips: " + m_innerCurrentTrips +
 			"\nouterTrips: " + m_outerCurrentTrips + 
-			"\nvoltageTrips: " + m_voltageTrips +
+			"\nemergencyStop: " + m_stopped +
 			"\nheartBeat: " + m_heartBeat +
 			"\ncurrentTripInnerNow: " + innerTrip +
 			"\ncurrentTripOuterNow: " + outerTrip +

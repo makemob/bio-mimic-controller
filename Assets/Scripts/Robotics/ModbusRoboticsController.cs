@@ -199,6 +199,7 @@ public class ModbusRoboticsController : RoboticsController
 			s.m_innerCurrentTrips = data [5];
 			s.m_outerCurrentTrips = data [6];
 			s.m_voltageTrips = data [7];
+			s.m_stopped = data [8];
 			s.m_innerLimitCount = data [14];
 			s.m_outerLimitCount = data [15];
 
@@ -209,6 +210,7 @@ public class ModbusRoboticsController : RoboticsController
 			//s.m_innerCurrentTrips = data[0];
 			//s.m_outerCurrentTrips = data[1];
 		}
+
 
 		//Add second read back in for now, for reliable microswitch test
 //		ushort[] extentSwitches;
