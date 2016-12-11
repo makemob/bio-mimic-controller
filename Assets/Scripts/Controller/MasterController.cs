@@ -591,14 +591,15 @@ public class MasterController : MonoBehaviour, IMasterController
 	{
 		m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, -1.0f);
 		yield return new WaitUntil (AllLegsAtInnerLimitOrRetracted);	//Need to ensure switches set on already retracted actuators for this to work
-		yield return new WaitForSeconds(2.0f);
+		yield return new WaitForSecondsRealtime(2.0f);
 
 		while (m_looping) 
 		{
 			m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, 1.0f);
-			yield return new WaitForSeconds (5.0f);
+			yield return new WaitForSecondsRealtime (4.0f);
 			m_roboticsControllers.SetActuatorSpeeds(ALL_LEGS, -1.0f);
-			yield return new WaitUntil (AllLegsAtInnerLimitOrRetracted);//WaitForSeconds (5.0f);
+			yield return new WaitForSecondsRealtime (4.5f);
+			//yield return new WaitUntil (AllLegsAtInnerLimitOrRetracted);//WaitForSeconds (5.0f);
 		}
 	}
 
