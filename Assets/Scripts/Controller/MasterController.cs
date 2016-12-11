@@ -5,47 +5,39 @@ using System.Collections.Generic;
 using System.IO;
 using UKI;
 
-
-
-
-
-
-
 public class MasterController : MonoBehaviour, IMasterController
 {
-	static readonly string LEFT_FRONT_HIP = "LeftFrontHip";
-	static readonly string LEFT_FRONT_KNEE = "LeftFrontKnee";
-	static readonly string LEFT_FRONT_ANKLE = "LeftFrontAnkle";
+	enum ActuatorName
+	{
+		LeftFrontHip,
+		LeftFrontKnee,
+		LeftFrontAnkle,
 
-	static readonly string LEFT_MID_HIP = "LeftMidHip";
-	static readonly string LEFT_MID_KNEE = "LeftMidKnee";
-	static readonly string LEFT_MID_ANKLE = "LeftMidAnkle";
+		LeftMidHip,
+		LeftMidKnee,
+		LeftMidAnkle,
 
-	static readonly string LEFT_REAR_HIP = "LeftRearHip";
-	static readonly string LEFT_REAR_KNEE = "LeftRearKnee";
-	static readonly string LEFT_REAR_ANKLE = "LeftRearAnkle";
+		LeftRearHip,
+		LeftRearKnee,
+		LeftRearAnkle,
 
-	static readonly string RIGHT_FRONT_HIP = "RightFrontHip";
-	static readonly string RIGHT_FRONT_KNEE = "RightFrontKnee";
-	static readonly string RIGHT_FRONT_ANKLE = "RightFrontAnkle";
+		RightFrontHip,
+		RightFrontKnee,
+		RightFrontAnkle,
 
-	static readonly string RIGHT_MID_HIP = "RightMidHip";
-	static readonly string RIGHT_MID_KNEE = "RightMidKnee";
-	static readonly string RIGHT_MID_ANKLE = "RightMidAnkle";
+		RightMidHip,
+		RightMidKnee,
+		RightMidAnkle,
 
-	static readonly string RIGHT_REAR_HIP = "RightRearHip";
-	static readonly string RIGHT_REAR_KNEE = "RightRearKnee";
-	static readonly string RIGHT_REAR_ANKLE = "RightRearAnkle";
+		RightRearHip,
+		RightRearKnee,
+		RightRearAnkle,
 
-	static readonly string LEFT_WING_ROTATE = "LeftWingRotate";
-	static readonly string LEFT_WING_RAISE = "LeftWingRaise";
-	static readonly string RIGHT_WING_ROTATE = "RightWingRotate";
-	static readonly string RIGHT_WING_RAISE = "RightWingRaise";
-
-
-
-
-
+		LeftWingRotate,
+		LeftWingRaise,
+		RightWingRotate,
+		RightWingRaise
+	}
 
 	public string m_configFile = "Config";
 	public UKI.Config m_config;
@@ -70,45 +62,45 @@ public class MasterController : MonoBehaviour, IMasterController
 
 		LoadConfig();
 
-		List<string> legs = new List<string> ();
-		legs.Add(LEFT_FRONT_HIP);
-		legs.Add(LEFT_FRONT_KNEE);
-		legs.Add(LEFT_FRONT_ANKLE);
+		List<ActuatorName> legs = new List<ActuatorName> ();
+		legs.Add(ActuatorName.LeftFrontHip);
+		legs.Add(ActuatorName.LeftFrontKnee);
+		legs.Add(ActuatorName.LeftFrontAnkle);
 
-		legs.Add(LEFT_MID_HIP);
-		legs.Add(LEFT_MID_KNEE);
-		legs.Add(LEFT_MID_ANKLE);
+		legs.Add(ActuatorName.LeftMidHip);
+		legs.Add(ActuatorName.LeftMidKnee);
+		legs.Add(ActuatorName.LeftMidAnkle);
 
-		legs.Add(LEFT_REAR_HIP);
-		legs.Add(LEFT_REAR_KNEE);
-		legs.Add(LEFT_REAR_ANKLE);
+		legs.Add(ActuatorName.LeftRearHip);
+		legs.Add(ActuatorName.LeftRearKnee);
+		legs.Add(ActuatorName.LeftRearAnkle);
 
-		legs.Add(RIGHT_FRONT_HIP);
-		legs.Add(RIGHT_FRONT_KNEE);
-		legs.Add(RIGHT_FRONT_ANKLE);
+		legs.Add(ActuatorName.RightFrontHip);
+		legs.Add(ActuatorName.RightFrontKnee);
+		legs.Add(ActuatorName.RightFrontAnkle);
 
-		legs.Add(RIGHT_MID_HIP);
-		legs.Add(RIGHT_MID_KNEE);
-		legs.Add(RIGHT_MID_ANKLE);
+		legs.Add(ActuatorName.RightMidHip);
+		legs.Add(ActuatorName.RightMidKnee);
+		legs.Add(ActuatorName.RightMidAnkle);
 
-		legs.Add(RIGHT_REAR_HIP);
-		legs.Add(RIGHT_REAR_KNEE);
-		legs.Add(RIGHT_REAR_ANKLE);
+		legs.Add(ActuatorName.RightRearHip);
+		legs.Add(ActuatorName.RightRearKnee);
+		legs.Add(ActuatorName.RightRearAnkle);
 
-		List<string> wings = new List<string> ();
-		wings.Add (LEFT_WING_ROTATE);
-		wings.Add (LEFT_WING_RAISE);
-		wings.Add (RIGHT_WING_ROTATE);
-		wings.Add (RIGHT_WING_RAISE);
+		List<ActuatorName> wings = new List<ActuatorName> ();
+		wings.Add (ActuatorName.LeftWingRotate);
+		wings.Add (ActuatorName.LeftWingRaise);
+		wings.Add (ActuatorName.RightWingRotate);
+		wings.Add (ActuatorName.RightWingRaise);
 
 
-		List<string> ankles = new List<string>();
-		ankles.Add (LEFT_FRONT_ANKLE);
-		ankles.Add (LEFT_MID_ANKLE);
-		ankles.Add (LEFT_REAR_ANKLE);
-		ankles.Add (RIGHT_FRONT_ANKLE);
-		ankles.Add (RIGHT_MID_ANKLE);
-		ankles.Add (RIGHT_REAR_ANKLE);
+		List<ActuatorName> ankles = new List<ActuatorName>();
+		ankles.Add (ActuatorName.LeftFrontAnkle);
+		ankles.Add (ActuatorName.LeftMidAnkle);
+		ankles.Add (ActuatorName.LeftRearAnkle);
+		ankles.Add (ActuatorName.RightFrontAnkle);
+		ankles.Add (ActuatorName.RightMidAnkle);
+		ankles.Add (ActuatorName.RightRearAnkle);
 
 		ALL_LEGS = new List<int> (legs.Count);
 		GetActuatorIDsByName (legs, ref ALL_LEGS);
@@ -186,10 +178,10 @@ public class MasterController : MonoBehaviour, IMasterController
 
 		if (registrationSuccess) 
 		{
-			if (a.GetID () == GetActuatorIDByName (LEFT_WING_RAISE) ||
-			   a.GetID () == GetActuatorIDByName (LEFT_WING_ROTATE) ||
-			   a.GetID () == GetActuatorIDByName (RIGHT_WING_RAISE) ||
-			   a.GetID () == GetActuatorIDByName (RIGHT_WING_ROTATE)) {
+			if (a.GetID () == GetActuatorIDByName (ActuatorName.LeftWingRaise) ||
+				a.GetID () == GetActuatorIDByName (ActuatorName.LeftWingRotate) ||
+				a.GetID () == GetActuatorIDByName (ActuatorName.RightWingRaise) ||
+				a.GetID () == GetActuatorIDByName (ActuatorName.RightWingRotate)) {
 				m_roboticsControllers.SetActuatorAcceleration (a.GetID (), 0.8f);
 			}
 		}
@@ -513,9 +505,9 @@ public class MasterController : MonoBehaviour, IMasterController
 
 		StopLegs ();
 
-		int hip = GetActuatorIDByName ("LeftFrontHip");
-		int knee = GetActuatorIDByName ("LeftFrontKnee");
-		int ankle = GetActuatorIDByName ("LeftFrontAnkle");
+		int hip = GetActuatorIDByName (ActuatorName.LeftFrontHip);
+		int knee = GetActuatorIDByName (ActuatorName.LeftFrontKnee);
+		int ankle = GetActuatorIDByName (ActuatorName.LeftFrontAnkle);
 
 		int[] actuators = { hip, knee, ankle };
 		float[] positions = { 100.0f, 0.0f, 50.0f };
@@ -540,7 +532,8 @@ public class MasterController : MonoBehaviour, IMasterController
 		List<float> positions = new List<float>(size);
 		for (int i = 0; i < size; i++) 
 		{
-			if (ALL_LEGS[i] == GetActuatorIDByName(LEFT_FRONT_ANKLE) || ALL_LEGS[i] == GetActuatorIDByName(RIGHT_FRONT_ANKLE))
+			if (ALL_LEGS[i] == GetActuatorIDByName(ActuatorName.LeftFrontAnkle) || 
+				ALL_LEGS[i] == GetActuatorIDByName(ActuatorName.RightFrontAnkle))
 				positions.Add(80.0f);	//front ankles 80mm out. everything else 0
 			else
 				positions.Add (0.0f);
@@ -556,10 +549,10 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void WingsPose1()
 	{
-		int leftWingRotate = GetActuatorIDByName ("LeftWingRotate");
-		int leftWingRaise = GetActuatorIDByName ("LeftWingRaise");
-		int rightWingRotate = GetActuatorIDByName ("RightWingRotate");
-		int rightWingRaise = GetActuatorIDByName ("RightWingRaise");
+		int leftWingRotate = GetActuatorIDByName (ActuatorName.LeftWingRotate);
+		int leftWingRaise = GetActuatorIDByName (ActuatorName.LeftWingRaise);
+		int rightWingRotate = GetActuatorIDByName (ActuatorName.RightWingRotate);
+		int rightWingRaise = GetActuatorIDByName (ActuatorName.RightWingRaise);
 
 		int[] actuators = { leftWingRotate, leftWingRaise, rightWingRotate, rightWingRaise };
 		float[] positions = { 100.0f, 100.0f, 100.0f, 100.0f };
@@ -569,10 +562,10 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void WingsPose2()
 	{
-		int leftWingRotate = GetActuatorIDByName ("LeftWingRotate");
-		int leftWingRaise = GetActuatorIDByName ("LeftWingRaise");
-		int rightWingRotate = GetActuatorIDByName ("RightWingRotate");
-		int rightWingRaise = GetActuatorIDByName ("RightWingRaise");
+		int leftWingRotate = GetActuatorIDByName (ActuatorName.LeftWingRotate);
+		int leftWingRaise = GetActuatorIDByName (ActuatorName.LeftWingRaise);
+		int rightWingRotate = GetActuatorIDByName (ActuatorName.RightWingRotate);
+		int rightWingRaise = GetActuatorIDByName (ActuatorName.RightWingRaise);
 
 		int[] actuators = { leftWingRotate, leftWingRaise, rightWingRotate, rightWingRaise };
 		float[] positions = { 0.0f, 100.0f, 0.0f, 100.0f };
@@ -582,10 +575,10 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void WingsPose3()
 	{
-		int leftWingRotate = GetActuatorIDByName ("LeftWingRotate");
-		int leftWingRaise = GetActuatorIDByName ("LeftWingRaise");
-		int rightWingRotate = GetActuatorIDByName ("RightWingRotate");
-		int rightWingRaise = GetActuatorIDByName ("RightWingRaise");
+		int leftWingRotate = GetActuatorIDByName (ActuatorName.LeftWingRotate);
+		int leftWingRaise = GetActuatorIDByName (ActuatorName.LeftWingRaise);
+		int rightWingRotate = GetActuatorIDByName (ActuatorName.RightWingRotate);
+		int rightWingRaise = GetActuatorIDByName (ActuatorName.RightWingRaise);
 
 		int[] actuators = { leftWingRotate, leftWingRaise, rightWingRotate, rightWingRaise };
 		float[] positions = { 100.0f, 0.0f, 100.0f, 0.0f };
@@ -609,16 +602,24 @@ public class MasterController : MonoBehaviour, IMasterController
 		}
 	}
 
-	private int GetActuatorIDByName(string name)
+	private int GetActuatorIDByName(ActuatorName name)
 	{
-		return m_config.GetActuatorID(name);
+		return m_config.GetActuatorID(name.ToString());
 	}
 
-	private void GetActuatorIDsByName(List<string> names, ref List<int> ids)
+	private void GetActuatorIDsByName(List<ActuatorName> names, ref List<int> ids)
 	{
 		foreach(var name in names)
 		{
-			ids.Add (m_config.GetActuatorID (name));
+			ActuatorConfig a = new ActuatorConfig ();
+			if (m_config.FindActuator (name.ToString(), ref a)) 
+			{
+				if (ids.Contains (a.id)) {
+					Debug.LogError ("Multiple actuators named " + name.ToString());
+					continue;
+				}
+				ids.Add (a.id);
+			}
 		}
 	}
 
@@ -653,8 +654,8 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void RotateWings(float direction)
 	{
-		int leftWingRotate = GetActuatorIDByName ("LeftWingRotate");
-		int rightWingRotate = GetActuatorIDByName ("RightWingRotate");
+		int leftWingRotate = GetActuatorIDByName (ActuatorName.LeftWingRotate);
+		int rightWingRotate = GetActuatorIDByName (ActuatorName.RightWingRotate);
 		m_roboticsControllers.SetActuatorSpeed (leftWingRotate, direction);
 		m_roboticsControllers.SetActuatorSpeed (rightWingRotate, direction);
 
@@ -662,8 +663,8 @@ public class MasterController : MonoBehaviour, IMasterController
 
 	public void RaiseWings(float direction)
 	{
-		int leftWingRaise = GetActuatorIDByName ("LeftWingRaise");
-		int rightWingRaise = GetActuatorIDByName ("RightWingRaise");
+		int leftWingRaise = GetActuatorIDByName (ActuatorName.LeftWingRaise);
+		int rightWingRaise = GetActuatorIDByName (ActuatorName.RightWingRaise);
 		m_roboticsControllers.SetActuatorSpeed (leftWingRaise, direction);
 		m_roboticsControllers.SetActuatorSpeed (rightWingRaise, direction);
 

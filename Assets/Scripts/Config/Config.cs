@@ -13,7 +13,7 @@ namespace UKI
 		{
 			foreach(ActuatorConfig a in actuators)
 			{
-				if (a.name == _name) 
+				if (a.enabled && a.name == _name) 
 				{
 					_config = a;
 					return true;
@@ -41,6 +41,7 @@ namespace UKI
 		public float maxExtent;
 		public float inwardCurrentLimit;
 		public float outwardCurrentLimit;
+		public bool enabled;
 	}
 
 
