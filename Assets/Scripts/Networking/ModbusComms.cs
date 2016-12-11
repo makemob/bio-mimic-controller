@@ -16,7 +16,7 @@ public class ModbusComms : SerialComms
 	public int m_waitToRetry = 200;		//milliseconds
 	public int m_retries = 3;			//max num retries
 	public bool m_logOutput = false;
-
+	public bool m_logReadTime = false;
 	//Register values from scarab
 	const ushort STILL = 0;
 	const ushort FORWARDS = 1;
@@ -138,13 +138,23 @@ public class ModbusComms : SerialComms
 		if (m_logOutput)
 			Debug.Log(Time.realtimeSinceStartup + " Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
 
+		float start = GetClockMS();
+
 		try 
 		{
 			if (m_modbusMaster != null && m_serial.IsOpen)
 			{
 				//Debug.Log(GetClock() + " Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
+				//float start = GetClockMS();
 
 				result = m_modbusMaster.ReadHoldingRegisters(slaveID, startRegister, numRegistersToRead);
+
+				if(m_logReadTime)
+				{
+					float end = GetClockMS();
+					Debug.Log("Read " + slaveID + ": " + (end-start).ToString());
+				}
+
 				//Debug.Log(GetClock() + " Finised Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
 				//if (result != null) {
 				//	foreach (ushort d in result)
@@ -154,8 +164,14 @@ public class ModbusComms : SerialComms
 		}
 		catch (Exception e)
 		{
-			Debug.Log(Time.realtimeSinceStartup + " Failed to read holding register.");
+			if (m_logReadTime) 
+			{
+				float end = GetClockMS ();
+				Debug.Log ("FailedRead " + slaveID + ": " + (end - start).ToString ());
+			}
+			Debug.Log(Time.realtimeSinceStartup + " Failed to read holding register " + slaveID);
 			Debug.LogError(e);
+
 
 			return null;
 		}
@@ -217,5 +233,11 @@ public class ModbusComms : SerialComms
 	{
 		System.TimeSpan t = System.DateTime.UtcNow - m_startTime;
 		return (float)(t.TotalMilliseconds/1000.0);
+	}
+
+	private float GetClockMS()
+	{
+		System.TimeSpan t = System.DateTime.UtcNow - m_startTime;
+		return (float)(t.TotalMilliseconds);
 	}
 }
