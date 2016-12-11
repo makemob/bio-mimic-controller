@@ -9,9 +9,7 @@ using UKI;
 [RequireComponent(typeof(ModbusComms))]
 public class ModbusRoboticsController : RoboticsController 
 {
-	//public bool m_useMultiRegister = true;
-	public bool m_useMultiRead = false;
-	//public int m_timeout = 1000;
+	public bool m_useMultiRead = true;	//NOTE: Switching multiread off appears to be broken due to timing issues
 	public float m_actuatorStateUpdateInterval = 1.0f;	//Time between state updates 
 
 	ModbusComms m_modbus;
@@ -38,8 +36,6 @@ public class ModbusRoboticsController : RoboticsController
 
 		m_actuators [actuator.GetID()] = actuator;
 
-		//TODO: Check writing immediately no longer locks up. We should be ok.
-
 		m_modbus.WriteSingleRegister((byte)actuator.GetID(), 
 									 (ushort)ModbusRegister.MB_CURRENT_LIMIT_INWARD, 
 									 (ushort)actuator.m_config.inwardCurrentLimit);
@@ -56,9 +52,6 @@ public class ModbusRoboticsController : RoboticsController
 		//Do an initial actuator read to determine current trip counts etc
 		ActuatorState state = ReadActuatorState(actuator.GetID());
 		UpdateActuator (actuator, state, false);				
-
-		//TODO: Sort dictionary
-		//m_actuators.Sort((a,b) => { return a.m_id.CompareTo(b.m_id); });
 
 		return true;
 	}
@@ -176,18 +169,7 @@ public class ModbusRoboticsController : RoboticsController
 		//TODO: Remap registers so we can do a state update with a single read
 
 		ActuatorState s = new ActuatorState();
-
-		//TODO: Re-enable 
-		if (m_useMultiRead) 
-		{
-			ushort[] diagnostics;
-			if (ReadRegisters (actuatorID, ModbusRegister.MB_BRIDGE_CURRENT, 5, out diagnostics)) {
-				s.m_bridgeCurrent = diagnostics [0];
-				s.m_batteryVoltage = diagnostics [1];
-				s.m_boardTemperature = diagnostics [4];
-			}
-		}
-			
+					
 		ushort[] data;
 		if (ReadRegisters (actuatorID, ModbusRegister.MB_MOTOR_SETPOINT, 17, out data)) 			
 		{
@@ -202,30 +184,19 @@ public class ModbusRoboticsController : RoboticsController
 			s.m_stopped = data [8];
 			s.m_innerLimitCount = data [14];
 			s.m_outerLimitCount = data [15];
-
-			//s.m_atInnerLimit = data [14] > 0;	//This doesn't work. Can we rely on count remaining the same and so simply test if this number has gone up by one?
-			//s.m_atOuterLimit = data [15] > 0;
 			s.m_heartBeat = data [16];
-
-			//s.m_innerCurrentTrips = data[0];
-			//s.m_outerCurrentTrips = data[1];
 		}
-
-
-		//Add second read back in for now, for reliable microswitch test
-//		ushort[] extentSwitches;
-//		if (ReadRegisters (actuatorID, ModbusRegister.MB_INWARD_ENDSTOP_STATE, 2, out extentSwitches)) 			
-//		{
-//			s.m_atInnerLimit = extentSwitches[0] > 0;
-//			s.m_atOuterLimit = extentSwitches[1] > 0;
-//		}
 
 		if (m_useMultiRead) 
 		{
-			ushort[] currentLimits;
-			if (ReadRegisters (actuatorID, ModbusRegister.MB_CURRENT_LIMIT_INWARD, 2, out currentLimits)) {
-				s.m_innerCurrentLimit = currentLimits [0];
-				s.m_outerCurrentLimit = currentLimits [1];
+			ushort[] diagnostics;
+			if (ReadRegisters (actuatorID, ModbusRegister.MB_BRIDGE_CURRENT, 17, out diagnostics)) 
+			{
+				s.m_bridgeCurrent = diagnostics [0];
+				s.m_batteryVoltage = diagnostics [1];
+				s.m_boardTemperature = diagnostics [4];
+				s.m_atInnerLimit = diagnostics [15] > 0;
+				s.m_atOuterLimit = diagnostics [16] > 0;
 			}
 		}
 
@@ -264,16 +235,6 @@ public class ModbusRoboticsController : RoboticsController
 			ReadActuatorState(a.GetID());
 	}
 
-	public void ToggleMultiRegister()
-	{
-		//m_useMultiRegister = !m_useMultiRegister;
-	}
-
-	public void UseMultiRegister(bool doUseMultiRegister)
-	{
-		//m_useMultiRegister = doUseMultiRegister;
-	}
-
 	bool ReadRegisters(int actuatorID, ModbusRegister startRegister, int count, out ushort [] result)
 	{
 		result =  m_modbus.ReadHoldingRegisters ((byte)actuatorID, (ushort)startRegister, (ushort)count);
@@ -307,7 +268,8 @@ public class ModbusRoboticsController : RoboticsController
 			int oldOuterLimitCount = actuator.m_state.m_outerLimitCount;
 
 			//Set limit flags
-			if (!m_useMultiRead) { //TODO: Remove multi read option when we can!
+			if (!m_useMultiRead) 
+			{ //TODO: Remove multi read option when we can!
 				if (newState.m_innerLimitCount > oldInnerLimitCount)
 					newState.m_atInnerLimit = true;
 
