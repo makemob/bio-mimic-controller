@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class FlashColor : MonoBehaviour {
 
 	public Color m_color = Color.green;
-	public float m_time = 0.3f;
+	public float m_time = 0.1f;
 	private Image m_image;
 	
 	public void Flash()
