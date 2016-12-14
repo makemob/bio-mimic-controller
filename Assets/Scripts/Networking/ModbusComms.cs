@@ -30,6 +30,16 @@ public class ModbusComms : SerialComms
 	private DateTime m_startTime;
 	private bool m_running = false;
 
+	public struct ReadResults
+	{
+		public byte slaveID;
+		public int startAddress;
+		public ushort [] data;
+	}
+
+	object m_readLock = new object();
+	Queue<ReadResults> m_readResults = new Queue<ReadResults> (32);
+
 	//
 	// Startup the modbus connection and commence the command queue, enforcing gaps between all networking calls
 	//
@@ -131,36 +141,76 @@ public class ModbusComms : SerialComms
 		});
 	}
 
-	public ushort [] ReadHoldingRegisters(byte slaveID, ushort startRegister, ushort numRegistersToRead)
+	public void AddReadData(ReadResults data)
 	{
-		ushort[] result = null;
-
-		if (m_logOutput)
-			Debug.Log(Time.realtimeSinceStartup + " Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
-
-		try 
+		lock (m_readLock) 
 		{
-			if (m_modbusMaster != null && m_serial.IsOpen)
+			m_readResults.Enqueue(data);
+		}
+	}
+
+	public bool HasReadData()
+	{
+		bool hasReadData = false;
+
+		lock (m_readLock) 
+		{
+			hasReadData = m_readResults.Count > 0;
+		}
+
+		return hasReadData;
+	}
+
+	public ReadResults GetReadData()
+	{
+		ReadResults r;
+
+		lock (m_readLock) 
+		{
+			r = m_readResults.Dequeue ();
+		}
+
+		return r;
+	}
+
+	public void ReadHoldingRegisters(byte slaveID, ushort startRegister, ushort numRegistersToRead)
+	{
+		QueueInternalCommand (() => {
+			
+			if (m_logOutput)
+				Debug.Log (Time.realtimeSinceStartup + " Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
+
+			ushort [] result = null;
+
+			try 
 			{
-				//Debug.Log(GetClock() + " Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
+				if (m_modbusMaster != null && m_serial.IsOpen) 
+				{
+					float timeA = GetClockMilliseconds ();
 
-				result = m_modbusMaster.ReadHoldingRegisters(slaveID, startRegister, numRegistersToRead);
-				//Debug.Log(GetClock() + " Finised Reading Holding Register. SlaveID: " + slaveID + " StartRegister: " + startRegister + " Count:" + numRegistersToRead);
-				//if (result != null) {
-				//	foreach (ushort d in result)
-				//		Debug.Log ("    Data: " + d);
-				//}
+					result = m_modbusMaster.ReadHoldingRegisters (slaveID, startRegister, numRegistersToRead);
+
+					float timeB = GetClockMilliseconds ();
+
+					Debug.Log ("ReadTime " + slaveID + ":" + (timeB - timeA).ToString ());
+				}
+			} 
+			catch (Exception e) 
+			{
+				Debug.Log (Time.realtimeSinceStartup + " Failed to read holding register.");
+				Debug.LogError (e);
 			}
-		}
-		catch (Exception e)
-		{
-			Debug.Log(Time.realtimeSinceStartup + " Failed to read holding register.");
-			Debug.LogError(e);
-
-			return null;
-		}
 		
-		return result;
+			if (result != null)
+			{
+				ReadResults r = new ReadResults();
+				r.slaveID = slaveID;
+				r.startAddress = startRegister;
+				r.data = result;
+
+				AddReadData(r);
+			}
+		});
 	}
 
 	public void ClearCommandQueue()
@@ -217,5 +267,11 @@ public class ModbusComms : SerialComms
 	{
 		System.TimeSpan t = System.DateTime.UtcNow - m_startTime;
 		return (float)(t.TotalMilliseconds/1000.0);
+	}
+
+	private float GetClockMilliseconds()
+	{
+		System.TimeSpan t = System.DateTime.UtcNow - m_startTime;
+		return (float)(t.TotalMilliseconds);
 	}
 }

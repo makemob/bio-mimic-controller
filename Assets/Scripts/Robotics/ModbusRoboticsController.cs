@@ -50,8 +50,8 @@ public class ModbusRoboticsController : RoboticsController
 		actuator.m_onMaxLimitReached.AddListener(() => { this.StopActuator (actuator.GetID ());} );
 
 		//Do an initial actuator read to determine current trip counts etc
-		ActuatorState state = ReadActuatorState(actuator.GetID());
-		UpdateActuator (actuator, state, false);				
+		//ActuatorState state = ReadActuatorState(actuator.GetID());
+		//UpdateActuator (actuator, state, false);				
 
 		return true;
 	}
@@ -162,45 +162,44 @@ public class ModbusRoboticsController : RoboticsController
 		StopAllActuators ();
 	}
 
-	public override ActuatorState ReadActuatorState (int actuatorID)
+	public override void ReadActuatorState (int actuatorID)
 	{
-		//TODO: run on separate thread?
-		//TODO: Fill out full state
-		//TODO: Remap registers so we can do a state update with a single read
+		ReadRegisters (actuatorID, ModbusRegister.MB_MOTOR_SETPOINT, 17);
+		ReadRegisters (actuatorID, ModbusRegister.MB_BRIDGE_CURRENT, 17);
+	}
 
-		ActuatorState s = new ActuatorState();
-					
-		ushort[] data;
-		if (ReadRegisters (actuatorID, ModbusRegister.MB_MOTOR_SETPOINT, 17, out data)) 			
+	void Update()
+	{
+		while (m_modbus.HasReadData ()) 
 		{
-			s.m_motorSetPoint = data [0];
-			s.m_motorSpeed = data [1];
-			s.m_motorAcceleration = data [2];
-			s.m_innerCurrentLimit = data [3];
-			s.m_outerCurrentLimit = data [4];
-			s.m_innerCurrentTrips = data [5];
-			s.m_outerCurrentTrips = data [6];
-			s.m_voltageTrips = data [7];
-			s.m_stopped = data [8];
-			s.m_innerLimitCount = data [14];
-			s.m_outerLimitCount = data [15];
-			s.m_heartBeat = data [16];
-		}
-
-		if (m_useMultiRead) 
-		{
-			ushort[] diagnostics;
-			if (ReadRegisters (actuatorID, ModbusRegister.MB_BRIDGE_CURRENT, 17, out diagnostics)) 
+			ModbusComms.ReadResults r =	m_modbus.GetReadData ();
+			ActuatorState s = GetActuatorState(r.slaveID);
+			if (r.startAddress == (int)ModbusRegister.MB_MOTOR_SETPOINT) 
 			{
-				s.m_bridgeCurrent = diagnostics [0];
-				s.m_batteryVoltage = diagnostics [1];
-				s.m_boardTemperature = diagnostics [4];
-				s.m_atInnerLimit = diagnostics [15] > 0;
-				s.m_atOuterLimit = diagnostics [16] > 0;
+				s.m_motorSetPoint = r.data [0];
+				s.m_motorSpeed = r.data [1];
+				s.m_motorAcceleration = r.data [2];
+				s.m_innerCurrentLimit = r.data [3];
+				s.m_outerCurrentLimit = r.data [4];
+				s.m_innerCurrentTrips = r.data [5];
+				s.m_outerCurrentTrips = r.data [6];
+				s.m_voltageTrips = r.data [7];
+				s.m_stopped = r.data [8];
+				s.m_innerLimitCount = r.data [14];
+				s.m_outerLimitCount = r.data [15];
+				s.m_heartBeat = r.data [16];
+			} 
+			else 
+			{
+				s.m_bridgeCurrent = r.data [0];
+				s.m_batteryVoltage = r.data [1];
+				s.m_boardTemperature = r.data [4];
+				s.m_atInnerLimit = r.data [15] > 0;
+				s.m_atOuterLimit = r.data [16] > 0;
 			}
-		}
 
-		return s;
+			UpdateActuator (m_actuators [r.slaveID], s, true);
+		}
 	}
 
 	public override ActuatorState GetActuatorState(int actuatorID)
@@ -235,10 +234,10 @@ public class ModbusRoboticsController : RoboticsController
 			ReadActuatorState(a.GetID());
 	}
 
-	bool ReadRegisters(int actuatorID, ModbusRegister startRegister, int count, out ushort [] result)
+	void ReadRegisters(int actuatorID, ModbusRegister startRegister, int count)
 	{
-		result =  m_modbus.ReadHoldingRegisters ((byte)actuatorID, (ushort)startRegister, (ushort)count);
-		return result != null && result.Length == count;
+		m_modbus.ReadHoldingRegisters ((byte)actuatorID, (ushort)startRegister, (ushort)count);
+		//return result != null && result.Length == count;
 	}
 
 	//Loop thorugh each actuator and update its state
@@ -256,8 +255,9 @@ public class ModbusRoboticsController : RoboticsController
 			{
 				index = (index + 1) % actuatorCount;
 				int currentID = actuatorIDs [index];
-				ActuatorState state = ReadActuatorState(currentID);
-				UpdateActuator (m_actuators [currentID], state, true);
+				//ActuatorState state = ReadActuatorState(currentID);
+				ReadActuatorState(currentID);
+				//UpdateActuator (m_actuators [currentID], state, true);
 			}
 		}
 	}
@@ -289,7 +289,7 @@ public class ModbusRoboticsController : RoboticsController
 		//TODO: Refactor this and wait on current and switch events properly!
 		actuator.SetState(newState);
 
-		//TODO: trigger event 
+		//TODO: trigger event in actuator script instead of performing logic here
 
 		if (actuator.m_state.m_atInnerLimit && actuator.m_moveSpeed < 0.0f) {
 			actuator.SetActuatorSpeed(0.0f);
