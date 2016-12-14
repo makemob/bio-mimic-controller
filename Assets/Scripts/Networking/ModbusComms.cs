@@ -16,7 +16,7 @@ public class ModbusComms : SerialComms
 	public int m_waitToRetry = 200;		//milliseconds
 	public int m_retries = 3;			//max num retries
 	public bool m_logOutput = false;
-
+	public bool m_logReadTime = false;
 	//Register values from scarab
 	const ushort STILL = 0;
 	const ushort FORWARDS = 1;
@@ -165,8 +165,7 @@ public class ModbusComms : SerialComms
 	{
 		ReadResults r;
 
-		lock (m_readLock) 
-		{
+		lock (m_readLock) {
 			r = m_readResults.Dequeue ();
 		}
 
@@ -186,11 +185,11 @@ public class ModbusComms : SerialComms
 			{
 				if (m_modbusMaster != null && m_serial.IsOpen) 
 				{
-					float timeA = GetClockMilliseconds ();
+					float timeA = GetClockMS ();
 
 					result = m_modbusMaster.ReadHoldingRegisters (slaveID, startRegister, numRegistersToRead);
 
-					float timeB = GetClockMilliseconds ();
+					float timeB = GetClockMS ();
 
 					Debug.Log ("ReadTime " + slaveID + ":" + (timeB - timeA).ToString ());
 				}
@@ -269,7 +268,7 @@ public class ModbusComms : SerialComms
 		return (float)(t.TotalMilliseconds/1000.0);
 	}
 
-	private float GetClockMilliseconds()
+	private float GetClockMS()
 	{
 		System.TimeSpan t = System.DateTime.UtcNow - m_startTime;
 		return (float)(t.TotalMilliseconds);
